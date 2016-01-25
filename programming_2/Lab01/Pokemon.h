@@ -1,8 +1,9 @@
-/**
+/*
 *	@file : Pokemon.h
 *	@author : Sharynne Azhar
-*	@date : 2015.08.28
-*	Purpose: Header file of Pokemon class. Used to store information on the user's pokemon.
+*	@date : 01-25-2016
+    Purpose: Header file of Pokemon class. Used to store information about
+             user's Pokemon
 */
 
 #ifndef POKEMON_H
@@ -10,39 +11,41 @@
 
 #include <string>
 
-using namespace std;
-
 class Pokemon
 {
-private:
-	int m_hp;
-	int m_attackLevel;
-	int m_defenseLevel;
-	string m_name;
 
-public: 
-	/**
-	* @pre None 
-	* @post Initializes all numeric data to zero and strings to ""
+private:
+    int m_hp; // health points of the pokemon
+    int m_attackLevel; // attack level of the pokemon
+    int m_defenseLevel; // defense level of the pokemon
+    std::string m_name; // name of the pokemon
+
+public:
+    /**
+	* @pre None
+	* @post Initializes all numeric data to zero and strings to empty
+    * @return None
 	**/
 	Pokemon();
 
-
-	int getHP() const;
-	int getAttackLevel() const;
-	int getDefenseLevel() const;
-	string getName() const;
-
-	void setHP(int h);
-	void setAttackLevel(int a);
-	void setDefenseLevel(int d);
-	void setName(string n);
-	
 	/**
-	* @pre amount is determine by attack() in Colosseum class 
-	* @post subtracts amount from m_hp 
+	* @pre amount is determine by attack() in Colosseum class
+	* @post subtracts amount from m_hp
+    * @return none
 	**/
-	void reduceHP(int amount); 
+	void reduceHP(int amount);
+
+    int getHP() const;
+    void setHP(int h);
+
+	int getAttackLevel() const;
+    void setAttackLevel(int a);
+
+	int getDefenseLevel() const;
+    void setDefenseLevel(int d);
+
+	std::string getName() const;
+	void setName(std::string n);
 };
 
 #endif

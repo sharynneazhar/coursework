@@ -5,6 +5,7 @@
 *	Purpose: Header file of Dice Class. Used to emulate a dice with the number of sides given at construction time.
 */
 
+
 /**
 * The ifndef, define block is used to avoid redefintion and other errors that can occur
 * during compilation. 
