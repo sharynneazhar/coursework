@@ -60,7 +60,7 @@ void Executive::printMenu()
     std::cout << "4. Quit";
 }
 
-void Executive::findByLastName(std::string lastName, DriversLicenseRecord* arr, int size) throw (ExecutiveReaderException)
+void Executive::findByLastName(std::string lastName, DriversLicenseRecord* arr, int size)
 {
     std::string temp;
     int numFound = 0;
@@ -77,11 +77,11 @@ void Executive::findByLastName(std::string lastName, DriversLicenseRecord* arr, 
 
     if (numFound == 0)
     {
-        throw ExecutiveReaderException("Last name not found.");
+        std::cout << "Last name not found.";
     }
 }
 
-void Executive::findByAge(int age_min, int age_max, DriversLicenseRecord* arr, int size) throw (ExecutiveReaderException)
+void Executive::findByAge(int age_min, int age_max, DriversLicenseRecord* arr, int size)
 {
     int temp;
     int numFound = 0;
@@ -98,11 +98,11 @@ void Executive::findByAge(int age_min, int age_max, DriversLicenseRecord* arr, i
 
     if (numFound == 0)
     {
-        throw ExecutiveReaderException("No person(s) within age range");
+        std::cout << "No person(s) within age range";
     }
 }
 
-void Executive::findByRegisteredVoters(char isRegistered, DriversLicenseRecord* arr, int size) throw (ExecutiveReaderException)
+void Executive::findByRegisteredVoters(char isRegistered, DriversLicenseRecord* arr, int size)
 {
     int temp;
     int numFound = 0;
@@ -119,7 +119,7 @@ void Executive::findByRegisteredVoters(char isRegistered, DriversLicenseRecord* 
 
     if (numFound == 0)
     {
-        throw ExecutiveReaderException("No registered voters found.");
+        std::cout << "No registered voters found.";
     }
 }
 
@@ -142,14 +142,7 @@ void Executive::run()
             std::cout << "Enter last name: ";
             std::cin >> lastName;
             lastName[0] = toupper(lastName[0]);
-            try
-            {
-                findByLastName(lastName, dlrArray, numRecords);
-            }
-            catch (ExecutiveReaderException& e)
-            {
-                std::cout << e.what();
-            }
+            findByLastName(lastName, dlrArray, numRecords);
             break;
         }
         case 2:
@@ -157,27 +150,13 @@ void Executive::run()
             int age_min, age_max;
             std::cout << "Enter age range (separated by single space): ";
             std::cin >> age_min >> age_max;
-            try
-            {
-                findByAge(age_min, age_max, dlrArray, numRecords);
-            }
-            catch (ExecutiveReaderException& e)
-            {
-                std::cout << e.what();
-            }
+            findByAge(age_min, age_max, dlrArray, numRecords);
             break;
         }
         case 3:
         {
             std::cout << "\nCompiling a list of registered voters...\n";
-            try
-            {
-                findByRegisteredVoters('Y', dlrArray, numRecords);
-            }
-            catch (ExecutiveReaderException& e)
-            {
-                std::cout << e.what();
-            }
+            findByRegisteredVoters('Y', dlrArray, numRecords);
             break;
         }
         case 4:
