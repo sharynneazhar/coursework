@@ -51,21 +51,21 @@ public:
     * @post prints list of records found to console
     * @throws when last name not found
     */
-    void findByLastName(std::string lastName, DriversLicenseRecord* arr, int size) throw (ExecutiveReaderException);
+    void findByLastName(std::string lastName, DriversLicenseRecord* arr, int size);
 
     /*
     * @pre assumes valid array with size and age range provided
     * @post prints list of records found to console
     * @throws when age is out of range
     */
-    void findByAge(int age_min, int age_max, DriversLicenseRecord* arr, int size) throw (ExecutiveReaderException);
+    void findByAge(int age_min, int age_max, DriversLicenseRecord* arr, int size);
 
     /*
     * @pre assumes valid array with size
     * @post prints list of records found to console
     * @throws when registered voters not found
     */
-    void findByRegisteredVoters(char isRegistered, DriversLicenseRecord* arr, int size) throw (ExecutiveReaderException);
+    void findByRegisteredVoters(char isRegistered, DriversLicenseRecord* arr, int size);
 
     /*
     * @pre assumes all instances and methods are valid
