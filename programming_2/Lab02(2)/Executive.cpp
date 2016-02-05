@@ -188,6 +188,8 @@ void Executive::run()
         default:
         {
             std::cout << "Invalid input. Please try again.";
+            std::cin.clear(); // clear the input stream
+            std::cin.ignore(256, '\n'); // ignore any remaining buffers
             done = false;
         }
         } // end switch
