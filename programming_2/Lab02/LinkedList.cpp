@@ -1,161 +1,192 @@
 /**
 *	@file : LinkedList.cpp
 *	@author : Sharynne Azhar
-*	@date : 2015.09.17
-*	@brief: Implementation file of LinkedList class
+*	@date : 02-08-2016
+*	Purpose: Implementation file for the LinkedList class
 */
 
 #include "LinkedList.h"
-#include "Node.h"
 
-#include <iostream>
-
-using namespace std;
-
-LinkedList::LinkedList() {
-	m_size = 0;
-	m_front = nullptr;
+LinkedList::LinkedList()
+{
+    m_front = nullptr;
+    m_size = 0;
 }
 
-LinkedList::~LinkedList() {
-	removeFront();
-	removeBack();
+LinkedList::~LinkedList()
+{
+    // removes all nodes until list is empty
+    while(removeFront());
+    m_front = nullptr;
 }
 
-bool LinkedList::isEmpty() const {
-	if (m_size == 0)
-	{
-		return (true);
-	}
-	else
-	{
-		return (false);
-	}
+int LinkedList::size() const
+{
+    return m_size;
 }
 
-int LinkedList::size() const {
-	return (m_size);
-}
-	
-bool LinkedList::search(int value) const {
-	Node* temp = m_front;
-	
-	if (m_size == 0)
-	{
-		cout << "List empty." << endl;
-		return (false);
-	}
-	else
-	{
-		while (temp != nullptr)
-		{
-			if (value == temp->getValue())
-			{
-				cout << value << " is in the list." << endl;
-				return (true);
-			}
-			temp = temp->getNext();
-		}
-		cout << value << " is not in the list." << endl;
-		return (false);
-	}
+bool LinkedList::isEmpty() const
+{
+    if (m_size == 0)
+    {
+        return true;
+    }
+
+    return false;
 }
 
-void LinkedList::printList() const {
-	Node* temp = m_front;
+bool LinkedList::search(int value) const
+{
+    Node* traverse = m_front;
 
-	while (temp != nullptr)
-	{
-		cout << temp -> getValue() << " ";
-		temp = temp -> getNext();
-	}
-}
-	
-void LinkedList::addBack(int value) {
-	Node* temp = nullptr; // use to create new Node instance
-	Node* traverse = m_front; // use to track last Node instance
-	
-	if (m_size == 0)
-	{
-		m_front = new Node();
-		m_front->setValue(value);
-		m_size++;
-	}
-	else if (m_size > 0)
-	{
-		while (traverse->getNext() != nullptr) 
-		{
-			traverse = traverse->getNext();
-		}
-		
-		temp = new Node();
-		temp->setValue(value);
-		traverse->setNext(temp);
-		m_size++;
-	}
+    if (!isEmpty())
+    {
+        while (traverse->getNext() != nullptr)
+        {
+            if (traverse->getValue() == value)
+            {
+                return true;
+            }
+            traverse = traverse->getNext();
+        }
+
+        if (traverse->getValue() == value)
+        {
+            return true;
+        }
+    }
+
+    return false;
 }
 
-void LinkedList::addFront(int value) {
-	Node* temp = new Node();
-	temp->setValue(value);
-	
-	if (m_front == nullptr)
-	{
-		m_front = temp;
-	}
-	else 
-	{
-		temp->setNext(m_front);
-		m_front = temp;
-	}
-	
-	m_size++;
-}
-	
-bool LinkedList::removeBack() {
-	Node* nextToLast = nullptr;
-	Node* traverse = m_front;
-	
-	if (isEmpty())
-	{
-		cout << "List empty." << endl;
-		return (false);
-	}
-	else
-	{
-		while (traverse->getNext() != nullptr)
-		{
-			nextToLast = traverse;
-			traverse = traverse->getNext();
-		}
-		
-		delete traverse;
+void LinkedList::printList() const
+{
+    Node* traverse = m_front;
 
-		if (nextToLast != nullptr)
-		{
-			nextToLast->setNext(nullptr);
-		}
-		m_size--;
-	}
-	
-	return (true);
+    if (isEmpty())
+    {
+        std::cout << "List is empty\n";
+    }
+    else
+    {
+        while (traverse != nullptr)
+        {
+            std::cout << traverse->getValue() << " ";
+            traverse = traverse->getNext();
+        }
+    }
 }
 
-bool LinkedList::removeFront() {
-	Node* temp = m_front;
-	
-	if (isEmpty())
+void LinkedList::addBack(int value)
+{
+    Node* traverse = m_front;
+
+    Node* newNode = new Node();
+    newNode->setValue(value);
+
+    if (isEmpty())
+    {
+        m_front = newNode;
+    }
+    else
+    {
+        while (traverse->getNext() != nullptr)
+        {
+            traverse = traverse->getNext();
+        }
+
+        traverse->setNext(newNode);
+    }
+
+    m_size++;
+
+    newNode = nullptr;
+}
+
+void LinkedList::addFront(int value)
+{
+    Node* newNode = new Node();
+    newNode->setValue(value);
+
+    if (m_front == nullptr)
+    {
+        m_front = newNode;
+    }
+    else
+    {
+        newNode->setNext(m_front);
+        m_front = newNode;
+    }
+
+    m_size++;
+
+    newNode = nullptr;
+}
+
+bool LinkedList::removeBack()
+{
+    Node* traverse = m_front;
+    Node* nextToLastNode = nullptr;
+
+	if (!isEmpty())
 	{
-		cout << "List empty." << endl;
-		return (false);
+        while(traverse->getNext() != nullptr)
+        {
+            nextToLastNode = traverse;
+            traverse = traverse->getNext();
+        }
+
+        delete traverse;
+        traverse = nullptr;
+
+        if (nextToLastNode != nullptr)
+        {
+            nextToLastNode->setNext(nullptr);
+        }
+
+        m_size--;
+        return true;
 	}
-	else
+
+	return false;
+}
+
+bool LinkedList::removeFront()
+{
+    Node* traverse = m_front;
+
+	if (!isEmpty())
 	{
-		m_front = m_front->getNext();
-		delete temp;
-		temp = nullptr;
-		m_size--;
+        m_front = m_front->getNext();
+
+        delete traverse;
+        traverse = nullptr;
+
+        m_size--;
+		return true;
 	}
-	
-	return (true);
+
+	return false;
+}
+
+std::vector<int> LinkedList::toVector() const
+{
+    Node* traverse = m_front;
+    std::vector<int> vec;
+
+    if (!isEmpty())
+    {
+        while (traverse->getNext() != nullptr)
+        {
+            vec.push_back(traverse->getValue());
+            traverse = traverse->getNext();
+        }
+
+        if (traverse != nullptr)
+        {
+            vec.push_back(traverse->getValue());
+        }
+    }
+
+    return vec;
 }
