@@ -10,7 +10,7 @@
 
 #include "Test_LinkedList.h"
 
-int main(int argc, char* argv[])
+int main(int argc, char** argv)
 {
     int testSize = std::stoi(argv[1]);
     Test_LinkedList tester(testSize);
