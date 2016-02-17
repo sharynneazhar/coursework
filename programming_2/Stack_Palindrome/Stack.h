@@ -64,7 +64,7 @@ class Stack : public StackInterface<T>
         /*
         * @return prints the contents of the stack or empty string if empty
         */
-        void print() const;
+        void print(bool isNegative) const;
 
         Stack<T> reverse();
 

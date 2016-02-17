@@ -115,9 +115,13 @@ std::vector<T> Stack<T>::toVector() const
 }
 
 template <typename T>
-void Stack<T>::print() const
+void Stack<T>::print(bool isNegative) const
 {
     Node<T>* nodeToPrint = m_top;
+
+    if (isNegative)
+        std::cout << "-";
+
     while (nodeToPrint != nullptr)
     {
         std::cout << nodeToPrint->getValue() << "";
