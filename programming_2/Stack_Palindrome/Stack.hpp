@@ -113,3 +113,14 @@ std::vector<T> Stack<T>::toVector() const
 
     return vec;
 }
+
+template <typename T>
+void Stack<T>::print() const
+{
+    Node<T>* nodeToPrint = m_top;
+    while (nodeToPrint != nullptr)
+    {
+        std::cout << nodeToPrint->getValue() << "";
+        nodeToPrint = nodeToPrint->getNext();
+    }
+}

@@ -60,6 +60,11 @@ class Stack : public StackInterface<T>
         * @return a vector with a copy of the stack
         */
         std::vector<T> toVector() const;
+
+        /*
+        * @return prints the contents of the stack or empty string if empty
+        */
+        void print() const;
 };
 
 #include "Stack.hpp"
