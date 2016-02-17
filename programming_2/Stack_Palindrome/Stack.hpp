@@ -124,3 +124,37 @@ void Stack<T>::print() const
         nodeToPrint = nodeToPrint->getNext();
     }
 }
+
+template <typename T>
+Stack<T> Stack<T>::reverse()
+{
+    Stack<T> revStack;
+    Node<T>* thisNode = m_top;
+    while (thisNode != nullptr)
+    {
+        revStack.push(thisNode->getValue());
+        thisNode = thisNode->getNext();
+    }
+
+    return revStack;
+}
+
+template <typename T>
+bool Stack<T>::checkPalindrome(Stack<T>& revStack)
+{
+    Node<T>* thisNode = m_top;
+    Node<T>* nextNode = revStack.m_top;
+
+    while (thisNode != nullptr)
+    {
+        if (thisNode->getValue() != nextNode->getValue())
+        {
+            return false;
+        }
+
+        thisNode = thisNode->getNext();
+        nextNode = nextNode->getNext();
+    }
+
+    return true;
+}

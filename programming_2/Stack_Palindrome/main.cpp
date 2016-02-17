@@ -8,14 +8,6 @@
 #include "Test_Stack.h"
 #include "Stack.h"
 
-#include <string>
-
-template <typename T>
-Stack<T> reverse(Stack<T>& stack);
-
-template <typename T>
-bool checkPalindrome(const Stack<T>& stack);
-
 int main()
 {
     int testSize = 20; //std::stoi(argv[1]);
@@ -29,38 +21,29 @@ int main()
         std::cout << "\nInput a number: ";
         std::cin >> num;
 
+        // create stack
         Stack<int> numStack;
-
-        if (num > 0)
+        while (num > 0)
         {
-            while (num > 0)
-            {
-                numStack.push(num % 10);
-                num /= 10;
-            }
-        }
-        else
-        {
-            std::string numString = std::to_string(num);
-            std::cout << numString;
+            numStack.push(num % 10);
+            num /= 10;
         }
 
         numStack.print();
         std::cout << " backwards is ";
 
-        Stack<int> reverseStack = reverse(numStack);
+        Stack<int> reverseStack = numStack.reverse();
         reverseStack.print();
 
-        bool isPalindrome = checkPalindrome(reverseStack);
-        std::cout << "\n";
-        reverseStack.print();
+        bool isPalindrome = numStack.checkPalindrome(reverseStack);
+
         if (isPalindrome)
         {
-            std::cout << " is a palindrome\n";
+            std::cout << "\nIs a palindrome\n";
         }
         else
         {
-            std::cout << " is not a palindrome.\n";
+            std::cout << "\nIs not a palindrome.\n";
         }
 
         char isUserDone;
@@ -75,26 +58,4 @@ int main()
     } while(!done);
 
     return 0;
-}
-
-template <typename T>
-Stack<T> reverse(Stack<T>& stack)
-{
-    T tempItem;
-    Stack<T> tempStack;
-
-    while (!stack.isEmpty())
-    {
-        tempItem = stack.peek();
-        stack.pop();
-        tempStack.push(tempItem);
-    }
-
-    return tempStack;
-}
-
-template <typename T>
-bool checkPalindrome(const Stack<T>& stack)
-{
-    return true;
 }

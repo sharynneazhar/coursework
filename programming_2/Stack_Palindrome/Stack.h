@@ -65,6 +65,11 @@ class Stack : public StackInterface<T>
         * @return prints the contents of the stack or empty string if empty
         */
         void print() const;
+
+        Stack<T> reverse();
+
+        bool checkPalindrome(Stack<T>& revStack);
+
 };
 
 #include "Stack.hpp"
