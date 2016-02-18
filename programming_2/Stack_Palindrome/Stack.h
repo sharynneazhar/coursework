@@ -1,7 +1,7 @@
 /**
 *	@file : Stack.h
 *	@author : Sharynne Azhar
-*	@date : 2015.10.05
+*	@date : 02-17-2016
 *	@brief: Header file for the stack class used to store nodes in a stack
 */
 
@@ -66,8 +66,16 @@ class Stack : public StackInterface<T>
         */
         void print(bool isNegative) const;
 
+        /*
+        * @pre assumes a valid nonempty stack
+        * @return a stack with its contents reversed
+        */
         Stack<T> reverse();
 
+        /*
+        * @pre assumes a valid nonempty stack
+        * @return true if the number is a palindrome, false otherwise
+        */
         bool checkPalindrome(Stack<T>& revStack);
 
 };

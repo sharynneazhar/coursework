@@ -1,7 +1,7 @@
 /**
 *	@file : Stack.hpp
 *	@author : Sharynne Azhar
-*	@date : 2015.10.05
+*	@date : 02-17-2016
 *	@brief: Implementation of the stack class
 */
 
