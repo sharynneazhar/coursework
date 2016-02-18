@@ -8,15 +8,16 @@
 #include "Test_Stack.h"
 #include "Stack.h"
 
-int main()
+int main(int argc, char** argv)
 {
-    int testSize = 20; //std::stoi(argv[1]);
+    int testSize = std::stoi(argv[1]);
     Test_Stack tester(testSize);
     tester.runTests();
 
     std::cout << "\n\n=========================\n";
 	std::cout << "  EVALUATING PALINDROME    \n";
 	std::cout << "=========================\n\n";
+    
     bool done = false;
     do
     {
