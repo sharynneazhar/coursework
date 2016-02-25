@@ -41,7 +41,7 @@ class Engine
         /*
         * @pre a name of type string in passed in
         * @post determines if the customer is a VIP or otherwise
-        * @return true if name matches "VIP(a number)" or "V(a number)"
+        * @return true if name matches "VIP(a number)"
         */
         bool isVip(const std::string name);
 
