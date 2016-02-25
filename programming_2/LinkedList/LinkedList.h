@@ -10,6 +10,7 @@
 
 #include <iostream>
 #include <vector>
+#include <stdexcept>
 #include "Node.h"
 
 class LinkedList
@@ -85,6 +86,12 @@ class LinkedList
 		* @return Returns a vector of linkedlist contents
 		**/
         std::vector<int> toVector() const;
+
+        void removeDuplicates();
+
+        int count(int value);
+
+        void insertAhead(int value, int listValue);
 };
 
 #endif
