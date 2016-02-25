@@ -44,7 +44,7 @@ T Stack<T>::peek() const throw(PrecondViolatedExcep)
 {
     if (isEmpty())
     {
-        throw PrecondViolatedExcep("No VIPS in line\n");
+        throw PrecondViolatedExcep("No VIPs in line\n");
     }
 
     return items[top];
