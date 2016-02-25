@@ -76,7 +76,7 @@ void readFile(const std::string filename, std::vector<std::string>& vec) throw (
     {
         throw PrecondViolatedExcep("Bad file.\n");
     }
-    else if (file.peek() == std::ifstream::traits_type::eof())
+    else if (file.eof())
     {
         throw PrecondViolatedExcep("Empty file\n");
     }
