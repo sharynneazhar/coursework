@@ -21,7 +21,7 @@ void Stack<T>::push(const T& newEntry) throw (PrecondViolatedExcep)
 {
     if (top == MAX_STACK - 1)
     {
-        throw PrecondViolatedExcep("Someone is an imposter. Only 10 VIPs in ACME!\n");
+        throw PrecondViolatedExcep("\nStack full!\n\nOnly 10 VIPs in ACME!\n");
     }
 
     top++;
