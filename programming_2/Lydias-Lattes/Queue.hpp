@@ -91,6 +91,20 @@ T Queue<T>::peekFront() const throw (PrecondViolatedExcep)
 }
 
 template <typename T>
+T Queue<T>::getNext() const throw (PrecondViolatedExcep)
+{
+    if (isEmpty())
+    {
+        throw PrecondViolatedExcep("No one left in queue\n");
+    }
+    else
+    {
+        Node<T>* nextNode = m_front->getNext();
+        return nextNode->getValue();
+    }
+}
+
+template <typename T>
 void Queue<T>::print() const
 {
     Node<T>* nodeToPrint = m_front;

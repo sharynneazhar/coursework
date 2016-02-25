@@ -55,13 +55,12 @@ int main(int argc, char** argv)
             std::cout << "\n=============================\n\n";
         	std::cout << "  WELCOME TO LYDIA'S LATTE    \n";
         	std::cout << "\n=============================\n\n";
+            run(events, vip, customer);
         }
         catch (PrecondViolatedExcep& e)
         {
             std::cerr << e.what();
         }
-
-        run(events, vip, customer);
     }
 
     return 0;
@@ -108,20 +107,20 @@ void run(std::vector<std::string>& vec, Stack<std::string>& stack, Queue<std::st
     // with valid vector filled with contents of the file, break down sequence of events
     for (unsigned int i = 0; i < vec.size(); i++)
     {
-        if (vec[i] == "SHOW"  && !stack.isEmpty() && !queue.isEmpty())
+        if (vec[i] == "SHOW"  && !queue.isEmpty())
         {
             try
             {
                 if (!stack.isEmpty())
                 {
-                    std::cout << "### " << stack.peek() << " is being served\n";
+                    std::cout << stack.peek() << " is being served\n";
+                    std::cout << queue.peekFront() << " is waiting in front of queue\n";
                 }
                 else
                 {
-                    std::cout << "### " << queue.peekFront() << " is being served\n";
+                    std::cout << queue.peekFront() << " is being served\n";
+                    std::cout << queue.getNext() << " is waiting in front of queue\n";
                 }
-
-                std::cout << "### " << queue.peekFront() << " is waiting in front of queue\n";
             }
             catch (PrecondViolatedExcep& e)
             {
@@ -133,22 +132,17 @@ void run(std::vector<std::string>& vec, Stack<std::string>& stack, Queue<std::st
         {
             try
             {
-                std::cout << "--> " << stack.peek() << " is done\n";
-                stack.pop();
-                std::cout << "<-- " << stack.peek() << " is starting\n";
-            }
-            catch (PrecondViolatedExcep& e)
-            {
-                std::cout << e.what();
-            }
-
-            try
-            {
                 if (stack.isEmpty())
                 {
-                    std::cout << "--> " << queue.peekFront() << " is done\n";
+                    std::cout << queue.peekFront() << " is done\n";
                     queue.dequeue();
-                    std::cout << "<-- " << queue.peekFront() << " is starting\n";
+                    std::cout << queue.peekFront() << " is starting\n";
+                }
+                else
+                {
+                    std::cout << stack.peek() << " is done\n";
+                    stack.pop();
+                    std::cout << stack.peek() << " is starting\n";
                 }
             }
             catch (PrecondViolatedExcep& e)
@@ -184,6 +178,20 @@ void run(std::vector<std::string>& vec, Stack<std::string>& stack, Queue<std::st
                 std::cout << temp << " arrives\n";
             }
 
+        }
+    }
+
+    while (!stack.isEmpty() || !queue.isEmpty())
+    {
+        try
+        {
+            std::cout << queue.peekFront() << " is done\n";
+            queue.dequeue();
+            std::cout << queue.peekFront() << " is starting\n";
+        }
+        catch (PrecondViolatedExcep& e)
+        {
+            std::cout << e.what();
         }
     }
 

@@ -51,6 +51,8 @@ class Queue : public QueueInterface<T>
         */
         T peekFront() const throw (PrecondViolatedExcep);
 
+        T getNext() const throw (PrecondViolatedExcep);
+
         /*
         * @return prints the contents of the queue or empty string if empty
         */
