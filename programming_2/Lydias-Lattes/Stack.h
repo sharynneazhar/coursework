@@ -17,7 +17,6 @@ class Stack : public StackInterface<T>
 {
     private:
         int top;
-        int next;
         T items[MAX_STACK];
 
     public:
@@ -47,6 +46,12 @@ class Stack : public StackInterface<T>
         * @return the value at the top of the stack
         */
         T peek() const throw(PrecondViolatedExcep);
+
+        /*
+        * @pre assumes the stack is not empty
+        * @return the next value in the stack
+        */
+        T getNext() const throw(PrecondViolatedExcep);
 
         /*
         * @return the size of the stack

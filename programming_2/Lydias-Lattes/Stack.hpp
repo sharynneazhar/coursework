@@ -6,7 +6,7 @@
 */
 
 template <typename T>
-Stack<T>::Stack() : top(-1), next(0) {}
+Stack<T>::Stack() : top(-1) {}
 
 // Copy constructor and destructor are supplied by the compiler
 
@@ -48,6 +48,17 @@ T Stack<T>::peek() const throw(PrecondViolatedExcep)
     }
 
     return items[top];
+}
+
+template <typename T>
+T Stack<T>::getNext() const throw(PrecondViolatedExcep)
+{
+    if (top == 0)
+    {
+        throw PrecondViolatedExcep("No other VIPs in sight\n");
+    }
+
+    return items[top - 1];
 }
 
 template <typename T>

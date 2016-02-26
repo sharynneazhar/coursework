@@ -51,8 +51,8 @@ void Engine::readFile(const std::string filename, std::vector<std::string>& vec)
 
 bool Engine::isVip(const std::string name)
 {
-    // method checks out if customer's name start with a V
-    while (name[0] != 'V' || (name[1] != 'I' && name[2] != 'P'))
+    // method checks out if customer's name matches VIP
+    while (name.substr(0,3) != "VIP")
     {
         return false;
     }
@@ -66,13 +66,23 @@ void Engine::show(Stack<std::string>& stack, Queue<std::string>& queue)
     {
         if (stack.isEmpty())
         {
-            std::cout << queue.peekFront() << " is being served\n";
-            std::cout << queue.getNext() << " is waiting in front of queue\n";
+            std::cout << queue.peekFront() << " is currently being served\n";
+            if (stack.isEmpty())
+            {
+                std::cout << queue.getNext() << " is waiting in front of the queue\n";
+            }
         }
         else
         {
             std::cout << stack.peek() << " is being served\n";
-            std::cout << queue.peekFront() << " is waiting in front of queue\n";
+            try
+            {
+                std::cout << stack.getNext() << " is waiting patiently to be served\n";
+            }
+            catch (PrecondViolatedExcep& e)
+            {
+                std::cout << e.what();
+            }
         }
     }
     catch (PrecondViolatedExcep& e)
