@@ -11,16 +11,16 @@
 #include "Stack.h"
 #include "PrecondViolatedExcep.h"
 
-// function checks if a character is an operator */+-
+// checks if a character is an operator */+-
 bool isOperator(char ch);
 
-// function checks if a character is a letter
+// checks if a character is a letter
 bool isAlpha(char ch);
 
 // parses a string to check for illegal input
 bool parse(std::string str);
 
-// function to convert a postfix to an infix expression
+// converts a postfix to an infix expression
 void postfixToInfix(std::string str);
 
 int main() {

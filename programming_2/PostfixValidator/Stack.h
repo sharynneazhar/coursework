@@ -2,7 +2,7 @@
 *	@file : Stack.h
 *	@author : Sharynne Azhar
 *	@date : 02-17-2016
-*	@brief: Header file for the stack class used to store nodes in a stack
+*	@brief: Header file for the stack class used to store items in a stack
 */
 
 #ifndef STACK_H
