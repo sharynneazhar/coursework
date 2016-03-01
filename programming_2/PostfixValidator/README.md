@@ -6,20 +6,3 @@ Your program will prompt for and read a series of strings from the console and t
 
 > You entered a valid postfix string. The equivalent infix: __((A/B)\*(c+w))__
 
-> Enter a string: __XYZ-__
-
-> You entered an invalid postfix string: it is missing one or more operators
-
-> Enter a string: __XY-*__
-
-> You entered an invalid postfix string: it is missing operands
-
-> Enter a string: __XY*BC+C3*++__
-
-> You entered an invalid postfix string: it contains the illegal character '3'
-
-> Enter a string: __XY*BC+CD*++__
-
-> You entered a valid postfix string. The equivalent infix: ((X*Y)+((B+C)+(C*D)))
-
-> Enter a string: __#__
