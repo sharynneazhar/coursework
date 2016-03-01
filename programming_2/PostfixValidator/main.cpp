@@ -56,23 +56,46 @@ bool isOperator(char ch) {
 }
 
 bool isAlpha(char ch) {
-    if (ch >= 'a' && ch <= 'z') return true;
-    if (ch >= 'A' && ch <= 'Z') return true;
+    if (ch >= 'a' && ch <= 'z')
+        return true;
+    if (ch >= 'A' && ch <= 'Z')
+        return true;
 
     return false;
 }
 
 bool parse(std::string str) {
     char temp;
+    int operatorCount = 0;
+    int operandCount = 0;
+
     for (unsigned int i = 0; i < str.length(); i++) {
         temp = str[i];
         if (!isOperator(temp) && !isAlpha(temp)) {
             if (temp == '#')
                 std::cout << "\nExiting...\n\n";
+            else if (temp == ' ')
+                std::cout << "\nInvalid postfix string: encountered an illegal space character\n\n";
             else
                 std::cout << "\nInvalid postfix string: encountered an illegal character\n\n";
                 return false;
         }
+
+        if (isOperator(temp))
+            operatorCount++;
+
+        if (isAlpha(temp))
+            operandCount++;
+    }
+
+    if (operatorCount >= operandCount) {
+        std::cout << "\nInvalid postfix string: it is missing operands\n\n";
+        return false;
+    }
+
+    if ((operatorCount + 1) != operandCount) {
+        std::cout << "\nInvalid postfix string: it is missing one or more operators\n\n";
+        return false;
     }
 
     return true;
@@ -87,11 +110,11 @@ void postfixToInfix(std::string str) {
     // parse each character from left to right
     for (unsigned int i = 0; i < str.length(); i++) {
         if (isOperator(str[i])) {
-            // get righthand operand
+            // get righthand operand and pop
             temp = parsedStack.peek();
             parsedStack.pop();
 
-            // get lefthand operand
+            // get lefthand operand and pop
             temp2 = parsedStack.peek();
             parsedStack.pop();
 
