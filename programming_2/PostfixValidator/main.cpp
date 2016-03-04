@@ -17,45 +17,54 @@ bool isOperator(char ch);
 // checks if a character is a letter
 bool isAlpha(char ch);
 
-// parses a string to check for illegal input
-bool parse(std::string str);
-
 // converts a postfix to an infix expression
-void postfixToInfix(std::string str);
+std::string postfixToInfix(const std::string str) throw (PrecondViolatedExcep);
 
-int main() {
-
+int main()
+{
     std::cout << "\n===============================\n\n";
     std::cout << " POSTFIX EXPRESSION VALIDATOR    \n";
     std::cout << "\n===============================\n\n";
 
-    // get input string from user
+    bool isDone = false;
     std::string input;
-    do {
+
+    do
+    {
         std::cout << "Enter a string: ";
-        std::getline(cin, input);
-        if (parse(input)) {
-            try {
-                postfixToInfix(input);
-            }
-            catch (PrecondViolatedExcep& e) {
-                std::cout << e.what();
-            }
+        std::getline(cin, input, '\n');
+
+        if (input == "#")
+        {
+            std::cout << "\n\nExiting...\n\n";
+            return true;
         }
-    } while (input != "#");
+
+        try
+        {
+            std::cout << "\nThe equivalent infix is "
+                      << postfixToInfix(input) << "\n\n";
+        }
+        catch (PrecondViolatedExcep& e)
+        {
+            std::cout << e.what();
+        }
+
+    } while (!isDone);
 
     return 0;
 }
 
-bool isOperator(char ch) {
-    if (ch == '*' || ch == '/' || ch == '+' || ch == '-') {
+bool isOperator(char ch)
+{
+    if (ch == '*' || ch == '/' || ch == '+' || ch == '-')
         return true;
-    }
 
     return false;
 }
 
-bool isAlpha(char ch) {
+bool isAlpha(char ch)
+{
     if (ch >= 'a' && ch <= 'z')
         return true;
     if (ch >= 'A' && ch <= 'Z')
@@ -64,70 +73,61 @@ bool isAlpha(char ch) {
     return false;
 }
 
-bool parse(std::string str) {
-    char temp;
-    int operatorCount = 0;
-    int operandCount = 0;
-
-    for (unsigned int i = 0; i < str.length(); i++) {
-        temp = str[i];
-        if (!isOperator(temp) && !isAlpha(temp)) {
-            if (temp == '#')
-                std::cout << "\nExiting...\n\n";
-            else if (temp == ' ')
-                std::cout << "\nInvalid postfix string: encountered an illegal space character\n\n";
-            else
-                std::cout << "\nInvalid postfix string: encountered an illegal character\n\n";
-                return false;
-        }
-
-        if (isOperator(temp))
-            operatorCount++;
-
-        if (isAlpha(temp))
-            operandCount++;
-    }
-
-    if (operatorCount >= operandCount) {
-        std::cout << "\nInvalid postfix string: it is missing operands\n\n";
-        return false;
-    }
-
-    if ((operatorCount + 1) != operandCount) {
-        std::cout << "\nInvalid postfix string: it is missing one or more operators\n\n";
-        return false;
-    }
-
-    return true;
-}
-
-void postfixToInfix(std::string str) {
+std::string postfixToInfix(const std::string str) throw (PrecondViolatedExcep)
+{
     Stack<std::string> parsedStack;
     std::string postfix = "";
-    std::string temp = "";
-    std::string temp2 = "";
+    std::string right = "";
+    std::string left = "";
+    int counter = 0;
 
     // parse each character from left to right
-    for (unsigned int i = 0; i < str.length(); i++) {
-        if (isOperator(str[i])) {
-            // get righthand operand and pop
-            temp = parsedStack.peek();
-            parsedStack.pop();
+    for (unsigned int i = 0; i < str.length(); i++)
+    {
+        if (!isOperator(str[i]) && !isAlpha(str[i]))
+        {
+             throw PrecondViolatedExcep("\nInvalid postfix string: encountered an illegal character\n\n");
+        }
+        else if (isAlpha(str[i]))
+        {
+            right = str[i];
+            parsedStack.push(right);
+            counter++;
+        }
+        else
+        {
+            try
+            {
+                // get righthand operand and pop
+                right = parsedStack.peek();
+                parsedStack.pop();
 
-            // get lefthand operand and pop
-            temp2 = parsedStack.peek();
-            parsedStack.pop();
+                // get lefthand operand and pop
+                left = parsedStack.peek();
+                parsedStack.pop();
+            }
+            catch (PrecondViolatedExcep& e)
+            {
+                e.what();
+            }
 
             // concatenate into a string and push to stack
-            postfix = "(" + temp2 + str[i] + temp + ")";
+            postfix = "(" + left + str[i] + right + ")";
             parsedStack.push(postfix);
-        }
-
-        if (isAlpha(str[i])) {
-            temp = str[i];
-            parsedStack.push(temp);
+            counter--;
         }
     }
 
-    std::cout << "\nThe equivalent infix is " << postfix << "\n\n";
+    if (counter < 1 || str.length() < 2)
+    {
+        throw PrecondViolatedExcep("\nInvalid postfix string: it is missing operands\n\n");
+    }
+    else if (counter > 1)
+    {
+        throw PrecondViolatedExcep("\nInvalid postfix string: it is missing one or more operators\n\n");
+    }
+    else
+    {
+        return postfix;
+    }
 }
