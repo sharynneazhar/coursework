@@ -44,7 +44,7 @@ T Stack<T>::peek() const throw(PrecondViolatedExcep)
 {
     if (isEmpty())
     {
-        throw PrecondViolatedExcep("\nInvalid postfix string: it is missing operands\n");
+        throw PrecondViolatedExcep("\nInvalid postfix string: missing one or more operands\n");
     }
 
     return items[top];
