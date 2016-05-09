@@ -1,4 +1,4 @@
-# Labs
+# Coursework
 A history of lab and homeworks assignments completed 
 
 ###### Courses:
