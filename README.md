@@ -1,5 +1,5 @@
 # Coursework
-A history of lab and homeworks assignments completed 
+A library of lab and homeworks assignments completed 
 
 ###### Courses:
 * EECS 168: Programming I
