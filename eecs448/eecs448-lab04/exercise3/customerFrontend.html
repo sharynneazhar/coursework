@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>EECS 448 | Lab 04</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+  <link rel="stylesheet" href="../css/main.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <nav class="navbar navbar-default">
+    <div class="container">
+      <a class="navbar-brand" href="#">The Practical Developer Web Store</a>
+      <ul class="nav pull-right">
+        <li><a href="../index.html">Back to Exercises</a></li>
+      </ul>
+    </div>
+  </nav>
+  <div class="container">
+    <form action="customerBackend.php" method="post" onsubmit="return validateForm()">
+      <div class="row">
+        <div class="col-xs-8">
+          <div class="store">
+            <div class="row">
+              <div class="col-xs-4">
+                <img src="img/stackOverflow.jpg" />
+                <div class="input-group quantity">
+                  <label>$14.00</label>
+                  <label>Qty<input type="numeric" name="item1" value="0" min="0" max="100"></label>
+                </div>
+              </div>
+              <div class="col-xs-4">
+                <img src="img/pointlessMeetings.jpg" />
+                <div class="input-group quantity">
+                  <label>$10.00</label>
+                  <label>Qty<input type="numeric" name="item2" value="0" min="0" max="100"></label>
+                </div>
+              </div>
+              <div class="col-xs-4">
+                <img src="img/blameUser.jpg" />
+                <div class="input-group quantity">
+                  <label>$10.00</label>
+                  <label>Qty<input type="numeric" name="item3" value="0" min="0" max="100"></label>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-xs-4">
+                <img src="img/resume.jpg" />
+                <div class="input-group quantity">
+                  <label>$18.00</label>
+                  <label>Qty<input type="numeric" name="item4" value="0" min="0" max="100"></label>
+                </div>
+              </div>
+              <div class="col-xs-4">
+                <img src="img/googleError.jpg" />
+                <div class="input-group quantity">
+                  <label>$40.00</label>
+                  <label>Qty<input type="numeric" name="item5" value="0" min="0" max="100"></label>
+                </div>
+              </div>
+              <div class="col-xs-4">
+                <img src="img/workarounds.jpg" />
+                <div class="input-group quantity">
+                  <label>$21.00</label>
+                  <label>Qty<input type="numeric" name="item6" value="0" min="0" max="100"></label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-xs-4" style="padding-left: 40px;">
+          <div class="form-group">
+            <label for="username">Email (will be used as username)</label>
+            <input class="form-control" type="email" name="email" required>
+          </div>
+          <div class="form-group">
+            <label for="password">Password</label>
+            <input class="form-control" type="password" name="password" required>
+          </div>
+          <div class="form-group">
+            <label for="shipping" style="margin-bottom: 15px;">Choose a shipping method</label>
+            <div class="radio-group">
+              <input type="radio" name="shipping" value="free" required>
+              <label>Seven Day (Free)</label>
+            </div>
+            <div class="radio-group">
+              <input type="radio" name="shipping" value="threeDay">
+              <label>Three Day ($5.00)</label>
+            </div>
+            <div class="radio-group">
+              <input type="radio" name="shipping" value="overnight">
+              <label>Overnight ($50.00)</label>
+            </div>
+          </div>
+          <div class="btn-group">
+            <button type="submit" class="btn btn-success" disabled>Checkout</button>
+            <button type="reset" class="btn btn-default">Reset</button>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <!-- Creates the bootstrap modal where the image will appear -->
+  <div class="modal fade" id="imgModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        </div>
+        <div class="modal-body">
+          <img src="" id="imgZoom">
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- jQuery Plugin -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+  <!-- Bootstrap JS Plugin -->
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+  integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+  <script type="text/javascript" src="formChecker.js"></script>
+  <script type="text/javascript" src="main.js"></script>
+</body>
+</html>

@@ -1,0 +1,81 @@
+.form-group {
+  width: 300px;
+  margin-bottom: 30px;
+}
+
+.radio-group label {
+  font-weight: 400;
+}
+
+.store {
+  width: 100%;
+}
+
+.store img {
+  height: 300px;
+  width: 230px;
+  border: 1px solid #e3e3e3;
+}
+
+.store img:hover {
+  cursor: pointer;
+}
+
+.store .row {
+  margin-bottom: 30px;
+}
+
+.modal-body img {
+  width: 100%;
+  height: auto;
+}
+
+.quantity {
+  margin: 15px auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.quantity label input {
+  width: 50px;
+  margin-left: 10px;
+  text-align: center;
+  background-image: none !important;
+}
+
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  margin: 0;
+}
+
+.userInfo {
+  display: flex;
+  flex-direction: row;
+}
+
+.userInfo h4 {
+  margin-right: 15px;
+}
+
+.order-details p {
+  margin-bottom: 0;
+}
+
+.table {
+  width: 80%;
+  margin-top: 30px;
+}
+
+th, td {
+  font-size: 16px;
+}
+
+th p {
+  margin-bottom: 10px;
+  font-weight: 300;
+  font-style: italic;
+}

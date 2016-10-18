@@ -1,0 +1,64 @@
+{
+  "questions": [
+    {
+      "question": "Where is the main campus located?",
+      "answers": [
+        "Manhattan",
+        "Kansas City",
+        "Lawrence",
+        "Wichita"
+      ],
+      "correctAnswer": "Lawrence"
+    },
+    {
+      "question": "What is the school mascot?",
+      "answers": [
+        "Wildcat",
+        "Jayhawk",
+        "Tiger",
+        "Cornhusker"
+      ],
+      "correctAnswer": "Jayhawk"
+    },
+    {
+      "question": "Legend has it that if you walk through this building before your graduation day, you'll never graduate. What is the name of this building?",
+      "answers": [
+        "Campanile",
+        "Memorial Stadium",
+        "Strong Hall",
+        "There is no such thing"
+      ],
+      "correctAnswer": "Campanile"
+    },
+    {
+      "question": "A sample of this gas was analyzed on the basement of Bailey Hall in 1905 making it the first time it was detected on earth. What is the name of this gas?",
+      "answers": [
+        "Nitrogen",
+        "Neon",
+        "Helium",
+        "Dihydrogen oxide"
+      ],
+      "correctAnswer": "Helium"
+    },
+    {
+      "question": "This KU student was an amateur astronomer who discovered Pluto in 1930.",
+      "answers": [
+        "Joe Engle",
+        "Clyde Tombaugh",
+        "Robert Dole",
+        "Dean Smith"
+      ],
+      "correctAnswer": "Clyde Tombaugh"
+    },
+    {
+      "question": "All I gotta say: Beware of the ________!",
+      "answers": [
+        "Jayhawks",
+        "Wave",
+        "Hills",
+        "Phog"
+      ],
+      "correctAnswer": "Phog"
+    }
+  ]
+}

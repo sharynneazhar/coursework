@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>EECS 448 | Lab 04</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+    <link rel="stylesheet" href="../css/main.css">
+  </head>
+  <body>
+    <nav class="navbar navbar-default">
+      <div class="container">
+        <a class="navbar-brand" href="#">KU Trivia</a>
+        <ul class="nav pull-right">
+          <li><a href="../index.html">Back to Exercises</a></li>
+        </ul>
+      </div>
+    </nav>
+    <div class="container">
+      <form action="quiz.php" method="post">
+        <div class="form-group question-group">
+          <div class="question">Question 1: Where is the main campus located?</div>
+          <div class="radio-group">
+            <input type="radio" name="q1" value="Manhattan" required>
+            <label>a) Manhattan</label>
+          </div>
+          <div class="radio-group">
+            <input type="radio" name="q1" value="Kansas City">
+            <label>b) Kansas City</label>
+          </div>
+          <div class="radio-group">
+            <input type="radio" name="q1" value="Lawrence">
+            <label>c) Lawrence</label>
+          </div>
+          <div class="radio-group">
+            <input type="radio" name="q1" value="Wichita">
+            <label>d) Wichita</label>
+          </div>
+        </div>
+        <div class="form-group question-group">
+          <div class="question">Question 2: What is the school mascot?</div>
+          <div class="radio-group">
+            <input type="radio" name="q2" value="Wildcats" required>
+            <label>a) Wildcats</label>
+          </div>
+          <div class="radio-group">
+            <input type="radio" name="q2" value="Jayhawks">
+            <label>b) Jayhawks</label>
+          </div>
+          <div class="radio-group">
+            <input type="radio" name="q2" value="Tigers">
+            <label>c) Tigers</label>
+          </div>
+          <div class="radio-group">
+            <input type="radio" name="q2" value="Cornhuskers">
+            <label>d) Cornhuskers</label>
+          </div>
+        </div>
+        <div class="form-group question-group">
+          <div class="question">Question 3: If you walk through this building before your graduation day, you'll never graduate.</div>
+          <div class="radio-group">
+            <input type="radio" name="q3" value="Campanile" required>
+            <label>a) Campanile</label>
+          </div>
+          <div class="radio-group">
+            <input type="radio" name="q3" value="Memorial Stadium">
+            <label>b) Memorial Stadium</label>
+          </div>
+          <div class="radio-group">
+            <input type="radio" name="q3" value="Strong Hall">
+            <label>c) Strong Hall</label>
+          </div>
+          <div class="radio-group">
+            <input type="radio" name="q3" value="There is no such thing">
+            <label>d) There is no such thing</label>
+          </div>
+        </div>
+        <div class="form-group question-group">
+          <div class="question">Question 4: This KU student was an amateur astronomer who discovered Pluto in 1930.</div>
+          <div class="radio-group">
+            <input type="radio" name="q4" value="Joe Engle" required>
+            <label>a) Joe Engle</label>
+          </div>
+          <div class="radio-group">
+            <input type="radio" name="q4" value="Clyde Tombaugh">
+            <label>b) Clyde Tombaugh</label>
+          </div>
+          <div class="radio-group">
+            <input type="radio" name="q4" value="Robert Dole">
+            <label>c) Robert Dole</label>
+          </div>
+          <div class="radio-group">
+            <input type="radio" name="q4" value="Dean Smith">
+            <label>d) Dean Smith</label>
+          </div>
+        </div>
+        <div class="form-group question-group">
+          <div class="question">Question 5: All I gotta say: Beware of the ________!</div>
+          <div class="radio-group">
+            <input type="radio" name="q5" value="Jayhawks" required>
+            <label>a) Jayhawks</label>
+          </div>
+          <div class="radio-group">
+            <input type="radio" name="q5" value="Wave">
+            <label>b) Wave</label>
+          </div>
+          <div class="radio-group">
+            <input type="radio" name="q5" value="Hills">
+            <label>c) Hills</label>
+          </div>
+          <div class="radio-group">
+            <input type="radio" name="q5" value="Phog">
+            <label>d) Phog</label>
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit Quiz</button>
+      </form>
+    </div>
+
+
+    <!-- jQuery Plugin -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+    <!-- Bootstrap JS Plugin -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+      integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+  </body>
+</html>
