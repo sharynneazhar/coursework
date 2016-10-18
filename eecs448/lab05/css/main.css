@@ -1,0 +1,108 @@
+html, body {
+  font-family: Open Sans, sans-serif;
+  margin-bottom: 50px;
+}
+
+a:hover {
+  text-decoration: none;
+}
+
+.well {
+  background-color: #fff;
+  background-image: none;
+}
+
+.navbar {
+  margin-bottom: 50px;
+  border-radius: 0;
+}
+
+.nav {
+  margin-top: 5px;
+}
+
+.btn-danger {
+  border: none;
+  border-radius: 0;
+  background-image: none;
+  background-color: #ff3232;
+  color: #fff;
+  text-shadow: none;
+}
+
+.btn-success {
+  border: none;
+  border-radius: 0;
+  background-image: none;
+  background-color: #19ee75;
+  color: #fff;
+  text-shadow: none;
+}
+
+.btn-primary {
+  border: none;
+  border-radius: 0;
+  background-image: none;
+  background-color: #3399ff;
+  color: #fff;
+  text-shadow: none;
+}
+
+.btn-default {
+  border: none;
+  border-radius: 0;
+  background-image: none;
+  background-color: #fff;
+  color: #000;
+  text-shadow: none;
+}
+
+.btn-primary:hover {
+  background-image: none;
+  background-color: #3366ff;
+  color: #fff;
+}
+
+.btn-primary:focus {
+  background-image: none;
+  background-color: #3399ff;
+  color: #fff;
+}
+
+.btn-success:hover {
+  background-image: none;
+  background-color: #19cc75;
+  color: #fff;
+}
+
+.btn-success:focus {
+  background-image: none;
+  background-color: #19ee75;
+  color: #fff;
+}
+
+.btn-group {
+  margin-top: 15px;
+}
+
+.btn-group .btn {
+  margin-right: 15px;
+  width: 120px;
+}
+
+.form-group {
+  width: 300px;
+}
+
+.form-control {
+  padding-left: 2px;
+  border-top: none;
+  border-left: none;
+  border-right: none;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.form-control:focus {
+  box-shadow: none;
+}
