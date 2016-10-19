@@ -22,34 +22,46 @@
 
   </head>
   <body>
+    <nav class="navbar navbar-default">
+      <div class="container">
+        <a class="navbar-brand" href="#">Lab 5 Exercises</a>
+        <ul class="nav pull-right">
+          <li><a href="./CreateUser.html">Back</a></li>
+        </ul>
+      </div>
+    </nav>
 
-    <?php
-      $mysqli = new mysqli("mysql.eecs.ku.edu", "sazhar", "VjXzuJuPUBCDXwDp", "sazhar");
+    <div class="container">
+      <?php
+        $mysqli = new mysqli("mysql.eecs.ku.edu", "sazhar", "VjXzuJuPUBCDXwDp", "sazhar");
 
-      /* check connection */
-      if ($mysqli->connect_errno) {
-        printf("Connect failed: %s\n", $mysqli->connect_error);
-        exit();
-      }
-
-      $query = "SELECT user_id FROM Users";
-
-      if ($result = $mysqli->query($query)) {
-
-        /* fetch associative array */
-        while ($row = $result->fetch_assoc()) {
-          echo "<br /><br /><br />";
-          echo $row["user_id"];
-
+        /* check connection */
+        if ($mysqli->connect_errno) {
+          printf("Connect failed: %s\n", $mysqli->connect_error);
+          exit();
         }
 
-        /* free result set */
-        $result->free();
-      }
+        $user = $mysqli->real_escape_string($_POST["username"]);
 
-      /* close connection */
-      $mysqli->close();
-    ?>
+        if (!isset($user) || empty($user)) {
+          echo 'Username cannot be empty<br />';
+          exit();
+        }
+
+        $query = "INSERT INTO Users (user_id) VALUES ('" . $user . "')";
+        if ($result = $mysqli->query($query)) {
+          printf("User %s successfully created!", $user);
+          $result->free();
+        } else {
+          if ($mysqli->errno == 1062) {
+            printf("User %s already exists!", $user);
+          }
+        }
+
+        /* close connection */
+        $mysqli->close();
+      ?>
+    </div>
 
   </body>
 </html>
