@@ -26,21 +26,48 @@
       <div class="container">
         <a class="navbar-brand" href="#">Lab 5 Exercises</a>
         <ul class="nav pull-right">
-          <li><a href="./CreatePosts.html">Submit a New Post</a></li>
-          <li><a href="../../../index.html">Back to Home</a></li>
+          <li><a href="./CreatePosts.html">Back</a></li>
         </ul>
       </div>
     </nav>
 
     <div class="container">
-      <h4>Create a New User</h4>
-      <form action="./CreateUser.php" method="post">
-        <div class="form-group">
-          <label for="username">Username</label>
-          <input class="form-control" type="text" name="username" required>
-        </div>
-        <button type="submit" class="btn btn-primary">Submit</button>
-      </form>
+      <?php
+        $mysqli = new mysqli("mysql.eecs.ku.edu", "sazhar", "VjXzuJuPUBCDXwDp", "sazhar");
+
+        /* check connection */
+        if ($mysqli->connect_errno) {
+          printf("Connect failed: %s\n", $mysqli->connect_error);
+          exit();
+        }
+
+        $user = $mysqli->real_escape_string($_POST["username"]);
+        $post = $mysqli->real_escape_string($_POST["post"]);
+
+        if (!isset($user) || empty($user)) {
+          echo 'Username cannot be empty<br />';
+          exit();
+        }
+
+        if (!isset($post) || empty($post)) {
+          echo 'Post cannot be empty<br />';
+          exit();
+        }
+
+        // $query = "INSERT INTO Users (user_id) VALUES ('" . $user . "')";
+        // if ($result = $mysqli->query($query)) {
+        //   printf("User %s successfully created!", $user);
+        //   $result->free();
+        // } else {
+        //   if ($mysqli->errno == 1062) {
+        //     printf("User %s already exists!", $user);
+        //   }
+        // }
+
+        /* close connection */
+        $mysqli->close();
+      ?>
     </div>
+
   </body>
 </html>

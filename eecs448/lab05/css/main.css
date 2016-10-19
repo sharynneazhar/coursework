@@ -7,6 +7,10 @@ a:hover {
   text-decoration: none;
 }
 
+form {
+  margin-top: 30px;
+}
+
 .well {
   background-color: #fff;
   background-image: none;
@@ -19,6 +23,10 @@ a:hover {
 
 .nav {
   margin-top: 5px;
+}
+
+.nav > li {
+  display: inline-block;
 }
 
 .btn-danger {
@@ -91,10 +99,11 @@ a:hover {
 }
 
 .form-group {
+  margin-bottom: 30px;
   width: 300px;
 }
 
-.form-control {
+.form-control:not(textarea) {
   padding-left: 2px;
   border-top: none;
   border-left: none;
