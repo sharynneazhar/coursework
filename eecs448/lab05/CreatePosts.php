@@ -33,6 +33,10 @@
 
     <div class="container">
       <?php
+        // Debugging purposes
+        error_reporting(E_ALL);
+        ini_set("display_errors", 1);
+
         $mysqli = new mysqli("mysql.eecs.ku.edu", "sazhar", "VjXzuJuPUBCDXwDp", "sazhar");
 
         /* check connection */
@@ -42,27 +46,31 @@
         }
 
         $user = $mysqli->real_escape_string($_POST["username"]);
-        $post = $mysqli->real_escape_string($_POST["post"]);
+        $content = $mysqli->real_escape_string($_POST["content"]);
 
         if (!isset($user) || empty($user)) {
           echo 'Username cannot be empty<br />';
           exit();
         }
 
-        if (!isset($post) || empty($post)) {
-          echo 'Post cannot be empty<br />';
+        if (!isset($content) || empty($content)) {
+          echo 'Post contents cannot be empty<br />';
           exit();
         }
 
-        // $query = "INSERT INTO Users (user_id) VALUES ('" . $user . "')";
-        // if ($result = $mysqli->query($query)) {
-        //   printf("User %s successfully created!", $user);
-        //   $result->free();
-        // } else {
-        //   if ($mysqli->errno == 1062) {
-        //     printf("User %s already exists!", $user);
-        //   }
-        // }
+        $query = "SELECT * FROM Users WHERE user_id = '" . $user. "'";
+        $userExists = $mysqli->query($query)->fetch_assoc();
+        if (!$userExists) {
+          echo "User does not exist. Please create a new user.";
+          exit();
+        }
+
+        $query = "INSERT INTO Posts (content, author_id) VALUES ('" . $content . "', '" . $user . "')";
+        if ($result = $mysqli->query($query)) {
+          echo "Post successfully added!";
+        } else {
+          echo "Oops, something went wrong.";
+        }
 
         /* close connection */
         $mysqli->close();

@@ -33,6 +33,10 @@
 
     <div class="container">
       <?php
+        // Debugging purposes
+        error_reporting(E_ALL);
+        ini_set("display_errors", 1);
+
         $mysqli = new mysqli("mysql.eecs.ku.edu", "sazhar", "VjXzuJuPUBCDXwDp", "sazhar");
 
         /* check connection */
@@ -51,7 +55,6 @@
         $query = "INSERT INTO Users (user_id) VALUES ('" . $user . "')";
         if ($result = $mysqli->query($query)) {
           printf("User %s successfully created!", $user);
-          $result->free();
         } else {
           if ($mysqli->errno == 1062) {
             printf("User %s already exists!", $user);
