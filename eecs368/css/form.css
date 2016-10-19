@@ -1,0 +1,80 @@
+@import url(https://fonts.googleapis.com/css?family=Open+Sans:300,400);
+
+body {
+    width: 80%;
+    margin: 20px auto;
+    text-align: center;
+    color: #262626;
+}
+
+body div,
+body form {
+    display: inline-block;
+    text-align: left;
+}
+
+.logo img {
+    padding: 30px;
+}
+
+.form-area {
+    margin-bottom: 15px;
+    vertical-align: top;
+}
+
+.form-field {
+    display: block;
+    padding: 10px 0;
+    font-size: 22px;
+}
+
+.form-field label {
+    display: inline-block;
+    width: 130px;
+    font-family: Open Sans;
+}
+
+.form-field input {
+    display: inline;
+    height: 22px;
+    width: 370px;
+}
+
+.button-area {
+    display: block;
+    width: 515px;
+}
+
+.button-area button {
+    width: 100%;
+    padding: 5px;
+    font-size: 14px;
+}
+
+.users-area {
+    font-family: Open Sans;
+    display: block;
+    margin: 30px;
+}
+
+.users-table {
+    width: 100%;
+}
+
+.users-table th {
+    padding: 5px 15px;
+    background-color: #D3FFCE;
+    font-size: 16px;
+}
+
+.users-table td {
+    padding: 5px 15px;
+    border-bottom: 1px solid #D3FFCE;
+}
+
+#error {
+    padding: 5px 300px 5px 10px;
+    color: #FFFFFF;
+    font-family: Open Sans;
+    font-size: 16px;
+}

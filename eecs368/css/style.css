@@ -1,0 +1,49 @@
+@import url(https://fonts.googleapis.com/css?family=Open+Sans:300,400);
+
+body {
+    text-align: center;
+}
+
+.nav > li {
+    text-align: center;
+    margin-top: 5px;
+}
+
+.jumbotron {
+    text-align: center;
+    margin-top: 50px;
+}
+
+.headshot {
+    margin-top: -150px;
+    height: 200px;
+    width: 200px;
+    border: 5px solid #ffffff;
+}
+
+.main-heading {
+    margin-top: 50px;
+    margin-bottom: 50px;
+    font-weight: lighter;
+}
+
+.social img {
+    opacity: .7;
+    height: 32px;
+    width: 32px;
+    margin: 30px 10px 50px 10px;
+}
+
+.container > table {
+    max-width: 95%;
+    text-align: left;
+}
+
+.footer {
+    text-align: center;
+    margin: 10px auto;
+    padding-top: 5px;
+    font-weight: lighter;
+    font-style: italic;
+    color: #555;
+}
