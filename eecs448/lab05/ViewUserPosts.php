@@ -12,10 +12,16 @@
     </nav>
 
     <div class="container">
-      <table class="table table-hover">
+      <table class="table table-striped">
         <thead>
           <tr>
-            <th><?php echo $_POST['username']?>'s Post</th>
+            <th><?php
+              if ($_POST['username'] === 'all') {
+                echo "All Posts";
+              } else {
+                echo $_POST['username'] . "'s Posts";
+              }
+            ?></th>
           </tr>
         </thead>
         <tbody>
@@ -30,10 +36,15 @@
               exit();
             }
 
-            $query = "SELECT * FROM Posts WHERE author_id = '" . $_POST['username'] . "'";
+            if ($_POST['username'] === 'all') {
+              $query = "SELECT * FROM Posts";
+            } else {
+              $query = "SELECT * FROM Posts WHERE author_id = '" . $_POST['username'] . "'";
+            }
+            
             if ($result = $mysqli->query($query)) {
               if ($result->num_rows === 0) {
-                echo "<tr><td>User has no posts.</td></tr>";
+                echo "<tr><td>There are no posts.</td></tr>";
               }
               while ($row = $result->fetch_assoc()) {
                 echo "<tr><td>".$row["content"]."</td></tr>";
@@ -42,7 +53,7 @@
             } else {
               echo "Oops, something went wrong!";
             }
-            
+
             $mysqli->close();
           ?>
         </tbody>

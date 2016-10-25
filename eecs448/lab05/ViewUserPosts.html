@@ -17,7 +17,7 @@
         <div class="form-group">
           <label for="username">Select User</label>
           <select class="form-control" name="username">
-            <option value="---" selected="selected">---</option>
+            <option value="all" selected="selected">All users</option>
             <?php
               $mysqli = new mysqli("mysql.eecs.ku.edu", "sazhar", "VjXzuJuPUBCDXwDp", "sazhar");
               if ($mysqli->connect_errno) {
@@ -33,7 +33,7 @@
               } else {
                 echo "Oops, something went wrong!";
               }
-              
+
               $mysqli->close();
             ?>
           </select>
