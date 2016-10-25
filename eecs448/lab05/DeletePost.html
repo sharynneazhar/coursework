@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+  <?php $title = 'EECS 448 | Lab 05'; include('../_templates/head.php'); ?>
+  <body>
+    <nav class="navbar navbar-default">
+      <div class="container">
+        <a class="navbar-brand" href="#">Lab 5 Exercises</a>
+        <ul class="nav pull-right">
+          <li><a href="./AdminHome.html">Back to Home</a></li>
+        </ul>
+      </div>
+    </nav>
+
+    <div class="container">
+      <h4>Delete Posts</h4><hr>
+      <form action="./DeletePost.php" method="post">
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th>Post ID</th>
+              <th>Author</th>
+              <th>Post</th>
+              <th>Delete?</th>
+            </tr>
+          </thead>
+          <tbody>
+            <?php
+              // Debugging purposes
+              error_reporting(E_ALL);
+              ini_set("display_errors", 1);
+
+              $mysqli = new mysqli("mysql.eecs.ku.edu", "sazhar", "VjXzuJuPUBCDXwDp", "sazhar");
+              if ($mysqli->connect_errno) {
+                printf("Connect failed: %s\n", $mysqli->connect_error);
+                exit();
+              }
+
+              $query = "SELECT * FROM Posts";
+              if ($result = $mysqli->query($query)) {
+                while ($row = $result->fetch_assoc()) {
+                  $rowDetails = "<tr><td>%s</td><td>%s</td><td>%s</td><td style='padding-left:25px;'><input type='checkbox' name='delete[]' value='%s' /></td></tr>";
+                  printf($rowDetails, $row["post_id"], $row["author_id"], $row["content"], $row["post_id"]);
+                }
+                $result->free();
+              } else {
+                echo "Oops, something went wrong!";
+              }
+
+              $mysqli->close();
+            ?>
+          </tbody>
+          <tfoot>
+            <tr>
+              <td colspan="3"></td>
+              <td><button type="submit" class="btn btn-primary" style='margin-left:-8px;'>Delete</button></td>
+            </tr>
+          </tfoot>
+        </table>
+      </form>
+    </div>
+
+  </body>
+</html>

@@ -12,7 +12,7 @@
     </nav>
 
     <div class="container">
-      <h4>View a Post</h4>
+      <h4>View a Post</h4><hr>
       <form action="./ViewUserPosts.php" method="post">
         <div class="form-group">
           <label for="username">Select User</label>
@@ -33,6 +33,7 @@
               } else {
                 echo "Oops, something went wrong!";
               }
+              
               $mysqli->close();
             ?>
           </select>
