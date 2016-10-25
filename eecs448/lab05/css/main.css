@@ -115,3 +115,7 @@ form {
 .form-control:focus {
   box-shadow: none;
 }
+
+select.form-control {
+  border: 1px solid #aaa;
+}

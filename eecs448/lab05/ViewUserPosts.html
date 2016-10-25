@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+  <?php $title = 'EECS 448 | Lab 05'; include('../_templates/head.php'); ?>
+  <body>
+    <nav class="navbar navbar-default">
+      <div class="container">
+        <a class="navbar-brand" href="#">Lab 5 Exercises</a>
+        <ul class="nav pull-right">
+          <li><a href="./AdminHome.html">Back to Home</a></li>
+        </ul>
+      </div>
+    </nav>
+
+    <div class="container">
+      <h4>View a Post</h4>
+      <form action="./ViewUserPosts.php" method="post">
+        <div class="form-group">
+          <label for="username">Select User</label>
+          <select class="form-control" name="username">
+            <option value="---" selected="selected">---</option>
+            <?php
+              $mysqli = new mysqli("mysql.eecs.ku.edu", "sazhar", "VjXzuJuPUBCDXwDp", "sazhar");
+              if ($mysqli->connect_errno) {
+                printf("Connect failed: %s\n", $mysqli->connect_error);
+                exit();
+              }
+
+              $query = "SELECT * FROM Users";
+              if ($result = $mysqli->query($query)) {
+                while($row = $result->fetch_assoc()) {
+                  echo "<option value='".$row["user_id"]."'>".$row["user_id"]."</option>";
+                }
+              } else {
+                echo "Oops, something went wrong!";
+              }
+              $mysqli->close();
+            ?>
+          </select>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+      </form>
+
+    </div>
+
+  </body>
+</html>
