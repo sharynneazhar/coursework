@@ -17,10 +17,9 @@
 class Test {
 
   private:
-    
+    void printResult(bool result);    
 
   public:
-    Test(int size);
 
     void run(); // runs all the test
 

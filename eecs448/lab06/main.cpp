@@ -12,14 +12,14 @@
 int main(int argc, char** argv)
 {
 	//Example of declaring a LinkedListOfInts
-	// LinkedListOfInts testableList;
+	LinkedListOfInts testableList;
 
 	//You won't do all the tests in main; that's what your Test class will be for
 	//Example:
 	Test myTester;
 	myTester.run();
 
-	std::cout << "Running...\nAnd we're done.\nGoodbye.\n";
+	std::cout << "\n\nAnd we're done.\nGoodbye.\n";
 
 	return (0);
 
