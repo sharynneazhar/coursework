@@ -31,7 +31,7 @@ void Test::printResult(bool result) {
 bool Test::test1() {
   LinkedListOfInts list;
   bool result = list.isEmpty() == true;
-  std::cout << list.size() << " Test 01: empty list should return true --> ";
+  std::cout << "Test 01: empty list should return true --> ";
   printResult(result);
   return result;
 }
@@ -40,7 +40,7 @@ bool Test::test2() {
   LinkedListOfInts list;
   list.addFront(1);
   bool result = list.isEmpty() == false;
-  std::cout << list.size() << " Test 02: non-empty list should return false --> ";
+  std::cout << "Test 02: non-empty list should return false --> ";
   printResult(result);
   return result;
 }
