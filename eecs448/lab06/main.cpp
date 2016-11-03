@@ -7,15 +7,10 @@
 
 #include <iostream>
 #include "Test.h"
-#include "LinkedListOfInts.h"
 
 int main(int argc, char** argv)
 {
-	//Example of declaring a LinkedListOfInts
-	LinkedListOfInts testableList;
 
-	//You won't do all the tests in main; that's what your Test class will be for
-	//Example:
 	Test myTester;
 	myTester.run();
 

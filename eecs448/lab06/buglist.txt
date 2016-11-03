@@ -7,3 +7,8 @@ LinkedListOfInts warning
 - Platform (MacOS)
 
 -----
+
+isEmpty() method fails
+- returning true on non-empty list
+
+-----

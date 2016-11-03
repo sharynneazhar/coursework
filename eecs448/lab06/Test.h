@@ -17,7 +17,9 @@
 class Test {
 
   private:
-    void printResult(bool result);    
+
+    void printResult(bool result);
+    
 
   public:
 
