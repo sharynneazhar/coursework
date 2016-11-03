@@ -9,3 +9,6 @@ dist
 .tmp
 bower_components
 test/bower_components
+
+# Don't ignore these
+!eecs448/lab06/LinkedListOfInts.o

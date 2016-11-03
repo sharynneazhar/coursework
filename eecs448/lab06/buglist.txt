@@ -1,0 +1,9 @@
+======================
+     LIST OF BUGS
+======================m
+
+LinkedListOfInts warning
+- file was built with unsupported file format
+- Platform (MacOS)
+
+-----
