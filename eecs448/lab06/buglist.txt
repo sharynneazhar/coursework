@@ -10,15 +10,18 @@ LinkedListOfInts warning
 
 isEmpty() method fails
 - returning true on non-empty list
+- fails Test #2
 
 -----
 
 addBack() method fails
 - addBack is adding to the the front of the list
+- fails Test #8
 
 -----
 
 removeFront() and removeBack() do not remove anything
 - seems to be returning false regardless of list size
+- fails Tests #11, #12, #13, #14, #15
 
 -----

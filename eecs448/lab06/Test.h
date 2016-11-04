@@ -49,14 +49,14 @@ class Test {
     bool test13(); // test for addFront and then removeFront
     bool test14(); // test for addBack and then removeBack
 
-    // test for addFront and then removeBack
-    // test for addBack and then removeFront
+    bool test15(); // test for a mixture of adding and removing on a large list
 
     // Tests for search()
-    // test search on empty list
-    // test search when value is not in list
-    // test search when value is first in list
-    // test search when value is last in list
+    bool test16(); // test search on empty list
+    bool test17(); // test search when value is not in list
+    bool test18(); // test search when value is first in list
+    bool test19(); // test search when value is last in list
+    bool test20(); // test search when value is in the middle of a large list
 
     // Tests for toVector()
     // test for toVector on empty list

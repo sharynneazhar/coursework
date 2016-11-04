@@ -48,12 +48,18 @@ void Test::run() {
   test12();
   test13();
   test14();
+  test15();
+  test16();
+  test17();
+  test18();
+  test19();
+  test20();
 }
 
 bool Test::test1() {
   LinkedListOfInts list;
   bool result = list.isEmpty() == true;
-  std::cout << "Test 01: empty list returns true -->";
+  std::cout << "Test 01: isEmpty on empty list returns true -->";
   printResult(result);
   return result;
 }
@@ -62,7 +68,7 @@ bool Test::test2() {
   LinkedListOfInts list;
   populateList(list, 1);
   bool result = list.isEmpty() == false;
-  std::cout << "Test 02: non-empty list returns false -->";
+  std::cout << "Test 02: isEmpty on non-empty list returns false -->";
   printResult(result);
   return result;
 }
@@ -79,7 +85,7 @@ bool Test::test4() {
   LinkedListOfInts list;
   populateList(list, 3);
   bool result = list.size() == 3;
-  std::cout << "Test 04: non-empty list returns correct value -->";
+  std::cout << "Test 04: non-empty list returns correct size value -->";
   printResult(result);
   return result;
 }
@@ -171,11 +177,105 @@ bool Test::test12() {
 }
 
 bool Test::test13() {
-
+  LinkedListOfInts list;
+  std::vector<int> vec { 6,2,1 };
+  list.addFront(1);
+  list.addFront(2);
+  list.addFront(3);
+  list.addFront(4);
+  list.removeFront();
+  list.addFront(5);
+  list.removeFront();
+  list.removeFront();
+  list.addFront(6);
+  bool result = list.toVector() == vec;
+  std::cout << "Test 13: a mix of addFront and removeFront maintains order -->";
+  printResult(result);
+  return result;
 }
 
 bool Test::test14() {
-  
+  LinkedListOfInts list;
+  std::vector<int> vec { 1,2,6 };
+  list.addBack(1);
+  list.addBack(2);
+  list.addBack(3);
+  list.addBack(4);
+  list.removeBack();
+  list.addBack(5);
+  list.removeBack();
+  list.removeBack();
+  list.addBack(6);
+  bool result = list.toVector() == vec;
+  std::cout << "Test 14: a mix of addBack and removeBack maintains order -->";
+  printResult(result);
+  return result;
+}
+
+bool Test::test15() {
+  LinkedListOfInts list;
+  populateList(list, 100);
+  bool result = false;
+  // TODO figure out how to do this easily...
+  std::cout << "Test 15: a mixture of add and remove on large list maintains order -->";
+  printResult(result);
+  return result;
+}
+
+bool Test::test16() {
+  LinkedListOfInts list;
+  bool result = list.search(3) == false;
+  std::cout << "Test 16: search on empty list returns false -->";
+  printResult(result);
+  return true;
+}
+
+bool Test::test17() {
+  LinkedListOfInts list;
+  list.addFront(5);
+  list.addFront(4);
+  list.addFront(3);
+  list.addFront(2);
+  list.addFront(1);
+  bool result = list.search(33) == false;
+  std::cout << "Test 17: search when value not in list returns false -->";
+  printResult(result);
+  return true;
+}
+
+bool Test::test18() {
+  LinkedListOfInts list;
+  list.addFront(5);
+  list.addFront(4);
+  list.addFront(3);
+  list.addFront(2);
+  list.addFront(1);
+  bool result = list.search(1) == true;
+  std::cout << "Test 18: search when value is first in list returns true -->";
+  printResult(result);
+  return true;
+}
+
+bool Test::test19() {
+  LinkedListOfInts list;
+  list.addFront(5);
+  list.addFront(4);
+  list.addFront(3);
+  list.addFront(2);
+  list.addFront(1);
+  bool result = list.search(5) == true;
+  std::cout << "Test 19: search when value is last in list returns true -->";
+  printResult(result);
+  return true;
+}
+
+bool Test::test20() {
+  LinkedListOfInts list;
+  populateList(list, 100);
+  bool result = list.search(56) == true;
+  std::cout << "Test 20: search when value is in a large list returns true -->";
+  printResult(result);
+  return true;
 }
 
 
