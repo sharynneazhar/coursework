@@ -12,3 +12,13 @@ isEmpty() method fails
 - returning true on non-empty list
 
 -----
+
+addBack() method fails
+- addBack is adding to the the front of the list
+
+-----
+
+removeFront() and removeBack() do not remove anything
+- seems to be returning false regardless of list size
+
+-----
