@@ -34,26 +34,30 @@ void Test::run() {
   std::cout << "  RUNNING TESTS   \n";
   std::cout << "=================\n\n";
 
-  test1();
-  test2();
-  test3();
-  test4();
-  test5();
-  test6();
-  test7();
-  test8();
-  test9();
-  test10();
-  test11();
-  test12();
-  test13();
-  test14();
-  test15();
-  test16();
-  test17();
-  test18();
-  test19();
-  test20();
+  int count = 0;
+
+  test1() ? count++ : count;
+  test2() ? count++ : count;
+  test3() ? count++ : count;
+  test4() ? count++ : count;
+  test5() ? count++ : count;
+  test6() ? count++ : count;
+  test7() ? count++ : count;
+  test8() ? count++ : count;
+  test9() ? count++ : count;
+  test10() ? count++ : count;
+  test11() ? count++ : count;
+  test12() ? count++ : count;
+  test13() ? count++ : count;
+  test14() ? count++ : count;
+  test15() ? count++ : count;
+  test16() ? count++ : count;
+  test17() ? count++ : count;
+  test18() ? count++ : count;
+  test19() ? count++ : count;
+  test20() ? count++ : count;
+
+  std::cout << "\n>> " << count << "/20 tests passed.\n";
 }
 
 bool Test::test1() {
@@ -277,7 +281,3 @@ bool Test::test20() {
   printResult(result);
   return true;
 }
-
-
-// std::cout << list.size() << " -- ";
-// printVector(list.toVector());

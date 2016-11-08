@@ -21,7 +21,6 @@ class Test {
     void printVector(std::vector<int> vec);
     void printResult(bool result);
 
-
   public:
     void run(); // runs all the test
 
