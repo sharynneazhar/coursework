@@ -55,9 +55,8 @@ void Test::run() {
   test17() ? count++ : count;
   test18() ? count++ : count;
   test19() ? count++ : count;
-  test20() ? count++ : count;
 
-  std::cout << "\n>> " << count << "/20 tests passed.\n";
+  std::cout << "\n>> " << count << "/19 tests passed.\n";
 }
 
 bool Test::test1() {
@@ -218,18 +217,21 @@ bool Test::test14() {
 
 bool Test::test15() {
   LinkedListOfInts list;
-  populateList(list, 100);
-  bool result = false;
-  // TODO figure out how to do this easily...
-  std::cout << "Test 15: a mixture of add and remove on large list maintains order -->";
+  bool result = list.search(3) == false;
+  std::cout << "Test 15: search on empty list returns false -->";
   printResult(result);
-  return result;
+  return true;
 }
 
 bool Test::test16() {
   LinkedListOfInts list;
-  bool result = list.search(3) == false;
-  std::cout << "Test 16: search on empty list returns false -->";
+  list.addFront(5);
+  list.addFront(4);
+  list.addFront(3);
+  list.addFront(2);
+  list.addFront(1);
+  bool result = list.search(33) == false;
+  std::cout << "Test 16: search when value not in list returns false -->";
   printResult(result);
   return true;
 }
@@ -241,8 +243,8 @@ bool Test::test17() {
   list.addFront(3);
   list.addFront(2);
   list.addFront(1);
-  bool result = list.search(33) == false;
-  std::cout << "Test 17: search when value not in list returns false -->";
+  bool result = list.search(1) == true;
+  std::cout << "Test 17: search when value is first in list returns true -->";
   printResult(result);
   return true;
 }
@@ -254,30 +256,17 @@ bool Test::test18() {
   list.addFront(3);
   list.addFront(2);
   list.addFront(1);
-  bool result = list.search(1) == true;
-  std::cout << "Test 18: search when value is first in list returns true -->";
+  bool result = list.search(5) == true;
+  std::cout << "Test 18: search when value is last in list returns true -->";
   printResult(result);
   return true;
 }
 
 bool Test::test19() {
   LinkedListOfInts list;
-  list.addFront(5);
-  list.addFront(4);
-  list.addFront(3);
-  list.addFront(2);
-  list.addFront(1);
-  bool result = list.search(5) == true;
-  std::cout << "Test 19: search when value is last in list returns true -->";
-  printResult(result);
-  return true;
-}
-
-bool Test::test20() {
-  LinkedListOfInts list;
   populateList(list, 100);
   bool result = list.search(56) == true;
-  std::cout << "Test 20: search when value is in a large list returns true -->";
+  std::cout << "Test 19: search when value is in a large list returns true -->";
   printResult(result);
   return true;
 }

@@ -22,6 +22,6 @@ addBack() method fails
 
 removeFront() and removeBack() do not remove anything
 - seems to be returning false regardless of list size
-- fails Tests #11, #12, #13, #14, #15
+- fails Tests #11, #12, #13, #14
 
 -----
