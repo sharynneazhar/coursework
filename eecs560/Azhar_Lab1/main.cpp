@@ -8,8 +8,7 @@
 
 void printMenu();
 
-int main()
-{
+int main() {
   int menuOption;
 
   printMenu();
@@ -18,8 +17,7 @@ int main()
   return 0;
 };
 
-void printMenu()
-{
+void printMenu() {
   std::cout << "\nPlease choose one of the following commands: ";
   std::cout << "\n1 - insert\n2 - delete\n3 - reverse\n4 - print\n5 - exit";
   std::cout << "\n\nYour choice: ";
