@@ -16,13 +16,13 @@ class Node {
 
   public:
     Node();
+    Node(T value);
     T getValue() const;
     T setValue(T val);
     Node<T>* getPrev() const;
     void setPrev(Node<T>* prev);
     Node<T>* getNext() const;
     void setNext(Node<T>* next);
-
 };
 
 #include "Node.hpp"

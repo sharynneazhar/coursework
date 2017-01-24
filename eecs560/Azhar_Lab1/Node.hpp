@@ -12,6 +12,13 @@ Node<T>::Node() {
 }
 
 template <typename T>
+Node<T>::Node(T value) {
+  m_value = value;
+  m_prev = nullptr;
+  m_next = nullptr;
+}
+
+template <typename T>
 T Node<T>::getValue() const {
   return m_value;
 }
