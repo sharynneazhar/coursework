@@ -18,15 +18,15 @@ class DoubleLinkedList {
     Node<T>* m_back;
     int m_size;
 
-    void insertHelper(Node<T>* currPtr, Node<T>* newNode);
+    bool insertHelper(Node<T>* currPtr, Node<T>* newNode);
 
   public:
     DoubleLinkedList();
     ~DoubleLinkedList();
 
     bool isEmpty() const;
-    void insert(T newEntry);
-    void remove();
+    void insert(T value);
+    void remove(T value);
     void reverse();
     void print();
 

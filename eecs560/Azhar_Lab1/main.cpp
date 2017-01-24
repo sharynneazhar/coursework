@@ -22,7 +22,7 @@ bool fileExists(std::string fileName) {
   return false;
 }
 
-void buildList(DoubleLinkedList<int>& list) {
+void generateList(DoubleLinkedList<int>& list) {
   std::string fileName = "data.txt";
   if (!fileExists(fileName)) {
     std::cout << "\nWARNING: The file \"data.txt\" cannot be found. ";
@@ -41,7 +41,7 @@ void buildList(DoubleLinkedList<int>& list) {
 
 int main() {
   DoubleLinkedList<int> list;
-  buildList(list);
+  generateList(list);
 
   int menuOption;
   bool done = false;
@@ -51,6 +51,10 @@ int main() {
 
     switch(menuOption) {
       case 1:
+        int value;
+        std::cout << "\nEnter a number to be inserted: ";
+        std::cin >> value;
+        list.insert(value);
         break;
       case 2:
         break;

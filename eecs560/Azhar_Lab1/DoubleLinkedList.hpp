@@ -26,27 +26,37 @@ bool DoubleLinkedList<T>::isEmpty() const {
 }
 
 template <typename T>
-void DoubleLinkedList<T>::insert(T newEntry) {
-  Node<T>* newNode = new Node<T>(newEntry);
+void DoubleLinkedList<T>::insert(T value) {
+  bool isAdded = false;
+  Node<T>* newNode = new Node<T>(value);
   if (isEmpty()) {
     m_front = newNode;
+    isAdded = true;
   } else {
-    insertHelper(m_front, newNode);
+    isAdded = insertHelper(m_front, newNode);
   }
-  m_size++;
+
+  if (isAdded)
+    m_size++;
 }
 
 template <typename T>
-void DoubleLinkedList<T>::insertHelper(Node<T>* currPtr, Node<T>* newNode) {
-  if (currPtr->getNext() == nullptr) {
-    currPtr->setNext(newNode);
+bool DoubleLinkedList<T>::insertHelper(Node<T>* currPtr, Node<T>* newNode) {
+  if (currPtr->getValue() != newNode->getValue()) {
+    if (currPtr->getNext() == nullptr) {
+      currPtr->setNext(newNode);
+    } else {
+      insertHelper(currPtr->getNext(), newNode);
+    }
   } else {
-    insertHelper(currPtr->getNext(), newNode);
+    std::cout << "\nValue already in list.\n";
+    return false;
   }
+  return true;
 }
 
 template <typename T>
-void DoubleLinkedList<T>::remove() {}
+void DoubleLinkedList<T>::remove(T value) {}
 
 template <typename T>
 void DoubleLinkedList<T>::reverse() {}
