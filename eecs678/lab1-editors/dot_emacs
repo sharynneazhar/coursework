@@ -1,0 +1,175 @@
+;;; .emacs --- A basic Emacs initialization script
+;;
+;;; Author: Jamie Robinson
+;;
+;;; Commentary:
+;;
+;;    This file highlights how you would go about changing various
+;;    aspects of Emacs' configuation. This configuration barely
+;;    scratches the surface of what is possible in Emacs. There are
+;;    many lengthy guides online that describe how to turn Emacs into
+;;    a very powerful IDE for most languages. However, this
+;;    configuration mainly focuses on enhancing the user's single file
+;;    editing experience while also providing the resources for
+;;    expanding to more advanced functionality and plugins.
+;;
+;;; Code:
+;;
+;; Automatically add a new line at column 80
+;; For more info and options:
+;;    https://www.gnu.org/software/emacs/manual/html_node/efaq/Turning-on-auto_002dfill-by-default.html
+;;    http://www.emacswiki.org/emacs/AutoFillMode
+(defun enable-auto-fill ()
+  "Setup 'auto-fill-mode' and the fill column."
+  (setq fill-column 80)
+  (setq-default auto-fill-function
+                'do-auto-fill) ; Turn auto-fill-mode on by default
+  (global-set-key (kbd "C-c C-q")
+                  'auto-fill-mode) ; Toggle auto-fill-mode with the
+                                   ; keyboard shortcut C-c C-q
+  )
+
+;; Show line number on each line
+;; NOTE: In TTY Emacs, the numbers will count towards the line length
+;;   when fill mode is in use or fill-paragraph is executed (M-q)
+;; For more info and options:
+;;    http://www.emacswiki.org/emacs/LineNumbers
+(defun enable-line-numbers ()
+  "A wrapper function to setup line numbering."
+  (add-hook 'find-file-hook (lambda () (linum-mode 1)))
+  (defvar linum-format)
+  (if (eq window-system nil)
+      (setq linum-format "%3d ") ; In TTY Emacs add an extra space
+                                 ; after the number
+    (setq linum-format "%3d") ; In Windowed mode just add the number
+                              ; without a space since windowed mode
+                              ; already has a divider with linum.
+    ))
+
+;; Indentation
+;; For more info and options:
+;;    http://www.emacswiki.org/emacs/IndentationBasics
+;;    http://www.emacswiki.org/emacs/AutoIndentation
+;;    http://www.emacswiki.org/emacs/NoTabs
+(defun enable-indentation-policy ()
+  "Setup indentation."
+  (define-key global-map (kbd "RET")
+    'newline-and-indent) ; Automatically indent on RET key pressed
+                         ; NOTE: This is normally bound to C-j
+  (setq-default indent-tabs-mode nil) ; substitute tabs with spaces
+  )
+
+;; Enable the semantic package.
+;; For more info and options:
+;;    https://www.gnu.org/software/emacs/manual/html_node/semantic/Using-Semantic.html
+(defun enable-semantic ()
+  "Setup semantic features."
+  (require 'semantic)
+  
+  ;; Enable some basic included IDE-like features
+  
+  ;; Parse buffers while Emacs is idle
+  (global-semantic-idle-scheduler-mode 1)
+  
+  ;; Store syntax parse in external database to reduce the overhead of
+  ;; opening files
+  (global-semanticdb-minor-mode 1)
+
+  ;; Displays function prototype in the mini-buffer (like el-doc)
+  (global-semantic-idle-summary-mode 1)
+
+  ;; Provides simple completion interface (<TAB> to cycle)
+  (global-semantic-idle-completions-mode 1)
+
+  ;; Highlight the function name currently being edited
+  (global-semantic-highlight-func-mode 1)
+
+  ;; Adds some markings that you may like
+  ;;(global-semantic-decoration-mode 1)
+
+  ;; Keeps the function on the top line of the editor
+  (global-semantic-stickyfunc-mode 1)
+
+  ;; Enable semantic mode
+  (semantic-mode 1)
+  )
+
+;; Call the above functions just like normal lisp
+(enable-auto-fill)
+(enable-indentation-policy)
+(enable-line-numbers)
+
+;; Enable eldoc-mode for Emacs lisp
+;; Eldoc-mode shows the arguments of a function in the mini-buffer.
+;;
+;; This is mainly here to demonstrate hooks which are functions that
+;; are called when an event occurs. The majority of the time you will
+;; use hooks to enable an addon that only makes sense in a certain
+;; programming language like eldoc-mode. The major mode hooks are run
+;; whenever a buffer is opened. If the buffer opened is a file then
+;; Emacs looks at the file extension or at the file's interpreter
+;; directive (#!/bin/bash) to determine what language it is using.
+(add-hook 'emacs-lisp-mode-hook 'turn-on-eldoc-mode)
+
+;; A c-mode hook would look like the following. This enables semantic
+;; which provides some limited code completion on its own. It can be
+;; enhanced using some sort of tagging system (etags, gtags, ctags,
+;; cscope, or others). The lambda would be useful if we were to add
+;; more commands to the hook body such as the company command.
+(add-hook 'c-mode-hook
+          (lambda ()
+            (enable-semantic)
+            ;;(company-mode 1) ; drop down completions interfacing with
+                             ; Semantic. Company is an external plugin.            
+            ;; add more commands here
+            ))
+
+
+;; Give visual indication (1) or disable (2) terminal bell
+;;(setq visible-bell 1)           ; (1)
+(setq ring-bell-function 'ignore) ; (2)
+
+;; Show column number in status bar
+(setq column-number-mode t)
+
+;; Melpa package repository setup
+;; For more info and options:
+;;    https://melpa.org/#/getting-started
+(require 'package)
+(add-to-list 'package-archives
+             '("melpa" . "https://melpa.org/packages/"))
+(when (< emacs-major-version 24)
+  ;; For important compatibility libraries like cl-lib
+  (add-to-list 'package-archives
+               '("gnu" . "http://elpa.gnu.org/packages/")))
+(package-initialize)
+
+;; Some useful addons to look into are flycheck (syntax checking),
+;; magit (a useful git interface), company (code completion), and
+;; helm (incremental completion for searches and more).
+
+;; 1) Type "M-x list-packages" to view an interactive list of packages
+;; available. This will open a buffer listing many packages.
+;;
+;; 2) To install a package navigate the cursor to the package you wish
+;; to install and click on it (press "Return" in TTY Emacs). This will
+;; split the window in half if it is not already split.
+;;
+;; 3) Navigate to the new window (C-x o). This new buffer is
+;; interactive like the previous one. Click on the install link.
+;;
+;; 4) Next follow the link to the homepage to learn how to use the
+;; package and see if there is any further configuration setup. You
+;; may need to add their code to this file if it is something that
+;; should start out enabled.
+;;
+;; 5) To remove packages go back to the package list buffer and find
+;; the package you just installed. All installed packages will appear
+;; near the end of the buffer (C-x >) just above the "built-in"
+;; packages. Press "d" when your cursor is on the line with the
+;; installed package and then press "x" to execute the delete. If you
+;; press "i" then "x" you can also install from the list packages
+;; buffer.
+
+(provide '.emacs)
+;;; .emacs ends here
