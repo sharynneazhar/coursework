@@ -57,5 +57,5 @@ correctly when the formatting command is used.
 
 [Emacs cheatsheet](http://www.rgrjr.com/emacs/emacs_cheat.html)  
 [Emacs multiple windows](https://www.fnal.gov/docs/products/emacs/emacs/emacs_20.html#SEC156)  
-[How to find function declaration in emacs](http://stackoverflow.com/questions/4759211/what-is-the-short-cut-key-to-jump-to-declaration-in-emacs)
+[Emacs finding function declarations](http://stackoverflow.com/questions/4759211/what-is-the-short-cut-key-to-jump-to-declaration-in-emacs)  
 [Emacs regex](https://www.emacswiki.org/emacs/RegularExpression#regexp)
