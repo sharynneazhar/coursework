@@ -45,6 +45,7 @@ bool DoubleLinkedList<T>::insertHelper(Node<T>* currPtr, Node<T>* newNode) {
   if (currPtr->getValue() != newNode->getValue()) {
     if (currPtr->getNext() == nullptr) {
       currPtr->setNext(newNode);
+      newNode->setPrev(currPtr);
     } else {
       insertHelper(currPtr->getNext(), newNode);
     }
