@@ -16,6 +16,10 @@ at the top of each new file. Save each new file.
 screen simultaneously, and switch between editing each of these two files and
 issuing commands to a terminal you have open.
 
+* We are currently in the `simple.c` buffer
+* `C-x 4 f a.c` will open the `a.c` buffer in another window
+* `C-x o` to switch between windows
+
 3. As you are reading the code for a large C program (with multiple source
 files spanned across multiple directories), you come across a call to an
 unknown function. Find the definition of this function. Go back to the
