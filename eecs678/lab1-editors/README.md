@@ -53,9 +53,13 @@ character text width. If you are using vim, you may assume that your vimrc has
 the appropriate textwidth and formatoptions settings so that lines are formatted
 correctly when the formatting command is used.
 
+  * `M-x replace-string` will replace `Bill Self` with `basketball genius Bill
+  Self`
+  
+
 ##### Resources
 
 [Emacs cheatsheet](http://www.rgrjr.com/emacs/emacs_cheat.html)  
 [Emacs multiple windows](https://www.fnal.gov/docs/products/emacs/emacs/emacs_20.html#SEC156)  
 [Emacs finding function declarations](http://stackoverflow.com/questions/4759211/what-is-the-short-cut-key-to-jump-to-declaration-in-emacs)  
-[Emacs regex](https://www.emacswiki.org/emacs/RegularExpression#regexp)
+[Emacs replacing commands](https://www.gnu.org/software/emacs/manual/html_node/emacs/Replace.html)
