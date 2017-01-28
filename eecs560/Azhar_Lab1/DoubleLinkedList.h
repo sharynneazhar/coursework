@@ -16,7 +16,7 @@ class DoubleLinkedList {
   private:
     Node<T>* m_front;
 
-    bool insertHelper(Node<T>* currNode, Node<T>* newNode);
+    bool insertHelper(Node<T>* currNode, T value);
     bool deleteHelper(Node<T>* currNode, T value);
 
   public:

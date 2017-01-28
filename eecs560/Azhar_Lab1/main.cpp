@@ -50,7 +50,6 @@ int main() {
   while (!done) {
     printMenu();
     std::cin >> menuOption;
-
     switch(menuOption) {
       case 1:
         std::cout << "\nEnter a number to be inserted: ";
