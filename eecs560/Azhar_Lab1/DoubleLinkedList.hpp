@@ -7,13 +7,11 @@
 template <typename T>
 DoubleLinkedList<T>::DoubleLinkedList() {
   m_front = nullptr;
-  m_back = nullptr;
-  m_size = 0;
 }
 
 template <typename T>
 DoubleLinkedList<T>::~DoubleLinkedList() {
-  while (m_front != nullptr) {
+  while (m_front) {
     Node<T>* nodeToDelete = m_front;
     m_front = nodeToDelete->getNext();
     delete nodeToDelete;
@@ -21,53 +19,61 @@ DoubleLinkedList<T>::~DoubleLinkedList() {
 }
 
 template <typename T>
-bool DoubleLinkedList<T>::isEmpty() const {
-  return m_size == 0;
-}
-
-template <typename T>
-void DoubleLinkedList<T>::insert(T value) {
-  bool isAdded = false;
+void DoubleLinkedList<T>::insertValue(T value) {
   Node<T>* newNode = new Node<T>(value);
-  if (isEmpty()) {
+  if (!m_front) {
     m_front = newNode;
-    isAdded = true;
   } else {
-    isAdded = insertHelper(m_front, newNode);
+    insertHelper(m_front, newNode);
   }
-
-  if (isAdded)
-    m_size++;
 }
 
 template <typename T>
-bool DoubleLinkedList<T>::insertHelper(Node<T>* currPtr, Node<T>* newNode) {
-  if (currPtr->getValue() != newNode->getValue()) {
-    if (currPtr->getNext() == nullptr) {
-      currPtr->setNext(newNode);
-      newNode->setPrev(currPtr);
-    } else {
-      insertHelper(currPtr->getNext(), newNode);
+bool DoubleLinkedList<T>::insertHelper(Node<T>* currNode, Node<T>* newNode) {
+  if (currNode->getValue() != newNode->getValue()) {
+    if (!currNode->getNext()) {
+      currNode->setNext(newNode);
+      newNode->setPrev(currNode);
+      return true;
     }
-  } else {
-    std::cout << "\nValue already in list.\n";
-    return false;
+    return insertHelper(currNode->getNext(), newNode);
   }
-  return true;
+  return false;
 }
 
 template <typename T>
-void DoubleLinkedList<T>::remove(T value) {}
+void DoubleLinkedList<T>::deleteValue(T value) {
+  if (!m_front) {
+    std::cout << "\nList empty\n";
+  } else {
+    deleteHelper(m_front, value);
+  }
+}
 
 template <typename T>
-void DoubleLinkedList<T>::reverse() {}
+bool DoubleLinkedList<T>::deleteHelper(Node<T>* currNode, const T value) {
+  if (currNode->getValue() == value) {
+    if (m_front == currNode)
+      m_front = currNode->getNext();
+    if (currNode->getPrev())
+      currNode->getPrev()->setNext(currNode->getNext());
+    if (currNode->getNext())
+      currNode->getNext()->setPrev(currNode->getPrev());
+    delete currNode;
+    return true;
+  }
+  return deleteHelper(currNode->getNext(), value);
+}
 
 template <typename T>
-void DoubleLinkedList<T>::print() {
-  Node<T>* currPtr = m_front;
-  while(currPtr != nullptr) {
-    std::cout << currPtr->getValue() << " ";
-    currPtr = currPtr->getNext();
+void DoubleLinkedList<T>::reverseList() {}
+
+template <typename T>
+void DoubleLinkedList<T>::printList() {
+  Node<T>* currNode = m_front;
+  while(currNode != nullptr) {
+    std::cout << currNode->getValue() << " ";
+    currNode = currNode->getNext();
   }
   std::cout << std::endl;
 }

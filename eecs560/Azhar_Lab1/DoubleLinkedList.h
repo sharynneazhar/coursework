@@ -15,20 +15,18 @@ template <typename T>
 class DoubleLinkedList {
   private:
     Node<T>* m_front;
-    Node<T>* m_back;
-    int m_size;
 
-    bool insertHelper(Node<T>* currPtr, Node<T>* newNode);
+    bool insertHelper(Node<T>* currNode, Node<T>* newNode);
+    bool deleteHelper(Node<T>* currNode, T value);
 
   public:
     DoubleLinkedList();
     ~DoubleLinkedList();
 
-    bool isEmpty() const;
-    void insert(T value);
-    void remove(T value);
-    void reverse();
-    void print();
+    void insertValue(T value);
+    void deleteValue(T value);
+    void reverseList();
+    void printList();
 
 };
 
