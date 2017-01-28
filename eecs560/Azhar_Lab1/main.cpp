@@ -35,7 +35,7 @@ void generateList(DoubleLinkedList<int>& list) {
 
   int value;
   while (file >> value) {
-    list.insert(value);
+    list.insertValue(value);
   }
 }
 
@@ -43,26 +43,30 @@ int main() {
   DoubleLinkedList<int> list;
   generateList(list);
 
-  int menuOption;
   bool done = false;
+  int menuOption;
+  int inputValue;
+
   while (!done) {
     printMenu();
     std::cin >> menuOption;
 
     switch(menuOption) {
       case 1:
-        int value;
         std::cout << "\nEnter a number to be inserted: ";
-        std::cin >> value;
-        list.insert(value);
+        std::cin >> inputValue;
+        list.insertValue(inputValue);
         break;
       case 2:
+        std::cout << "\nEnter a number to be deleted: ";
+        std::cin >> inputValue;
+        list.deleteValue(inputValue);
         break;
       case 3:
         break;
       case 4:
         std::cout << "\nList: ";
-        list.print();
+        list.printList();
         break;
       case 5:
         done = true;
