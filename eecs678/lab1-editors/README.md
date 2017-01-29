@@ -55,7 +55,13 @@ correctly when the formatting command is used.
 
   * `M-x replace-string` will replace `Bill Self` with `basketball genius Bill
   Self`
-  
+  * `C-u 80 C-x f` to set the column width to 80 characters if it wasn't the
+  default already
+  * Move the cursor to the beginning of the paragraph needing formatting,
+  `M-q` to reformat a paragraph to the set column width, in this case,
+  80 characters
+  * `M-x auto-fill-mode` toggles auto-wrapping as you type
+
 
 ##### Resources
 
