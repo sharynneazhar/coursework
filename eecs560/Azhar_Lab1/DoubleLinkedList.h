@@ -18,6 +18,7 @@ class DoubleLinkedList {
 
     bool insertHelper(Node<T>* currNode, T value);
     bool deleteHelper(Node<T>* currNode, T value);
+    Node<T>* reverseListHelper(Node<T>* currNode);
 
   public:
     DoubleLinkedList();

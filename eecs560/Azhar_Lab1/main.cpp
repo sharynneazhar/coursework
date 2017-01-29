@@ -62,6 +62,7 @@ int main() {
         list.deleteValue(inputValue);
         break;
       case 3:
+        list.reverseList();
         break;
       case 4:
         std::cout << "\nList: ";

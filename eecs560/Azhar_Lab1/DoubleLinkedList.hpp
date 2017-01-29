@@ -67,7 +67,27 @@ bool DoubleLinkedList<T>::deleteHelper(Node<T>* currNode, const T value) {
 
 template <typename T>
 void DoubleLinkedList<T>::reverseList() {
+  if (m_front) {
+    m_front = reverseListHelper(m_front);
+  }
+}
 
+template <typename T>
+Node<T>* DoubleLinkedList<T>::reverseListHelper(Node<T>* currNode) {
+  if (!currNode)
+    return currNode;
+
+  if (!currNode->getNext()) {
+    currNode->setPrev(nullptr);
+    return currNode;
+  }
+
+  Node<T>* newFront = reverseListHelper(currNode->getNext());
+  currNode->getNext()->setNext(currNode);
+  currNode->setPrev(currNode->getNext());
+  currNode->setNext(nullptr);
+
+  return newFront;
 }
 
 template <typename T>
