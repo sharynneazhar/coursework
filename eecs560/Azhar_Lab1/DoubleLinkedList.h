@@ -8,15 +8,15 @@
 #define DOUBLELINKEDLIST_H
 
 #include "Node.h"
-
 #include <iostream>
 
 template <typename T>
 class DoubleLinkedList {
   private:
     Node<T>* m_front;
+    Node<T>* m_back;
 
-    bool insertHelper(Node<T>* currNode, T value);
+    Node<T>* insertHelper(Node<T>* currNode, T value);
     bool deleteHelper(Node<T>* currNode, T value);
     Node<T>* reverseListHelper(Node<T>* currNode);
 

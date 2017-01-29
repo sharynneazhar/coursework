@@ -23,22 +23,23 @@ void DoubleLinkedList<T>::insertValue(T value) {
   if (!m_front) {
     m_front = new Node<T>(value);
   } else {
-    insertHelper(m_front, value);
+    m_back = insertHelper(m_front, value);
   }
 }
 
 template <typename T>
-bool DoubleLinkedList<T>::insertHelper(Node<T>* currNode, T value) {
+Node<T>* DoubleLinkedList<T>::insertHelper(Node<T>* currNode, T value) {
   if (currNode->getValue() != value) {
     if (!currNode->getNext()) {
       Node<T>* newNode = new Node<T>(value);
       currNode->setNext(newNode);
       newNode->setPrev(currNode);
-      return true;
+      return newNode;
     }
     return insertHelper(currNode->getNext(), value);
   }
-  return false;
+  std::cout << "\nValue already in list.\n" << std::endl;
+  return currNode;
 }
 
 template <typename T>
@@ -82,12 +83,11 @@ Node<T>* DoubleLinkedList<T>::reverseListHelper(Node<T>* currNode) {
     return currNode;
   }
 
-  Node<T>* newFront = reverseListHelper(currNode->getNext());
+  Node<T>* tempNode = reverseListHelper(currNode->getNext());
   currNode->getNext()->setNext(currNode);
   currNode->setPrev(currNode->getNext());
   currNode->setNext(nullptr);
-
-  return newFront;
+  return tempNode;
 }
 
 template <typename T>
