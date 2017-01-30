@@ -7,6 +7,7 @@
 template <typename T>
 DoubleLinkedList<T>::DoubleLinkedList() {
   m_front = nullptr;
+  m_back = nullptr;
 }
 
 template <typename T>
@@ -29,17 +30,19 @@ void DoubleLinkedList<T>::insertValue(T value) {
 
 template <typename T>
 Node<T>* DoubleLinkedList<T>::insertHelper(Node<T>* currNode, T value) {
-  if (currNode->getValue() != value) {
-    if (!currNode->getNext()) {
-      Node<T>* newNode = new Node<T>(value);
-      currNode->setNext(newNode);
-      newNode->setPrev(currNode);
-      return newNode;
-    }
-    return insertHelper(currNode->getNext(), value);
+  if (currNode->getValue() == value) {
+    std::cout << "\nValue already in list.\n" << std::endl;
+    return currNode;
   }
-  std::cout << "\nValue already in list.\n" << std::endl;
-  return currNode;
+
+  if (!currNode->getNext()) {
+    Node<T>* newNode = new Node<T>(value);
+    currNode->setNext(newNode);
+    newNode->setPrev(currNode);
+    return newNode;
+  }
+
+  return insertHelper(currNode->getNext(), value);
 }
 
 template <typename T>
@@ -50,20 +53,21 @@ void DoubleLinkedList<T>::deleteValue(T value) {
 
 template <typename T>
 bool DoubleLinkedList<T>::deleteHelper(Node<T>* currNode, const T value) {
-  if (currNode) {
-    if (currNode->getValue() == value) {
-      if (m_front == currNode)
-        m_front = currNode->getNext();
-      if (currNode->getPrev())
-        currNode->getPrev()->setNext(currNode->getNext());
-      if (currNode->getNext())
-        currNode->getNext()->setPrev(currNode->getPrev());
-      delete currNode;
-      return true;
-    }
-    return deleteHelper(currNode->getNext(), value);
+  if (!currNode)
+    return false;
+
+  if (currNode->getValue() == value) {
+    if (m_front == currNode)
+      m_front = currNode->getNext();
+    if (currNode->getPrev())
+      currNode->getPrev()->setNext(currNode->getNext());
+    if (currNode->getNext())
+      currNode->getNext()->setPrev(currNode->getPrev());
+    delete currNode;
+    return true;
   }
-  return false;
+
+  return deleteHelper(currNode->getNext(), value);
 }
 
 template <typename T>

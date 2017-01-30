@@ -22,10 +22,9 @@ bool fileExists(std::string fileName) {
   return false;
 }
 
-void generateList(DoubleLinkedList<int>& list) {
-  std::string fileName = "data.txt";
+void generateList(std::string fileName, DoubleLinkedList<int>& list) {
   if (!fileExists(fileName)) {
-    std::cout << "\nWARNING: The file \"data.txt\" cannot be found. ";
+    std::cout << "\nWARNING: The file " << fileName << " cannot be found. ";
     std::cout << "Please provide the name of the data file.\n>> ";
     std::cin >> fileName;
   }
@@ -39,9 +38,16 @@ void generateList(DoubleLinkedList<int>& list) {
   }
 }
 
-int main() {
+int main(int argc, char** argv) {
   DoubleLinkedList<int> list;
-  generateList(list);
+
+  if (argc == 2) {
+    std::string fileName = argv[1];
+    generateList(fileName, list);
+  }
+  else {
+    generateList("data.txt", list);
+  }
 
   bool done = false;
   int menuOption;
