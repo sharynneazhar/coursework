@@ -1,53 +1,74 @@
 /**
 *	@file : main.cpp
 *	@author : Sharynne Azhar
-*	@date : 01-24-2017
+*	@date : 02-03-2017
 */
 
-#include "DoubleLinkedList.h"
+#include "OpenHasher.h"
 
 #include <iostream>
 #include <fstream>
+#include <stdexcept>
 
 void printMenu() {
   std::cout << "\nPlease choose one of the following commands: ";
-  std::cout << "\n1 - insert\n2 - delete\n3 - reverse\n4 - print\n5 - exit";
+  std::cout << "\n1 - insert\n2 - delete\n3 - print\n4 - exit";
   std::cout << "\n\nYour choice: ";
 }
 
-bool fileExists(std::string fileName) {
-  if (std::ifstream(fileName)) {
-    return true;
+bool isPrime(int num) {
+  int count = 0;
+  for (int i = 1; i <= num; i++) {
+    if (num % i == 0)
+      count++;
   }
-  return false;
+  return count == 2;
 }
 
-void generateList(std::string fileName, DoubleLinkedList<int>& list) {
-  if (!fileExists(fileName)) {
-    std::cout << "\nWARNING: The file " << fileName << " cannot be found. ";
-    std::cout << "Please provide the name of the data file.\n>> ";
-    std::cin >> fileName;
-  }
-
+OpenHasher<int> generateHashTable(std::string fileName) {
   std::ifstream file;
   file.open(fileName);
 
-  int value;
-  while (file >> value) {
-    list.insertValue(value);
+  if (file.fail()) {
+    std::cout << "\nWARNING: Unable to open file " << fileName;
+    std::cout << ". Please provide the name of the data file.\n>> ";
+    std::cin >> fileName;
   }
+
+  int value, size;
+  file >> size;
+
+  OpenHasher<int> hashTable(size);
+  if (!isPrime(size)) {
+    std::string msg = "\nERROR: Hash table size \""
+                    + std::to_string(size)
+                    + "\" should be a prime number\n";
+    throw std::runtime_error(msg);
+  }
+
+  while (file >> value) {
+    hashTable.insertValue(value);
+  }
+
+  return hashTable;
 }
 
 int main(int argc, char** argv) {
-  DoubleLinkedList<int> list;
+  OpenHasher<int> hashTable;
 
-  if (argc == 2) {
-    std::string fileName = argv[1];
-    generateList(fileName, list);
+  try {
+    if (argc == 2) {
+      std::string fileName = argv[1];
+      hashTable = generateHashTable(fileName);
+    }
+    else {
+      hashTable = generateHashTable("data.txt");
+    }
+  } catch (const std::exception& e) {
+    std::cout << e.what();
+    return 0;
   }
-  else {
-    generateList("data.txt", list);
-  }
+
 
   bool done = false;
   int menuOption;
@@ -60,21 +81,17 @@ int main(int argc, char** argv) {
       case 1:
         std::cout << "\nEnter a number to be inserted: ";
         std::cin >> inputValue;
-        list.insertValue(inputValue);
+        hashTable.insertValue(inputValue);
         break;
       case 2:
         std::cout << "\nEnter a number to be deleted: ";
         std::cin >> inputValue;
-        list.deleteValue(inputValue);
+        hashTable.deleteValue(inputValue);
         break;
       case 3:
-        list.reverseList();
+        hashTable.printList();
         break;
       case 4:
-        std::cout << "\nList: ";
-        list.printList();
-        break;
-      case 5:
         done = true;
         break;
       default:
