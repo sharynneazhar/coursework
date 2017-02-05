@@ -1,17 +1,17 @@
 /**
-*	@file : OpenHasher.h
+*	@file : HashTable.h
 *	@author : Sharynne Azhar
 *	@date : 02-03-2017
 */
 
-#ifndef OPENHASHER_H
-#define OPENHASHER_H
+#ifndef HASHTABLE_H
+#define HASHTABLE_H
 
 #include "Node.h"
 #include <iostream>
 
 template <typename T>
-class OpenHasher {
+class HashTable {
   private:
     int m_tableSize;
     Node<T>** hashTable;
@@ -20,9 +20,8 @@ class OpenHasher {
     bool find(T value);
 
   public:
-    OpenHasher();
-    OpenHasher(T tableSize);
-    ~OpenHasher();
+    HashTable(T tableSize);
+    virtual ~HashTable();
 
     void insertValue(T value);
     void deleteValue(T value);
@@ -30,6 +29,6 @@ class OpenHasher {
 
 };
 
-#include "OpenHasher.hpp"
+#include "HashTable.hpp"
 
 #endif

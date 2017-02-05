@@ -1,17 +1,11 @@
 /**
-*	@file : OpenHasher.hpp
+*	@file : HashTable.hpp
 *	@author : Sharynne Azhar
 *	@date : 02-03-2017
 */
 
 template <typename T>
-OpenHasher<T>::OpenHasher() {
-  m_tableSize = 0;
-  hashTable = new Node<T>*[0];
-}
-
-template <typename T>
-OpenHasher<T>::OpenHasher(T tableSize) {
+HashTable<T>::HashTable(T tableSize) {
   m_tableSize = tableSize;
   hashTable = new Node<T>*[tableSize];
   for (int i = 0; i < m_tableSize; i++) {
@@ -19,9 +13,8 @@ OpenHasher<T>::OpenHasher(T tableSize) {
   }
 }
 
-
 template <typename T>
-OpenHasher<T>::~OpenHasher() {
+HashTable<T>::~HashTable() {
   for (int i = 0; i < m_tableSize; i++) {
     Node<T>* currNode = hashTable[i];
     while (currNode) {
@@ -33,12 +26,12 @@ OpenHasher<T>::~OpenHasher() {
 }
 
 template <typename T>
-int OpenHasher<T>::hash(T value) {
+int HashTable<T>::hash(T value) {
   return (value % m_tableSize);
 }
 
 template <typename T>
-bool OpenHasher<T>::find(T value) {
+bool HashTable<T>::find(T value) {
   int hashKey = hash(value);
   Node<T>* currNode = hashTable[hashKey];
   while (currNode) {
@@ -50,21 +43,27 @@ bool OpenHasher<T>::find(T value) {
 }
 
 template <typename T>
-void OpenHasher<T>::insertValue(T value) {
-  if (find(value))
-    return;
-
-  
+void HashTable<T>::insertValue(T value) {
+  if (!find(value)) {
+    Node<T>* newNode = new Node<T>(value);
+    int key = hash(value);
+    if (hashTable[key] == nullptr) {
+      hashTable[key] = newNode;
+    } else {
+      newNode->setNext(hashTable[key]);
+      hashTable[key] = newNode;
+    };
+  }
 }
 
 template <typename T>
-void OpenHasher<T>::deleteValue(T value) {
+void HashTable<T>::deleteValue(T value) {
   // if (!deleteHelper(m_front, value))
   //   std::cout << "\nValue not found.\n";
 }
 
 template <typename T>
-void OpenHasher<T>::printList() {
+void HashTable<T>::printList() {
   for (int i = 0; i < m_tableSize; i++) {
     std::cout << i << ": ";
     Node<T>* currNode = hashTable[i];

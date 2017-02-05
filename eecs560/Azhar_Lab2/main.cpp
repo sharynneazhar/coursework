@@ -4,11 +4,11 @@
 *	@date : 02-03-2017
 */
 
-#include "OpenHasher.h"
+#include "HashTable.h"
 
 #include <iostream>
 #include <fstream>
-#include <stdexcept>
+#include <stdlib.h>
 
 void printMenu() {
   std::cout << "\nPlease choose one of the following commands: ";
@@ -16,64 +16,30 @@ void printMenu() {
   std::cout << "\n\nYour choice: ";
 }
 
-bool isPrime(int num) {
-  int count = 0;
-  for (int i = 1; i <= num; i++) {
-    if (num % i == 0)
-      count++;
-  }
-  return count == 2;
-}
-
-OpenHasher<int> generateHashTable(std::string fileName) {
+int main(int argc, char* argv[]) {
   std::ifstream file;
-  file.open(fileName);
+  (argc == 2) ? file.open(argv[1]) : file.open("data.txt");
 
   if (file.fail()) {
-    std::cout << "\nWARNING: Unable to open file " << fileName;
-    std::cout << ". Please provide the name of the data file.\n>> ";
-    std::cin >> fileName;
+    std::cout << "\n>> ERROR: Unable to open file.\n";
+    exit(EXIT_FAILURE);
   }
 
-  int value, size;
+  // get table size 
+  int size;
   file >> size;
 
-  OpenHasher<int> hashTable(size);
-  if (!isPrime(size)) {
-    std::string msg = "\nERROR: Hash table size \""
-                    + std::to_string(size)
-                    + "\" should be a prime number\n";
-    throw std::runtime_error(msg);
-  }
+  // generate hash table with size
+  HashTable<int> hashTable(size);
 
+  // read in the red of the values
+  int value;
   while (file >> value) {
     hashTable.insertValue(value);
   }
 
-  return hashTable;
-}
-
-int main(int argc, char** argv) {
-  OpenHasher<int> hashTable;
-
-  try {
-    if (argc == 2) {
-      std::string fileName = argv[1];
-      hashTable = generateHashTable(fileName);
-    }
-    else {
-      hashTable = generateHashTable("data.txt");
-    }
-  } catch (const std::exception& e) {
-    std::cout << e.what();
-    return 0;
-  }
-
-
   bool done = false;
-  int menuOption;
-  int inputValue;
-
+  int menuOption, inputValue;
   while (!done) {
     printMenu();
     std::cin >> menuOption;
