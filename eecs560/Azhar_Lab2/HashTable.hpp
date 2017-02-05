@@ -51,6 +51,7 @@ void HashTable<T>::insertValue(T value) {
       hashTable[key] = newNode;
     } else {
       newNode->setNext(hashTable[key]);
+      hashTable[key]->setPrev(newNode);
       hashTable[key] = newNode;
     };
   }
@@ -58,8 +59,25 @@ void HashTable<T>::insertValue(T value) {
 
 template <typename T>
 void HashTable<T>::deleteValue(T value) {
-  // if (!deleteHelper(m_front, value))
-  //   std::cout << "\nValue not found.\n";
+  if (find(value)) {
+    int key = hash(value);
+    Node<T>* currNode = hashTable[key];
+
+    while (currNode) {
+      if (currNode->getValue() == value) {
+        if (!currNode->getPrev()) {
+          hashTable[key] = currNode->getNext();
+          delete currNode;
+          return;
+        }
+        currNode->getPrev()->setNext(currNode->getNext());
+        delete currNode;
+      }
+      currNode = currNode->getNext();
+    }
+  } else {
+    std::cout << "\nValue is not in list.\n";
+  }
 }
 
 template <typename T>
