@@ -1,4 +1,4 @@
-STUDENT_ID=XXXXXXX
+STUDENT_ID=2513206
 
 all: bugs valgrind_test
 
@@ -20,6 +20,7 @@ test: bugs
 	@echo "======================================="
 	@echo "PROGRAM DIFF"
 	-@diff -a bugs_desired.txt bugs_output.txt
+	@echo "---------------------------------------"
 
 clean:
 	-rm bugs valgrind_test bugs_output.txt valgrind_output.txt
