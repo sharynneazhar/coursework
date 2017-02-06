@@ -23,6 +23,7 @@ HashTable<T>::~HashTable() {
       delete nodeToDelete;
     }
   }
+  delete [] hashTable;
 }
 
 template <typename T>
@@ -65,12 +66,10 @@ void HashTable<T>::deleteValue(T value) {
 
     while (currNode) {
       if (currNode->getValue() == value) {
-        if (!currNode->getPrev()) {
+        if (!currNode->getPrev())
           hashTable[key] = currNode->getNext();
-          delete currNode;
-          return;
-        }
-        currNode->getPrev()->setNext(currNode->getNext());
+        else
+          currNode->getPrev()->setNext(currNode->getNext());
         delete currNode;
       }
       currNode = currNode->getNext();
