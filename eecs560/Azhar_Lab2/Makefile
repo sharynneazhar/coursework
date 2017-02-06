@@ -7,3 +7,6 @@ main.o: main.cpp Node.h HashTable.h HashTable.hpp
 clean:
 	rm *.o lab2
 	echo clean done
+
+test:
+	./lab2 < input.txt

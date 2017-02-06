@@ -33,8 +33,8 @@ int HashTable<T>::hash(T value) {
 
 template <typename T>
 bool HashTable<T>::find(T value) {
-  int hashKey = hash(value);
-  Node<T>* currNode = hashTable[hashKey];
+  int key = hash(value);
+  Node<T>* currNode = hashTable[key];
   while (currNode) {
     if (currNode->getValue() == value)
       return true;
@@ -45,37 +45,43 @@ bool HashTable<T>::find(T value) {
 
 template <typename T>
 void HashTable<T>::insertValue(T value) {
-  if (!find(value)) {
-    Node<T>* newNode = new Node<T>(value);
-    int key = hash(value);
-    if (hashTable[key] == nullptr) {
-      hashTable[key] = newNode;
-    } else {
-      newNode->setNext(hashTable[key]);
-      hashTable[key]->setPrev(newNode);
-      hashTable[key] = newNode;
-    };
+  if (find(value)) {
+    return;
   }
+
+  int key = hash(value);
+  Node<T>* newNode = new Node<T>(value);
+
+  if (!hashTable[key]) {
+    hashTable[key] = newNode;
+  } else {
+    newNode->setNext(hashTable[key]);
+    hashTable[key]->setPrev(newNode);
+    hashTable[key] = newNode;
+  };
 }
 
 template <typename T>
 void HashTable<T>::deleteValue(T value) {
-  if (find(value)) {
-    int key = hash(value);
-    Node<T>* currNode = hashTable[key];
-
-    while (currNode) {
-      if (currNode->getValue() == value) {
-        if (!currNode->getPrev())
-          hashTable[key] = currNode->getNext();
-        else
-          currNode->getPrev()->setNext(currNode->getNext());
-        delete currNode;
-      }
-      currNode = currNode->getNext();
-    }
-  } else {
+  if (!find(value)) {
     std::cout << "\nValue is not in list.\n";
+    return;
+  }
+
+  int key = hash(value);
+  Node<T>* currNode = hashTable[key];
+  
+  while (currNode) {
+    Node<T>* nextNode = currNode->getNext();
+    if (currNode->getValue() == value) {
+      if (!currNode->getPrev()) {
+        hashTable[key] = currNode->getNext();
+      } else {
+        currNode->getPrev()->setNext(currNode->getNext());
+      }
+      delete currNode;
+    }
+    currNode = nextNode;
   }
 }
 

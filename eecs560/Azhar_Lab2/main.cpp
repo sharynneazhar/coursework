@@ -25,7 +25,7 @@ int main(int argc, char* argv[]) {
     exit(EXIT_FAILURE);
   }
 
-  // get table size 
+  // get table size
   int size;
   file >> size;
 
