@@ -1,17 +1,18 @@
 /**
-*	@file : HashTable.h
+*	@file : QuadraticHash.h
 *	@author : Sharynne Azhar
-*	@date : 02-03-2017
+*	@date : 02-07-2017
 */
 
-#ifndef HASHTABLE_H
-#define HASHTABLE_H
+#ifndef QUADRATIC_HASH_H
+#define QUADRATIC_HASH_H
 
 #include "Node.h"
+
 #include <iostream>
 
 template <typename T>
-class HashTable {
+class QuadraticHash {
   private:
     int m_tableSize;
     Node<T>** hashTable;
@@ -20,15 +21,13 @@ class HashTable {
     bool find(T value);
 
   public:
-    HashTable(T tableSize);
-    virtual ~HashTable();
-
+    QuadraticHash(T tableSize);
+    ~QuadraticHash();
     void insertValue(T value);
     void deleteValue(T value);
     void printList();
-
 };
 
-#include "HashTable.hpp"
+#include "QuadraticHash.hpp"
 
 #endif

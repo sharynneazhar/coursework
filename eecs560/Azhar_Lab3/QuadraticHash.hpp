@@ -1,11 +1,11 @@
 /**
-*	@file : HashTable.hpp
+*	@file : QuadraticHash.hpp
 *	@author : Sharynne Azhar
 *	@date : 02-03-2017
 */
 
 template <typename T>
-HashTable<T>::HashTable(T tableSize) {
+QuadraticHash<T>::QuadraticHash(T tableSize) {
   m_tableSize = tableSize;
   hashTable = new Node<T>*[tableSize];
   for (int i = 0; i < m_tableSize; i++) {
@@ -14,7 +14,7 @@ HashTable<T>::HashTable(T tableSize) {
 }
 
 template <typename T>
-HashTable<T>::~HashTable() {
+QuadraticHash<T>::~QuadraticHash() {
   for (int i = 0; i < m_tableSize; i++) {
     Node<T>* currNode = hashTable[i];
     while (currNode) {
@@ -27,12 +27,12 @@ HashTable<T>::~HashTable() {
 }
 
 template <typename T>
-int HashTable<T>::hash(T value) {
+int QuadraticHash<T>::hash(T value) {
   return (value % m_tableSize);
 }
 
 template <typename T>
-bool HashTable<T>::find(T value) {
+bool QuadraticHash<T>::find(T value) {
   int key = hash(value);
   Node<T>* currNode = hashTable[key];
   while (currNode) {
@@ -44,7 +44,7 @@ bool HashTable<T>::find(T value) {
 }
 
 template <typename T>
-void HashTable<T>::insertValue(T value) {
+void QuadraticHash<T>::insertValue(T value) {
   if (find(value)) {
     return;
   }
@@ -62,7 +62,7 @@ void HashTable<T>::insertValue(T value) {
 }
 
 template <typename T>
-void HashTable<T>::deleteValue(T value) {
+void QuadraticHash<T>::deleteValue(T value) {
   if (!find(value)) {
     std::cout << "\nValue is not in list.\n";
     return;
@@ -70,7 +70,7 @@ void HashTable<T>::deleteValue(T value) {
 
   int key = hash(value);
   Node<T>* currNode = hashTable[key];
-  
+
   while (currNode) {
     Node<T>* nextNode = currNode->getNext();
     if (currNode->getValue() == value) {
@@ -86,7 +86,7 @@ void HashTable<T>::deleteValue(T value) {
 }
 
 template <typename T>
-void HashTable<T>::printList() {
+void QuadraticHash<T>::printList() {
   for (int i = 0; i < m_tableSize; i++) {
     std::cout << i << ": ";
     Node<T>* currNode = hashTable[i];
