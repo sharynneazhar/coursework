@@ -7,14 +7,12 @@ int main()
 
 	pid = fork();
 
-#if 0
-	if (pid == 0){
-		/*execl("/bin/uname", "uname", "-a", (char *) 0);*/
+	if (pid == 0) {
+		execl("/bin/uname", "uname", "-a", (char *) 0);
 		printf("child\n");
 	} else{
 		printf("parent\n");
 	}
-#endif
 
 	printf("%d\n", pid);
 
