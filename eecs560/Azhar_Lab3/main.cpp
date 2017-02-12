@@ -41,7 +41,7 @@ void run(std::string fileName, char hashMethod) {
   file.close();
 
   bool done = false;
-  int select, input;
+  int select;
   while(!done) {
     printSubMenu();
     std::cin >> select;
@@ -49,12 +49,12 @@ void run(std::string fileName, char hashMethod) {
       case 1:
         std::cout << "\nEnter a number to be inserted: ";
         std::cin >> value;
-        hashTable.insertValue(input);
+        hashTable.insertValue(value);
         break;
       case 2:
         std::cout << "\nEnter a number to be deleted: ";
         std::cin >> value;
-        hashTable.deleteValue(input);
+        hashTable.deleteValue(value);
         break;
       case 3:
         hashTable.printList();
