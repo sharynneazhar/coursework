@@ -21,15 +21,16 @@ class HashTable {
     int m_tableSize;
     HashObject<T>* hashTable;
 
-    int hash(T value, int iteration);
-    bool contains(T value);
+    int hash(const T value, int iteration);
+    int findPosition(const T value);
 
   public:
     HashTable(T tableSize, char hashMethod);
     virtual ~HashTable();
 
-    void insertValue(T value);
-    void deleteValue(T value);
+    bool contains(const T value);
+    void insertValue(const T value);
+    void deleteValue(const T value);
     void printList();
 };
 

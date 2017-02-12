@@ -20,65 +20,60 @@ HashTable<T>::~HashTable() {
 }
 
 template <typename T>
-int HashTable<T>::hash(T value, int iteration) {
+int HashTable<T>::hash(const T value, int iteration) {
   if (m_hashMethod == 'Q')
     return (((value % m_tableSize) + (iteration * iteration)) % m_tableSize);
   return value;
 }
 
 template <typename T>
-bool HashTable<T>::contains(T value) {
+int HashTable<T>::findPosition(const T value) {
   int key, iter = 0;
   do {
     key = hash(value, iter);
     if (hashTable[key].getValue() == value)
-      return true;
+      return key;
     iter++;
   } while ((hashTable[key].insertable()) && (iter < m_tableSize));
-
-  return false;
+  return -1;
 }
 
 template <typename T>
-void HashTable<T>::insertValue(T value) {
-  if (find(value)) {
-    return;
-  }
-
-  int key = hash(value);
-  Node<T>* newNode = new Node<T>(value);
-
-  if (!hashTable[key]) {
-    hashTable[key] = newNode;
-  } else {
-    newNode->setNext(hashTable[key]);
-    hashTable[key]->setPrev(newNode);
-    hashTable[key] = newNode;
-  };
+bool HashTable<T>::contains(const T value) {
+  int pos = findPosition(value);
+  return (pos != -1);
 }
 
 template <typename T>
-void HashTable<T>::deleteValue(T value) {
-  if (!find(value)) {
-    std::cout << "\nValue is not in list.\n";
+void HashTable<T>::insertValue(const T value) {
+  if (contains(value)) {
+    std::cout << "\nValue already exists.\n";
     return;
   }
 
-  int key = hash(value);
-  Node<T>* currNode = hashTable[key];
-
-  while (currNode) {
-    Node<T>* nextNode = currNode->getNext();
-    if (currNode->getValue() == value) {
-      if (!currNode->getPrev()) {
-        hashTable[key] = currNode->getNext();
-      } else {
-        currNode->getPrev()->setNext(currNode->getNext());
-      }
-      delete currNode;
+  int key, iter = 0;
+  do {
+    key = hash(value, iter);
+    if (hashTable[key].insertable()) {
+      hashTable[key].setValue(value);
+      return;
     }
-    currNode = nextNode;
+    iter++;
+  } while (iter < m_tableSize);
+
+  std::cout << "\nUnable to insert value into table. Skipping...\n";
+}
+
+template <typename T>
+void HashTable<T>::deleteValue(const T value) {
+  if (!contains(value)) {
+    std::cout << "\nValue not found.\n";
+    return;
   }
+
+  int key = findPosition(value);
+  hashTable[key].setValue(-1);
+  hashTable[key].setFlag(true);
 }
 
 template <typename T>
@@ -88,18 +83,19 @@ void HashTable<T>::printList() {
   std::cout << std::endl;
   std::cout << std::left << std::setw(30) << std::setfill('-') << "-";
   std::cout << "\nHash Method: " << method << std::endl;
-  std::cout << std::left << std::setw(30) << std::setfill('-') << "-";
-  std::cout << std::endl;
+  std::cout << std::left << std::setw(30) << std::setfill('-') << "-" << std::endl;
+
+  std::cout << std::left << std::setw(6) << std::setfill(' ') << "key";
+  std::cout << std::left << std::setw(8) << std::setfill(' ') << "value";
+  std::cout << std::left << std::setw(15) << std::setfill(' ') << "flag" << std::endl;
+  std::cout << std::left << std::setw(30) << std::setfill('-') << "-" << std::endl;
 
   for (int i = 0; i < m_tableSize; i++) {
-    std::string flagStr = hashTable[i].getFlag() ? " flag = true" : " flag = false";
-    std::cout << std::left << std::setfill(' ')
-              << std::setw(2) << i << "  |  "
-              << std::setw(2) << hashTable[i].getValue() << "  |  "
-              << std::setw(15) << flagStr
-              << std::endl;
+    std::string flagStr = hashTable[i].getFlag() ? "true" : "false";
+    std::cout << std::left << std::setw(6) << std::setfill(' ') << i;
+    std::cout << std::left << std::setw(8) << std::setfill(' ') << hashTable[i].getValue();
+    std::cout << std::left << std::setw(15) << std::setfill(' ') << flagStr << std::endl;
   }
 
-  std::cout << std::left << std::setw(30) << std::setfill('-') << "-";
-  std::cout << std::endl;
+  std::cout << std::left << std::setw(30) << std::setfill('-') << "-" << std::endl;
 }
