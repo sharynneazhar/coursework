@@ -20,8 +20,10 @@ HashTable<T>::~HashTable() {
 }
 
 template <typename T>
-int HashTable<T>::hash(T value) {
-  return (value % m_tableSize);
+int HashTable<T>::hash(T value, int iteration) {
+  if (m_hashMethod == 'Q')
+    return (((value % m_tableSize) + (iteration * iteration)) % m_tableSize);
+  return value;
 }
 
 template <typename T>
