@@ -27,14 +27,15 @@ int HashTable<T>::hash(T value, int iteration) {
 }
 
 template <typename T>
-bool HashTable<T>::find(T value) {
-  int key = hash(value);
-  Node<T>* currNode = hashTable[key];
-  while (currNode) {
-    if (currNode->getValue() == value)
+bool HashTable<T>::contains(T value) {
+  int key, iter = 0;
+  do {
+    key = hash(value, iter);
+    if (hashTable[key].getValue() == value)
       return true;
-    currNode = currNode->getNext();
-  }
+    iter++;
+  } while ((hashTable[key].insertable()) && (iter < m_tableSize));
+
   return false;
 }
 
