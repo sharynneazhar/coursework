@@ -7,9 +7,11 @@
 #ifndef HASH_TABLE_H
 #define HASH_TABLE_H
 
-#include "Node.h"
+#include "HashObject.h"
 
 #include <iostream>
+#include <string>
+#include <iomanip>
 #include <stdlib.h>
 
 template <typename T>

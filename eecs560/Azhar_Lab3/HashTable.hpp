@@ -89,15 +89,22 @@ void HashTable<T>::deleteValue(T value) {
 template <typename T>
 void HashTable<T>::printList() {
   std::string method = m_hashMethod == 'Q' ? "Quadratic" : "Double Hashing";
-  std::cout << "\nHash Method: " << method << std::endl << std::endl;
+
+  std::cout << std::endl;
+  std::cout << std::left << std::setw(30) << std::setfill('-') << "-";
+  std::cout << "\nHash Method: " << method << std::endl;
+  std::cout << std::left << std::setw(30) << std::setfill('-') << "-";
+  std::cout << std::endl;
 
   for (int i = 0; i < m_tableSize; i++) {
-    std::cout << i << ": ";
-    Node<T>* currNode = hashTable[i];
-    while (currNode) {
-      std::cout << currNode->getValue() << " ";
-      currNode = currNode->getNext();
-    }
-    std::cout << std::endl;
+    std::string flagStr = hashTable[i].getFlag() ? " flag = true" : " flag = false";
+    std::cout << std::left << std::setfill(' ')
+              << std::setw(2) << i << "  |  "
+              << std::setw(2) << hashTable[i].getValue() << "  |  "
+              << std::setw(15) << flagStr
+              << std::endl;
   }
+
+  std::cout << std::left << std::setw(30) << std::setfill('-') << "-";
+  std::cout << std::endl;
 }
