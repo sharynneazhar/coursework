@@ -21,9 +21,13 @@ HashTable<T>::~HashTable() {
 
 template <typename T>
 int HashTable<T>::hash(const T value, int iteration) {
+  // quadratic hashing
   if (m_hashMethod == 'Q')
     return (((value % m_tableSize) + (iteration * iteration)) % m_tableSize);
-  return value;
+
+  // double hashing
+  int p = 5;
+  return ((value % m_tableSize) + (iteration * (p - (value % p)))) % m_tableSize;
 }
 
 template <typename T>
