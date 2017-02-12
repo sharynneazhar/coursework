@@ -1,7 +1,7 @@
 lab3: main.o
 	g++ -g -std=c++11 main.o -o lab3
 
-main.o: main.cpp Node.h HashTable.h HashTable.hpp
+main.o: main.cpp HashObject.h HashTable.h HashTable.hpp
 	g++ -g -std=c++11 -c main.cpp
 
 clean:
