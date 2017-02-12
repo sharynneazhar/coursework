@@ -19,14 +19,14 @@ class HashTable {
   private:
     char m_hashMethod;
     int m_tableSize;
-    Node<T>** hashTable;
+    HashObject<T>* hashTable;
 
-    int hash(T value);
-    bool find(T value);
+    int hash(T value, int iteration);
+    bool contains(T value);
 
   public:
     HashTable(T tableSize, char hashMethod);
-    ~HashTable();
+    virtual ~HashTable();
 
     void insertValue(T value);
     void deleteValue(T value);

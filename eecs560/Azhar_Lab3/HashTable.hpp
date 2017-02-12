@@ -6,24 +6,16 @@
 
 template <typename T>
 HashTable<T>::HashTable(T tableSize, char hashMethod) {
-  m_hashMethod = hashMethod;
   m_tableSize = tableSize;
-  hashTable = new Node<T>*[tableSize];
+  m_hashMethod = hashMethod;
+  hashTable = new HashObject<T>[tableSize];
   for (int i = 0; i < m_tableSize; i++) {
-    hashTable[i] = nullptr;
+    hashTable[i] = HashObject<T>();
   }
 }
 
 template <typename T>
 HashTable<T>::~HashTable() {
-  for (int i = 0; i < m_tableSize; i++) {
-    Node<T>* currNode = hashTable[i];
-    while (currNode) {
-      Node<T>* nodeToDelete = currNode;
-      currNode = currNode->getNext();
-      delete nodeToDelete;
-    }
-  }
   delete [] hashTable;
 }
 
