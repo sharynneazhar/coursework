@@ -1,7 +1,7 @@
 /**
 *	@file : HashTable.hpp
 *	@author : Sharynne Azhar
-*	@date : 02-03-2017
+*	@date : 02-12-2017
 */
 
 template <typename T>
