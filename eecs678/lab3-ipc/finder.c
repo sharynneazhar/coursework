@@ -51,8 +51,8 @@ int main(int argc, char *argv[])
 		close(fd3[READ_END]);
 		close(fd3[WRITE_END]);
 
-		char* const args[] = {BASH_EXEC, "-c", cmdbuf, (char *) 0};
-		if (execv(BASH_EXEC, args)) {
+		char* const args[] = { BASH_EXEC, "-c", cmdbuf, (char *) 0 };
+		if ((execv(BASH_EXEC, args)) < 0) {
 			fprintf(stderr, "\nError execing find. ERROR#%d\n", errno);
 			return EXIT_FAILURE;
 		}
@@ -63,7 +63,6 @@ int main(int argc, char *argv[])
 	pid_2 = fork();
 	if (pid_2 == 0) {
 		/* Second Child */
-
 		dup2(fd1[READ_END], STDIN_FILENO);
 		dup2(fd2[WRITE_END], STDOUT_FILENO);
 
@@ -74,8 +73,8 @@ int main(int argc, char *argv[])
 		close(fd3[READ_END]);
 		close(fd3[WRITE_END]);
 
-		char* const args[] = {XARGS_EXEC, GREP_EXEC, "-c", argv[2], (char *) 0};
-		if (execv(XARGS_EXEC, args)) {
+		char* const args[] = { XARGS_EXEC, GREP_EXEC, "-c", argv[2], (char *) 0 };
+		if ((execv(XARGS_EXEC, args)) < 0) {
 			fprintf(stderr, "\nError execing grep. ERROR#%d\n", errno);
 			return EXIT_FAILURE;
 		}
@@ -86,7 +85,6 @@ int main(int argc, char *argv[])
 	pid_3 = fork();
 	if (pid_3 == 0) {
 		/* Third Child */
-
 		dup2(fd2[READ_END], STDIN_FILENO);
 		dup2(fd3[WRITE_END], STDOUT_FILENO);
 
@@ -97,8 +95,8 @@ int main(int argc, char *argv[])
 		close(fd3[READ_END]);
 		close(fd3[WRITE_END]);
 
-		char* const args[] = {SORT_EXEC, "-t", ":", "+1.0", "-2.0", "--numeric", "--reverse", (char *) 0};
-		if (execv(SORT_EXEC, args)) {
+		char* const args[] = { SORT_EXEC, "-t", ":", "+1.0", "-2.0", "--numeric", "--reverse", (char *) 0 };
+		if ((execv(SORT_EXEC, args)) < 0) {
 			fprintf(stderr, "\nError execing sort. ERROR#%d\n", errno);
 			return EXIT_FAILURE;
 		}
@@ -109,7 +107,6 @@ int main(int argc, char *argv[])
 	pid_4 = fork();
 	if (pid_4 == 0) {
 		/* Fourth Child */
-
 		dup2(fd3[READ_END], STDIN_FILENO);
 
 		close(fd1[READ_END]);
@@ -119,8 +116,8 @@ int main(int argc, char *argv[])
 		close(fd3[READ_END]);
 		close(fd3[WRITE_END]);
 
-		char* const args[] = {HEAD_EXEC, "--lines", argv[3], (char *) 0};
-		if (execv(HEAD_EXEC, args)) {
+		char* const args[] = { HEAD_EXEC, "--lines", argv[3], (char *) 0 };
+		if ((execv(HEAD_EXEC, args)) < 0) {
 			fprintf(stderr, "\nError execing head. ERROR#%d\n", errno);
 			return EXIT_FAILURE;
 		}
