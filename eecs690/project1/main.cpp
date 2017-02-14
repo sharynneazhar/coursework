@@ -10,55 +10,44 @@
 #include <iostream>
 #include <fstream>
 #include <queue>
-#include <stdlib.h>
-
 #include <thread>
 #include <mutex>
 
 #include "Barrier.h"
+#include "Train.h"
 
-Barrier barrier;
-std::mutex TRAIN_MUTEX;
-bool GO = false;
+Barrier theBarrier;
+std::mutex coutMutex;
 
-class Train {
-private:
-  int m_trainId;
-  std::queue<int> m_route;
+bool ready = false;
+int timeStep = 0;
 
-public:
-  // Default constructor
-  Train(int trainId, std::queue<int> route)
-    : m_trainId(trainId), m_route(route) {}
-
-  // converts int to char and returns the character (i.e. 1 == 'A')
-  char getId() { return m_trainId + 65; }
-
-  // returns the train route
-  std::queue<int>& getRoute() { return m_route; }
-
-  // return true if the train route is done (i.e. queue empty)
-  bool isAtEnd() { return m_route.empty(); }
-};
-
-void travel(Train* train, int numTrains) {
+void runTrain(Train* train) {
   // wait until all trains threads are ready
-  while (!GO) {};
+  while (!ready) {};
 
-  while (!train->isAtEnd()) {
-    std::unique_lock<std::mutex> ml(TRAIN_MUTEX);
-    std::cout << "I am train " << train->getId() << " ";
-    std::cout << "going from " << train->getRoute().front() << " ";
-    train->getRoute().pop();
-    std::cout << "to " << train->getRoute().front() << std::endl;
+  if (!train->isAtEnd()) {
+    std::unique_lock<std::mutex> mutexLock(coutMutex);
+
+    // if track is clear
+    std::cout << "At time step " << timeStep << ": ";
+    std::cout << "Train " << train->getId() << " ";
+    std::cout << "going from station " << train->getRoute().front() << " ";
+    train->goToNextStop();
+    std::cout << "to station " << train->getRoute().front() << std::endl;
+
+    // else
+    // the train must stay
+    // std::cout << "At time step " << timeStep << ": ";
+    // std::cout << "Train " << train->getId() << " ";
+    // std::cout << "must stay at station " << train->getRoute().front() << " ";
   }
 }
 
 int main(int argc, char* argv[]) {
-
   if (argc != 2) {
     std::cerr << "\nMissing file.\n";
-    exit(EXIT_FAILURE);
+    return 0;
   }
 
   // get information about the number of trains and stations
@@ -67,6 +56,15 @@ int main(int argc, char* argv[]) {
   file.open(argv[1]);
   file >> numTrains >> numStations;
 
+  // generate possible pairs of tracks
+  // for (int i = 0; i < numStations; i++) {
+  //   for (int j = i; j < numStations; j++) {
+  //     if (i != j) {
+  //       std::cout << i << " " << j << std::endl;
+  //     }
+  //   }
+  // }
+
   // create a thread for each train
   std::thread** trains = new std::thread*[numTrains];
 
@@ -74,18 +72,18 @@ int main(int argc, char* argv[]) {
   int numStops, stop;
   for (int i = 0; i < numTrains; i++) {
     file >> numStops;
-    std::queue<int> routeList;
+    std::queue<int> route;
     for (int j = 0; j < numStops; j++) {
       file >> stop;
-      routeList.push(stop);
+      route.push(stop);
     }
-    trains[i] = new std::thread(travel, new Train(i, routeList), numTrains);
+    trains[i] = new std::thread(runTrain, new Train(i, route));
   }
 
   std::cout << "\nStarting simulation...\n\n";
 
-  // threads are ready run simulation
-  GO = true;
+  // Run once all threads are ready
+  ready = true;
 
   for (int i = 0; i < numTrains; i++) {
     trains[i]->join();
