@@ -1,7 +1,7 @@
 /*
  ============================================================================
  Author        : Sharynne Azhar
- Last modified : 8 February 2017
+ Date          : 8 February 2017
  Description   : Simulates a train scheduling system using threads
  To Compile    : make; make run
  ============================================================================
@@ -20,27 +20,38 @@ Barrier theBarrier;
 std::mutex coutMutex;
 
 bool ready = false;
-int timeStep = 0;
+int numTrainsLeft;
 
 void runTrain(Train* train) {
   // wait until all trains threads are ready
   while (!ready) {};
 
-  if (!train->isAtEnd()) {
-    std::unique_lock<std::mutex> mutexLock(coutMutex);
+  int timeStep = 0;
+  while (!train->isAtEnd()) {
 
     // if track is clear
+    coutMutex.lock();
     std::cout << "At time step " << timeStep << ": ";
     std::cout << "Train " << train->getId() << " ";
     std::cout << "going from station " << train->getRoute().front() << " ";
     train->goToNextStop();
     std::cout << "to station " << train->getRoute().front() << std::endl;
+    coutMutex.unlock();
+
+    // make sure all trains are finished at this time step before moving on
+    theBarrier.barrier(numTrainsLeft);
 
     // else
     // the train must stay
     // std::cout << "At time step " << timeStep << ": ";
     // std::cout << "Train " << train->getId() << " ";
     // std::cout << "must stay at station " << train->getRoute().front() << " ";
+
+    if (train->isAtEnd()) {
+      numTrainsLeft--;
+    }
+
+    timeStep++;
   }
 }
 
@@ -55,6 +66,8 @@ int main(int argc, char* argv[]) {
   std::ifstream file;
   file.open(argv[1]);
   file >> numTrains >> numStations;
+
+  numTrainsLeft = numTrains;
 
   // generate possible pairs of tracks
   // for (int i = 0; i < numStations; i++) {
