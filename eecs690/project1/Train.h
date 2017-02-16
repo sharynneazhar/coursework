@@ -17,12 +17,12 @@ private:
   int m_numStops;
   int* m_route;
 
-  int currentStopIdx;
+  int currentIdx;
 
 public:
   // Default constructor
   Train(int trainId, int numStops, int* route)
-    : m_trainId(trainId), m_numStops(numStops), m_route(route), currentStopIdx(0) {}
+    : m_trainId(trainId), m_numStops(numStops), m_route(route), currentIdx(0) {}
 
   // converts int to char and returns the character (i.e. 1 == 'A')
   char getId() {
@@ -35,23 +35,24 @@ public:
     return m_numStops - 1;
   }
 
-  // returns the train route
-  int* getRoute() {
-    return m_route;
-  }
-
   // returns the station number
   int getStation(int idx) {
     return m_route[idx];
   }
 
+  // returns the current station number
   int getCurrentStopIdx() {
-    return currentStopIdx;
+    return currentIdx;
   }
 
   // go to next station
   void travel() {
-    currentStopIdx++;
+    currentIdx++;
+  }
+
+  // return true if the train is at its final destination
+  bool isAtEnd() {
+    return currentIdx == m_numStops - 1;
   }
 
 };

@@ -27,31 +27,33 @@ void runTrain(Train* train) {
   while (!ready) {};
 
   int timeStep = 0;
-  int* route = train->getRoute();
+  while (!train->isAtEnd()) {
 
-  for (int i = train->getCurrentStopIdx(); i < train->getNumStops(); i++) {
-
-    coutMutex.lock();
-
+    int i = train->getCurrentStopIdx();
     int currentStation = train->getStation(i);
     int nextStation = train->getStation(i + 1);
 
     if (true) {
       // if track is clear
+      coutMutex.lock();
       std::cout << "At time step " << timeStep << ": ";
       std::cout << "Train " << train->getId() << " ";
       std::cout << "going from station " << currentStation << " ";
       std::cout << "to station " << nextStation << std::endl;
-      //trackMtxs[currentStation][nextStation].unlock();
+      coutMutex.unlock();
+
       train->travel();
+      // trackMtxs[currentStation][nextStation].unlock();
+
     } else {
       // train must stay
+      coutMutex.lock();
       std::cout << "At time step " << timeStep << ": ";
       std::cout << "Train " << train->getId() << " ";
       std::cout << "must stay at station " << currentStation << ".\n";
-    }
+      coutMutex.unlock();
 
-    coutMutex.unlock();
+    }
 
     // make sure all trains are finished at this time step before moving on
     theBarrier.barrier(numTrainsLeft);
@@ -74,19 +76,20 @@ int main(int argc, char* argv[]) {
   file.open(argv[1]);
   file >> numTrains >> numStations;
 
+  // keep track of how many trains are left for barrier
   numTrainsLeft = numTrains;
 
-  // generate possible pairs of tracks
+  // generate possible pairs of tracks and create a mutex for each
   trackMtxs = new std::mutex*[numStations];
   for (int i = 0; i < numStations; i++) {
-    for (int j = i; j < numStations; j++) {
+    for (int j = 0; j < numStations; j++) {
       std::cout << i << " " << j << "  |  ";
       trackMtxs[i] = new std::mutex();
     }
     std::cout << std::endl;
   }
 
-  // create a thread for each train
+  // create an array of train threads
   std::thread** trains = new std::thread*[numTrains];
 
   // get routes for each train
@@ -97,12 +100,13 @@ int main(int argc, char* argv[]) {
     for (int j = 0; j < numStops; j++) {
       file >> route[j];
     }
+
+    // launch threads
     trains[i] = new std::thread(runTrain, new Train(i, numStops, route));
   }
 
-  std::cout << "\nStarting simulation...\n\n";
-
   // Run once all threads are ready
+  std::cout << "\nStarting simulation...\n\n";
   ready = true;
 
   for (int i = 0; i < numTrains; i++) {
