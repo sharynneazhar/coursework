@@ -23,6 +23,7 @@ private:
   char getId() { return m_trainId + 65; }
 
 public:
+  
   // Default constructor
   Train(int trainId, int numStops, int* route)
     : m_trainId(trainId), m_numStops(numStops), m_route(route), currentIdx(0) {}
@@ -42,18 +43,20 @@ public:
 
   // go to next stop
   void travel() {
-    std::unique_lock<std::mutex> lock(mtx);
+    mtx.lock();
     std::cout << "Train " << getId() << " ";
     std::cout << "going from station " << m_route[currentIdx] << " ";
     std::cout << "to station " << m_route[currentIdx + 1] << std::endl;
     currentIdx++;
+    mtx.unlock();
   }
 
   // stay at current stop
   void stay() {
-    std::unique_lock<std::mutex> lock(mtx);
+    mtx.lock();
     std::cout << "Train " << getId() << " ";
     std::cout << "must stay at station " << m_route[currentIdx] << ".\n";
+    mtx.lock();
   }
 
 };

@@ -12,6 +12,8 @@
 #include <thread>
 #include <mutex>
 
+#include <iomanip>
+
 #include "Barrier.h"
 #include "Train.h"
 
@@ -29,18 +31,17 @@ void runTrain(Train* train) {
   int timeStep = 0;
   while (!train->isAtEnd()) {
 
-    if (true) { // if track is clear
-      std::unique_lock<std::mutex> timeLock(coutMtx);
+    // if track is clear (mutex lockable) advance, else stay
+    if (true) {
+      coutMtx.lock();
       std::cout << "At time step " << timeStep << ": ";
       train->travel();
-
-      // trackMtxs[train->getCurrentStop()][train->getNextStop()].unlock();
-
-    } else { // train must stay
-      std::unique_lock<std::mutex> timeLock(coutMtx);
+      coutMtx.unlock();
+    } else {
+      coutMtx.lock();
       std::cout << "At time step " << timeStep << ": ";
       train->stay();
-
+      coutMtx.unlock();
     }
 
     // make sure all trains are finished at this time step before moving on
@@ -70,8 +71,9 @@ int main(int argc, char* argv[]) {
   // generate possible pairs of tracks and create a mutex for each
   trackMtxs = new std::mutex*[numStations];
   for (int i = 0; i < numStations; i++) {
-    for (int j = 0; j < numStations; j++) {
-      std::cout << i << " " << j << "  |  ";
+    for (int j = i; j < numStations; j++) {
+      std::cout << std::setfill(' ') << std::setw(2) << i << " "
+                << std::setfill(' ') << std::setw(2) << j << " | ";
       trackMtxs[i] = new std::mutex();
     }
     std::cout << std::endl;
@@ -81,7 +83,7 @@ int main(int argc, char* argv[]) {
   std::thread** trains = new std::thread*[numTrains];
 
   // get routes for each train
-  int numStops, stop;
+  int numStops;
   for (int i = 0; i < numTrains; i++) {
     file >> numStops;
     int* route = new int[numStops];

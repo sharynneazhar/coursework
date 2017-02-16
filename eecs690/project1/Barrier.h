@@ -22,10 +22,10 @@ public:
 	virtual ~Barrier() {}
 
 	void barrier(int numExpectedAtBarrier) {
-		std::unique_lock<std::mutex> ulbm(barrierMutex);
+		std::unique_lock<std::mutex> barrierLock(barrierMutex);
 		barrierCounter++;
 		if (barrierCounter != numExpectedAtBarrier) {
-			barrierCV.wait(ulbm);
+			barrierCV.wait(barrierLock);
     } else {
 			barrierCounter = 0;
 			barrierCV.notify_all();
