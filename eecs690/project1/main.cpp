@@ -16,7 +16,7 @@
 #include "Train.h"
 
 Barrier theBarrier;
-std::mutex coutMutex;
+std::mutex coutMtx;
 std::mutex** trackMtxs;
 
 bool ready = false;
@@ -29,29 +29,17 @@ void runTrain(Train* train) {
   int timeStep = 0;
   while (!train->isAtEnd()) {
 
-    int i = train->getCurrentStopIdx();
-    int currentStation = train->getStation(i);
-    int nextStation = train->getStation(i + 1);
-
-    if (true) {
-      // if track is clear
-      coutMutex.lock();
+    if (true) { // if track is clear
+      std::unique_lock<std::mutex> timeLock(coutMtx);
       std::cout << "At time step " << timeStep << ": ";
-      std::cout << "Train " << train->getId() << " ";
-      std::cout << "going from station " << currentStation << " ";
-      std::cout << "to station " << nextStation << std::endl;
-      coutMutex.unlock();
-
       train->travel();
-      // trackMtxs[currentStation][nextStation].unlock();
 
-    } else {
-      // train must stay
-      coutMutex.lock();
+      // trackMtxs[train->getCurrentStop()][train->getNextStop()].unlock();
+
+    } else { // train must stay
+      std::unique_lock<std::mutex> timeLock(coutMtx);
       std::cout << "At time step " << timeStep << ": ";
-      std::cout << "Train " << train->getId() << " ";
-      std::cout << "must stay at station " << currentStation << ".\n";
-      coutMutex.unlock();
+      train->stay();
 
     }
 

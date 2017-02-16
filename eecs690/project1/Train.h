@@ -16,43 +16,44 @@ private:
   int m_trainId;
   int m_numStops;
   int* m_route;
-
   int currentIdx;
+  std::mutex mtx;
+
+  // converts int to char and returns the character (i.e. 1 == 'A')
+  char getId() { return m_trainId + 65; }
 
 public:
   // Default constructor
   Train(int trainId, int numStops, int* route)
     : m_trainId(trainId), m_numStops(numStops), m_route(route), currentIdx(0) {}
 
-  // converts int to char and returns the character (i.e. 1 == 'A')
-  char getId() {
-    return m_trainId + 65;
-  }
+  // return true if the train is at its final destination
+  bool isAtEnd() { return currentIdx == m_numStops - 1; }
 
   // returns the number of stops on route
   // (minus 1 because we want to stay at the last stop)
-  int getNumStops() {
-    return m_numStops - 1;
-  }
+  int getNumStops() { return m_numStops - 1; }
 
-  // returns the station number
-  int getStation(int idx) {
-    return m_route[idx];
-  }
+  // returns the current stop id
+  int getCurrentStop() { return m_route[currentIdx]; }
 
-  // returns the current station number
-  int getCurrentStopIdx() {
-    return currentIdx;
-  }
+  // returns the next stop id
+  int getNextStop() { return m_route[currentIdx + 1]; }
 
-  // go to next station
+  // go to next stop
   void travel() {
+    std::unique_lock<std::mutex> lock(mtx);
+    std::cout << "Train " << getId() << " ";
+    std::cout << "going from station " << m_route[currentIdx] << " ";
+    std::cout << "to station " << m_route[currentIdx + 1] << std::endl;
     currentIdx++;
   }
 
-  // return true if the train is at its final destination
-  bool isAtEnd() {
-    return currentIdx == m_numStops - 1;
+  // stay at current stop
+  void stay() {
+    std::unique_lock<std::mutex> lock(mtx);
+    std::cout << "Train " << getId() << " ";
+    std::cout << "must stay at station " << m_route[currentIdx] << ".\n";
   }
 
 };
