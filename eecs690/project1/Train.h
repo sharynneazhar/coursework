@@ -14,31 +14,46 @@
 class Train {
 private:
   int m_trainId;
-  std::queue<int> m_route;
+  int m_numStops;
+  int* m_route;
+
+  int currentStopIdx;
 
 public:
   // Default constructor
-  Train(int trainId, std::queue<int> route)
-    : m_trainId(trainId), m_route(route) {}
+  Train(int trainId, int numStops, int* route)
+    : m_trainId(trainId), m_numStops(numStops), m_route(route), currentStopIdx(0) {}
 
   // converts int to char and returns the character (i.e. 1 == 'A')
   char getId() {
     return m_trainId + 65;
   }
 
+  // returns the number of stops on route
+  // (minus 1 because we want to stay at the last stop)
+  int getNumStops() {
+    return m_numStops - 1;
+  }
+
   // returns the train route
-  std::queue<int>& getRoute() {
+  int* getRoute() {
     return m_route;
   }
 
-  void goToNextStop() {
-    m_route.pop();
+  // returns the station number
+  int getStation(int idx) {
+    return m_route[idx];
   }
 
-  // return true if the train route is done (i.e. queue empty)
-  bool isAtEnd() {
-    return m_route.size() == 1;
+  int getCurrentStopIdx() {
+    return currentStopIdx;
   }
+
+  // go to next station
+  void travel() {
+    currentStopIdx++;
+  }
+
 };
 
 #endif

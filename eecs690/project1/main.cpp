@@ -9,7 +9,6 @@
 
 #include <iostream>
 #include <fstream>
-#include <queue>
 #include <thread>
 #include <mutex>
 
@@ -18,41 +17,49 @@
 
 Barrier theBarrier;
 std::mutex coutMutex;
+std::mutex** trackMtxs;
 
 bool ready = false;
 int numTrainsLeft;
 
 void runTrain(Train* train) {
-  // wait until all trains threads are ready
+  // wait until all trains threads are initialized
   while (!ready) {};
 
   int timeStep = 0;
-  while (!train->isAtEnd()) {
+  int* route = train->getRoute();
 
-    // if track is clear
+  for (int i = train->getCurrentStopIdx(); i < train->getNumStops(); i++) {
+
     coutMutex.lock();
-    std::cout << "At time step " << timeStep << ": ";
-    std::cout << "Train " << train->getId() << " ";
-    std::cout << "going from station " << train->getRoute().front() << " ";
-    train->goToNextStop();
-    std::cout << "to station " << train->getRoute().front() << std::endl;
+
+    int currentStation = train->getStation(i);
+    int nextStation = train->getStation(i + 1);
+
+    if (true) {
+      // if track is clear
+      std::cout << "At time step " << timeStep << ": ";
+      std::cout << "Train " << train->getId() << " ";
+      std::cout << "going from station " << currentStation << " ";
+      std::cout << "to station " << nextStation << std::endl;
+      //trackMtxs[currentStation][nextStation].unlock();
+      train->travel();
+    } else {
+      // train must stay
+      std::cout << "At time step " << timeStep << ": ";
+      std::cout << "Train " << train->getId() << " ";
+      std::cout << "must stay at station " << currentStation << ".\n";
+    }
+
     coutMutex.unlock();
 
     // make sure all trains are finished at this time step before moving on
     theBarrier.barrier(numTrainsLeft);
 
-    // else
-    // the train must stay
-    // std::cout << "At time step " << timeStep << ": ";
-    // std::cout << "Train " << train->getId() << " ";
-    // std::cout << "must stay at station " << train->getRoute().front() << " ";
-
-    if (train->isAtEnd()) {
-      numTrainsLeft--;
-    }
-
     timeStep++;
   }
+
+  numTrainsLeft--;
 }
 
 int main(int argc, char* argv[]) {
@@ -70,13 +77,14 @@ int main(int argc, char* argv[]) {
   numTrainsLeft = numTrains;
 
   // generate possible pairs of tracks
-  // for (int i = 0; i < numStations; i++) {
-  //   for (int j = i; j < numStations; j++) {
-  //     if (i != j) {
-  //       std::cout << i << " " << j << std::endl;
-  //     }
-  //   }
-  // }
+  trackMtxs = new std::mutex*[numStations];
+  for (int i = 0; i < numStations; i++) {
+    for (int j = i; j < numStations; j++) {
+      std::cout << i << " " << j << "  |  ";
+      trackMtxs[i] = new std::mutex();
+    }
+    std::cout << std::endl;
+  }
 
   // create a thread for each train
   std::thread** trains = new std::thread*[numTrains];
@@ -85,12 +93,11 @@ int main(int argc, char* argv[]) {
   int numStops, stop;
   for (int i = 0; i < numTrains; i++) {
     file >> numStops;
-    std::queue<int> route;
+    int* route = new int[numStops];
     for (int j = 0; j < numStops; j++) {
-      file >> stop;
-      route.push(stop);
+      file >> route[j];
     }
-    trains[i] = new std::thread(runTrain, new Train(i, route));
+    trains[i] = new std::thread(runTrain, new Train(i, numStops, route));
   }
 
   std::cout << "\nStarting simulation...\n\n";

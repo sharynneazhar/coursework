@@ -9,4 +9,4 @@ clean:
 	echo clean done
 
 run:
-	./prog input.txt
+	./prog routes.txt
