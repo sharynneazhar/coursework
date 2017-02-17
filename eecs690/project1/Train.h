@@ -23,7 +23,7 @@ private:
   char getId() { return m_trainId + 65; }
 
 public:
-  
+
   // Default constructor
   Train(int trainId, int numStops, int* route)
     : m_trainId(trainId), m_numStops(numStops), m_route(route), currentIdx(0) {}
@@ -32,8 +32,7 @@ public:
   bool isAtEnd() { return currentIdx == m_numStops - 1; }
 
   // returns the number of stops on route
-  // (minus 1 because we want to stay at the last stop)
-  int getNumStops() { return m_numStops - 1; }
+  int getNumStops() { return m_numStops; }
 
   // returns the current stop id
   int getCurrentStop() { return m_route[currentIdx]; }

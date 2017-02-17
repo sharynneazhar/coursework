@@ -17,82 +17,81 @@
 #include "Barrier.h"
 #include "Train.h"
 
+struct Track {
+  int stationI;
+  int stationJ;
+};
+
 Barrier theBarrier;
+Track** tracks;
 std::mutex coutMtx;
-std::mutex** trackMtxs;
 
 bool ready = false;
-int numTrainsLeft;
 
-void runTrain(Train* train) {
+void runTrain(Train* train, int numTrains) {
+  int timeStep = 0;
+
   // wait until all trains threads are initialized
   while (!ready) {};
 
-  int timeStep = 0;
-  while (!train->isAtEnd()) {
+  while (timeStep != 12) {
+    if (!train->isAtEnd()) {
+      // if track is clear (mutex lockable) advance, else stay
+      coutMtx.lock();
 
-    // if track is clear (mutex lockable) advance, else stay
-    if (true) {
-      coutMtx.lock();
-      std::cout << "At time step " << timeStep << ": ";
-      train->travel();
-      coutMtx.unlock();
-    } else {
-      coutMtx.lock();
-      std::cout << "At time step " << timeStep << ": ";
-      train->stay();
+      if (true) {
+        std::cout << "At time step " << timeStep << ": ";
+        train->travel();
+      } else {
+        std::cout << "At time step " << timeStep << ": ";
+        train->stay();
+      }
+
       coutMtx.unlock();
     }
 
     // make sure all trains are finished at this time step before moving on
-    theBarrier.barrier(numTrainsLeft);
-
+    theBarrier.barrier(numTrains);
     timeStep++;
   }
 
-  numTrainsLeft--;
 }
 
 int main(int argc, char* argv[]) {
-  if (argc != 2) {
-    std::cerr << "\nMissing file.\n";
-    return 0;
-  }
 
   // get information about the number of trains and stations
-  int numTrains, numStations;
+  int numTrains;
+  int numStations;
+  int numStops;
+
   std::ifstream file;
-  file.open(argv[1]);
+  file.open((argc == 2) ? argv[1] : "routes.txt");
   file >> numTrains >> numStations;
 
-  // keep track of how many trains are left for barrier
-  numTrainsLeft = numTrains;
-
-  // generate possible pairs of tracks and create a mutex for each
-  trackMtxs = new std::mutex*[numStations];
-  for (int i = 0; i < numStations; i++) {
-    for (int j = i; j < numStations; j++) {
-      std::cout << std::setfill(' ') << std::setw(2) << i << " "
-                << std::setfill(' ') << std::setw(2) << j << " | ";
-      trackMtxs[i] = new std::mutex();
-    }
-    std::cout << std::endl;
-  }
-
-  // create an array of train threads
-  std::thread** trains = new std::thread*[numTrains];
-
-  // get routes for each train
-  int numStops;
+  // initialize all the trains
+  Train** trains = new Train*[numTrains];
   for (int i = 0; i < numTrains; i++) {
     file >> numStops;
     int* route = new int[numStops];
     for (int j = 0; j < numStops; j++) {
       file >> route[j];
     }
+    trains[i] = new Train(i, numStops, route);
+  }
 
-    // launch threads
-    trains[i] = new std::thread(runTrain, new Train(i, numStops, route));
+  file.close();
+
+  // initialize tracks - since there are 6 trains,
+  // there would only be 6 tracks at any given time
+  tracks = new Track*[numTrains];
+  for (int i = 0; i < numTrains; i++) {
+    tracks[i] = nullptr;
+  }
+
+  // create a thread for each train
+  std::thread** trainThreads = new std::thread*[numTrains];
+  for (int i = 0; i < numTrains; i++) {
+    trainThreads[i] = new std::thread(runTrain, trains[i], numTrains);
   }
 
   // Run once all threads are ready
@@ -100,7 +99,7 @@ int main(int argc, char* argv[]) {
   ready = true;
 
   for (int i = 0; i < numTrains; i++) {
-    trains[i]->join();
+    trainThreads[i]->join();
   }
 
   // All threads are done
