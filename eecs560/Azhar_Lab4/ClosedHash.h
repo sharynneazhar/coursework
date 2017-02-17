@@ -66,7 +66,6 @@ class ClosedHash {
 
     void insertValue(const T value) {
       if (contains(value)) {
-        std::cout << "\nValue already exists.\n";
         return;
       }
 
@@ -83,7 +82,6 @@ class ClosedHash {
 
     void deleteValue(const T value) {
       if (!contains(value)) {
-        std::cout << "\nValue not found.\n";
         return;
       }
 
