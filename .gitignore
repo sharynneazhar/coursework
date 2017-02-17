@@ -1,7 +1,13 @@
+# ignore all files without extension
+*
+!*.*
+!*/
+
+.DS_Store
+
 eecs678/lab3-ipc/bash-4.2
 *-master
 
-prog
 *.o
 *.exe
 
