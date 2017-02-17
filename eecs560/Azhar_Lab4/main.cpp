@@ -5,6 +5,7 @@
 */
 
 #include <iostream>
+#include <iomanip>
 #include <stdlib.h>
 #include <cmath>
 
@@ -13,16 +14,36 @@
 
 const int DEFAULT_TABLE_SIZE = 600011;
 
+void prettyPrint(std::string hashMethod, float loadFactors[], double loadTimes[]) {
+  std::cout << std::left << std::setw(30) << std::setfill('-') << "-";
+  std::cout << "\n" << hashMethod << "\n";
+  std::cout << std::left << std::setw(30) << std::setfill('-') << "-";
+
+  std::cout << std::endl;
+  std::cout << std::left << std::setw(15) << std::setfill(' ') << "Load Factor";
+  std::cout << std::left << std::setw(5) << std::setfill(' ') << "Time\n";
+  std::cout << std::left << std::setw(30) << std::setfill('-') << "-" << std::endl;
+
+  for (int i = 0; i < 8; i++) {
+    std::cout << std::left << std::setw(15) << std::setfill(' ') << loadFactors[i];
+    std::cout << std::left << std::setw(15) << std::setfill(' ') << loadTimes[i];
+    std::cout << std::endl;
+  }
+
+  std::cout << std::left << std::setw(30) << std::setfill('-') << "-" << std::endl;
+}
+
+
 int main(int argc, char* argv[]) {
 
   // load factor is a  measure of how full the hash table is allowed to get
   // before its capacity is automatically increased (i.e. rehashed)
   float loadFactors[8] = { 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9 };
 
-  // keep track of results from 5 different seeds
-  double openHashTimes[5];
-  double quadraticTimes[5];
-  double dblHashTimes[5];
+  // keep track of results from different load factors
+  double openHashLoadFactorTimes[8];
+  // double quadraticLoadFactorTimes[8];
+  // double doubleHashLoadFactorTimes[8];
 
   // initialize our timer
   Timer timer;
@@ -42,13 +63,12 @@ int main(int argc, char* argv[]) {
       openHash->insertValue(num);
     }
 
-    openHashTimes[i] = timer.stop();
-    std::cout << "Open Hashing: Load " << loadFactors[i]
-              << ", number of elements: " << numElements
-              << ", time: " << openHashTimes[i] << std::endl;
-
+    openHashLoadFactorTimes[i] = timer.stop();
   }
 
+  prettyPrint("Open Hashing", loadFactors, openHashLoadFactorTimes);
+  // prettyPrint("Quadratic Probing", loadFactors, quadraticLoadFactorTimes);
+  // prettyPrint("Double Hashing", loadFactors, doubleHashLoadFactorTimes);
 
 
   return 0;
