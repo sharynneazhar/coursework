@@ -95,18 +95,6 @@ class OpenHash {
       }
     }
 
-    void printList() {
-      for (int i = 0; i < m_tableSize; i++) {
-        std::cout << i << ": ";
-        OpenHashNode<T>* currNode = openHashTable[i];
-        while (currNode) {
-          std::cout << currNode->getValue() << " ";
-          currNode = currNode->getNext();
-        }
-        std::cout << std::endl;
-      }
-    }
-
 };
 
 #endif
