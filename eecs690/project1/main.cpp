@@ -63,8 +63,6 @@ void runTrain(Train* train, int numTrains) {
 
     timeStep++;
   }
-
-  theBarrier.barrier(numTrains);
 }
 
 int main(int argc, char* argv[]) {
