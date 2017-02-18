@@ -5,6 +5,7 @@
 */
 
 #include <cmath>
+#include <fstream>
 #include <iomanip>
 #include <iostream>
 #include <stdlib.h>
@@ -32,10 +33,17 @@ int main(int argc, char* argv[]) {
   // initialize our timer
   Timer timer;
 
+  std::cout << "\n\nThis benchmark will run each hash algorithms 5 times.\nThis might take a while...";
+  std::ofstream hashResults;
+  hashResults.open("results.csv", std::ios_base::out | std::ios_base::trunc);
+
   // run 5 different trials
+  // start open hashing
   std::cout << "\n\nOpen Hashing\n"; hr();
+  hashResults << "Open Hashing Results";
   for (int seedIdx = 1; seedIdx <= 5; seedIdx++) {
     std::cout << "\nSeed #" << seedIdx << std::left << std::setw(5) << std::setfill(' ') << ":";
+    hashResults << "\nSeed #" << seedIdx << ", ";
     srand(seedIdx);
     timer.start();
     for (int i = 0; i < 8; i++) {
@@ -46,6 +54,7 @@ int main(int argc, char* argv[]) {
       }
       double _time = timer.stop();
       std::cout << std::left << std::setw(13) << std::setfill(' ') << _time;
+      hashResults << _time << ", ";
       openHashTotalTime[i] += _time;
       delete openHash;
     }
@@ -53,13 +62,19 @@ int main(int argc, char* argv[]) {
 
   std::cout << std::endl; hr();
   std::cout << "\nAverage" << std::left << std::setw(5) << std::setfill(' ') << ":";
+  hashResults << "\nAverage, ";
   for (int i = 0; i < 8; i++) {
     std::cout << std::left << std::setw(13) << std::setfill(' ') << openHashTotalTime[i] / 5;
+    hashResults << openHashTotalTime[i] / 5 << ", ";
   }
 
+
+  // start quadratic probing
   std::cout << "\n\n\nQuadratic Probing\n"; hr();
+  hashResults << "\n\nQuadratic Probing Results";
   for (int seedIdx = 1; seedIdx <= 5; seedIdx++) {
     std::cout << "\nSeed #" << seedIdx << std::left << std::setw(5) << std::setfill(' ') << ":";
+    hashResults << "\nSeed #" << seedIdx << ", ";
     srand(seedIdx);
     timer.start();
     for (int i = 0; i < 8; i++) {
@@ -70,6 +85,7 @@ int main(int argc, char* argv[]) {
       }
       double _time = timer.stop();
       std::cout << std::left << std::setw(13) << std::setfill(' ') << _time;
+      hashResults << _time << ", ";
       quadraticTotalTime[i] += _time;
       delete quadraticHash;
     }
@@ -77,13 +93,18 @@ int main(int argc, char* argv[]) {
 
   std::cout << std::endl; hr();
   std::cout << "\nAverage" << std::left << std::setw(5) << std::setfill(' ') << ":";
+  hashResults << "\nAverage, ";
   for (int i = 0; i < 8; i++) {
     std::cout << std::left << std::setw(13) << std::setfill(' ') << quadraticTotalTime[i] / 5;
+    hashResults << quadraticTotalTime[i] / 5 << ", ";
   }
 
+  // start double hashing
   std::cout << "\n\n\nDouble Hashing\n"; hr();
+  hashResults << "\n\nDouble Hashing Results";
   for (int seedIdx = 1; seedIdx <= 5; seedIdx++) {
     std::cout << "\nSeed #" << seedIdx << std::left << std::setw(5) << std::setfill(' ') << ":";
+    hashResults << "\nSeed #" << seedIdx << ", ";
     srand(seedIdx);
     timer.start();
     for (int i = 0; i < 8; i++) {
@@ -94,6 +115,7 @@ int main(int argc, char* argv[]) {
       }
       double _time = timer.stop();
       std::cout << std::left << std::setw(13) << std::setfill(' ') << _time;
+      hashResults << _time << ", ";
       doubleHashTotalTime[i] += _time;
       delete doubleHash;
     }
@@ -101,12 +123,14 @@ int main(int argc, char* argv[]) {
 
   std::cout << std::endl; hr();
   std::cout << "\nAverage" << std::left << std::setw(5) << std::setfill(' ') << ":";
+  hashResults << "\nAverage, ";
   for (int i = 0; i < 8; i++) {
     std::cout << std::left << std::setw(13) << std::setfill(' ') << doubleHashTotalTime[i] / 5;
+    hashResults << doubleHashTotalTime[i] / 5 << ", ";
   }
 
-
-  std::cout << "\n\nAll done!\n\n";
+  std::cout << "\n\n\nAll done! Results saved in \"results.txt\".\n";
+  hashResults.close();
 
   return 0;
 };

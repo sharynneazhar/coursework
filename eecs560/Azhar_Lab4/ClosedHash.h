@@ -1,7 +1,7 @@
 /**
-*	@file : ClosedHash.h
+*	@file   : ClosedHash.h
 *	@author : Sharynne Azhar
-*	@date : 02-17-2017
+*	@date   : 02-17-2017
 * @desc   : Implementation of closed hashing algorithm
 */
 
