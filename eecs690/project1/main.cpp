@@ -36,6 +36,8 @@ void runTrain(Train* train, int numTrains) {
   // wait until all trains threads are initialized
   while (!ready) {};
 
+  // make sure the timeStep keeps going even when the train
+  // is done to satisfy barrier condition
   while (timeStep != 12) {
     int currentStop = train->getCurrentStop();
     int nextStop = train->getNextStop();
@@ -43,7 +45,7 @@ void runTrain(Train* train, int numTrains) {
     if (!train->isAtEnd()) {
       // if track is clear (mutex lockable) advance, else stay
       coutMtx.lock();
-      if (true) { // lockTrack(currentStop, nextStop)) {
+      if (lockTrack(currentStop, nextStop)) {
         train->move(timeStep);
       } else {
         train->stay(timeStep);
@@ -52,7 +54,7 @@ void runTrain(Train* train, int numTrains) {
     }
 
     theBarrier.barrier(numTrains);
-    // unlockTrack(currentStop, nextStop);
+    unlockTrack(currentStop, nextStop);
     timeStep++;
   }
 }
@@ -60,9 +62,7 @@ void runTrain(Train* train, int numTrains) {
 int main(int argc, char* argv[]) {
 
   // get information about the number of trains and stations
-  int numTrains;
-  int numStations;
-  int numStops;
+  int numTrains, numStations, numStops;
 
   std::ifstream file;
   file.open((argc == 2) ? argv[1] : "routes.txt");

@@ -27,6 +27,7 @@ public:
 		if (barrierCounter != numExpectedAtBarrier) {
 			barrierCV.wait(barrierLock);
     } else {
+      std::cout << std::endl;
 			barrierCounter = 0;
 			barrierCV.notify_all();
 		}
