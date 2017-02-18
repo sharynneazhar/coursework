@@ -19,6 +19,7 @@ test/bower_components
 
 # Don't ignore these
 !eecs448/lab06/LinkedListOfInts.o
+!Makefile
 
 
 # Created by https://www.gitignore.io/api/emacs
