@@ -7,26 +7,28 @@
  ============================================================================
 */
 
-#include <iostream>
 #include <fstream>
-#include <thread>
+#include <iostream>
 #include <mutex>
-
-#include <iomanip>
+#include <thread>
 
 #include "Barrier.h"
 #include "Train.h"
 
-struct Track {
-  int stationI;
-  int stationJ;
-};
-
 Barrier theBarrier;
-Track** tracks;
 std::mutex coutMtx;
-
+std::mutex** trackMtxs;
 bool ready = false;
+
+bool lockTrack(int stationI, int stationJ) {
+  return trackMtxs[stationI][stationJ].try_lock()
+    && trackMtxs[stationJ][stationI].try_lock();
+}
+
+void unlockTrack(int stationI, int stationJ) {
+  trackMtxs[stationI][stationJ].unlock();
+  trackMtxs[stationJ][stationI].unlock();
+}
 
 void runTrain(Train* train, int numTrains) {
   int timeStep = 0;
@@ -35,26 +37,24 @@ void runTrain(Train* train, int numTrains) {
   while (!ready) {};
 
   while (timeStep != 12) {
+    int currentStop = train->getCurrentStop();
+    int nextStop = train->getNextStop();
+
     if (!train->isAtEnd()) {
       // if track is clear (mutex lockable) advance, else stay
       coutMtx.lock();
-
-      if (true) {
-        std::cout << "At time step " << timeStep << ": ";
-        train->travel();
+      if (true) { // lockTrack(currentStop, nextStop)) {
+        train->move(timeStep);
       } else {
-        std::cout << "At time step " << timeStep << ": ";
-        train->stay();
+        train->stay(timeStep);
       }
-
       coutMtx.unlock();
     }
 
-    // make sure all trains are finished at this time step before moving on
     theBarrier.barrier(numTrains);
+    // unlockTrack(currentStop, nextStop);
     timeStep++;
   }
-
 }
 
 int main(int argc, char* argv[]) {
@@ -78,14 +78,15 @@ int main(int argc, char* argv[]) {
     }
     trains[i] = new Train(i, numStops, route);
   }
-
   file.close();
 
-  // initialize tracks - since there are 6 trains,
-  // there would only be 6 tracks at any given time
-  tracks = new Track*[numTrains];
-  for (int i = 0; i < numTrains; i++) {
-    tracks[i] = nullptr;
+  // initialize tracks - create a mutex instance for
+  // all possible tracks
+  trackMtxs = new std::mutex*[numStations];
+  for (int i = 0; i <= numStations; i++) {
+    for (int j = 0; j <= numStations; j++) {
+      trackMtxs[i] = new std::mutex();
+    }
   }
 
   // create a thread for each train

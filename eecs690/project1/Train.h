@@ -10,6 +10,7 @@
 #define TRAIN_H
 
 #include <iostream>
+std::mutex mtx;
 
 class Train {
 private:
@@ -17,7 +18,6 @@ private:
   int m_numStops;
   int* m_route;
   int currentIdx;
-  std::mutex mtx;
 
   // converts int to char and returns the character (i.e. 1 == 'A')
   char getId() { return m_trainId + 65; }
@@ -41,21 +41,21 @@ public:
   int getNextStop() { return m_route[currentIdx + 1]; }
 
   // go to next stop
-  void travel() {
-    mtx.lock();
+  void move(int timeStep) {
+    std::lock_guard<std::mutex> guard(mtx);
+    std::cout << "At time step " << timeStep << ": ";
     std::cout << "Train " << getId() << " ";
     std::cout << "going from station " << m_route[currentIdx] << " ";
     std::cout << "to station " << m_route[currentIdx + 1] << std::endl;
     currentIdx++;
-    mtx.unlock();
   }
 
   // stay at current stop
-  void stay() {
-    mtx.lock();
+  void stay(int timeStep) {
+    std::lock_guard<std::mutex> guard(mtx);
+    std::cout << "At time step " << timeStep << ": ";
     std::cout << "Train " << getId() << " ";
     std::cout << "must stay at station " << m_route[currentIdx] << ".\n";
-    mtx.lock();
   }
 
 };
