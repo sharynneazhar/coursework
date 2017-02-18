@@ -19,6 +19,7 @@ Barrier theBarrier;
 std::mutex coutMtx;
 std::mutex** trackMtxs;
 bool ready = false;
+int numTrainsDone = 0;
 
 bool lockTrack(int stationI, int stationJ) {
   return trackMtxs[stationI][stationJ].try_lock()
@@ -38,7 +39,7 @@ void runTrain(Train* train, int numTrains) {
 
   // make sure the timeStep keeps going even when the train
   // is done to satisfy barrier condition
-  while (timeStep != 12) {
+  while (numTrainsDone != numTrains) {
     int currentStop = train->getCurrentStop();
     int nextStop = train->getNextStop();
 
@@ -47,6 +48,10 @@ void runTrain(Train* train, int numTrains) {
       coutMtx.lock();
       if (lockTrack(currentStop, nextStop)) {
         train->move(timeStep);
+
+        if (train->isAtEnd())
+          numTrainsDone++;
+
       } else {
         train->stay(timeStep);
       }
@@ -55,8 +60,11 @@ void runTrain(Train* train, int numTrains) {
 
     theBarrier.barrier(numTrains);
     unlockTrack(currentStop, nextStop);
+
     timeStep++;
   }
+
+  theBarrier.barrier(numTrains);
 }
 
 int main(int argc, char* argv[]) {
