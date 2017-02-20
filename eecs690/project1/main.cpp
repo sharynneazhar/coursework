@@ -55,23 +55,23 @@ void runTrain(Train* train, int numTrains) {
   // the timestep for each train should be synchronized
   int timeStep = 0;
 
-
-  while (!train->isAtEnd()) {
-
+  while (numTrainsDone != numTrains) {
     // get the train current stop and next stop
     int currentStop = train->getCurrentStop();
     int nextStop = train->getNextStop();
 
-    // try to lock the track and advance if unoccupied
-    if (lockTrack(currentStop, nextStop)) {
-      train->move(timeStep);
+    if (!train->isAtEnd()) {
 
-      if (train->isAtEnd()) {
-        numTrainsExpected--;
+      // try to lock the track and advance if unoccupied
+      if (lockTrack(currentStop, nextStop)) {
+        train->move(timeStep);
+        if (train->isAtEnd()) {
+          numTrainsExpected--;
+        }
+      } else {
+        train->stay(timeStep);
       }
 
-    } else {
-      train->stay(timeStep);
     }
 
     // hit barrier to wait for the rest of the threads
@@ -84,9 +84,6 @@ void runTrain(Train* train, int numTrains) {
     timeStep++;
 
   }
-
-  // hit barrier to wait for the rest of the threads
-  theBarrier.barrier(numTrains);
 
 }
 

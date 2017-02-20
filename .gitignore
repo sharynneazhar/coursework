@@ -6,7 +6,7 @@
 .DS_Store
 
 eecs678/lab3-ipc/bash-4.2
-*-master
+*-master/*
 
 *.o
 *.exe
