@@ -2,7 +2,7 @@
  ============================================================================
  Author        : Sharynne Azhar
  Date          : 8 February 2017
- Description   : Handles train methods
+ Description   : Container for train methods
  ============================================================================
 */
 
