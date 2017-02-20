@@ -10,6 +10,7 @@
 #define TRAIN_H
 
 #include <iostream>
+
 std::mutex mtx;
 
 class Train {
@@ -30,9 +31,6 @@ public:
 
   // return true if the train is at its final destination
   bool isAtEnd() { return currentIdx == m_numStops - 1; }
-
-  // returns the number of stops on route
-  int getNumStops() { return m_numStops; }
 
   // returns the current stop id
   int getCurrentStop() { return m_route[currentIdx]; }

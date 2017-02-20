@@ -7,6 +7,7 @@
  ============================================================================
 */
 
+#include <atomic>
 #include <fstream>
 #include <iostream>
 #include <mutex>
@@ -31,6 +32,9 @@ bool ready = false;
 // the value to keep track of how many trains are done
 int numTrainsDone = 0;
 
+// the value to keep track of how many trains the barrier should expect
+std::atomic<int> numTrainsExpected;
+
 // track i-j is the same as track j-i; returns true if track is lockable
 bool lockTrack(int stationI, int stationJ) {
   return trackMtxs[stationI][stationJ].try_lock()
@@ -51,33 +55,29 @@ void runTrain(Train* train, int numTrains) {
   // the timestep for each train should be synchronized
   int timeStep = 0;
 
-  // keep going while other trains are still running
-  while (numTrainsDone != numTrains) {
+
+  while (!train->isAtEnd()) {
 
     // get the train current stop and next stop
     int currentStop = train->getCurrentStop();
     int nextStop = train->getNextStop();
 
-    if (!train->isAtEnd()) {
+    // try to lock the track and advance if unoccupied
+    if (lockTrack(currentStop, nextStop)) {
+      train->move(timeStep);
 
-      // try to lock the track and advance if unoccupied
-      if (lockTrack(currentStop, nextStop)) {
-        train->move(timeStep);
-
-        if (train->isAtEnd()) {
-          numTrainsDone++;
-        }
-
-      } else {
-        train->stay(timeStep);
+      if (train->isAtEnd()) {
+        numTrainsExpected--;
       }
 
+    } else {
+      train->stay(timeStep);
     }
 
     // hit barrier to wait for the rest of the threads
     theBarrier.barrier(numTrains);
 
-    // unlock the track that was in use
+    // unlock the track mutex
     unlockTrack(currentStop, nextStop);
 
     // increment to next time step
@@ -85,7 +85,9 @@ void runTrain(Train* train, int numTrains) {
 
   }
 
+  // hit barrier to wait for the rest of the threads
   theBarrier.barrier(numTrains);
+
 }
 
 int main(int argc, char* argv[]) {
@@ -97,6 +99,9 @@ int main(int argc, char* argv[]) {
   // get total number of trains and stations
   int numTrains, numStations;
   file >> numTrains >> numStations;
+
+  // initialize number of trains barrier should expect
+  numTrainsExpected = numTrains;
 
   // initialize all the trains
   Train** trains = new Train*[numTrains];
