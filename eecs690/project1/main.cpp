@@ -32,8 +32,7 @@ bool ready = false;
 // the value to keep track of how many trains are done
 int numTrainsDone = 0;
 
-// the value to keep track of how many trains the barrier should expect
-std::atomic<int> numTrainsExpected;
+int longestRoute = 0;
 
 // track i-j is the same as track j-i; returns true if track is lockable
 bool lockTrack(int stationI, int stationJ) {
@@ -55,20 +54,21 @@ void runTrain(Train* train, int numTrains) {
   // the timestep for each train should be synchronized
   int timeStep = 0;
 
-  while (!train->isAtEnd()) {
+  while (timeStep != longestRoute) {
 
     // get the train current stop and next stop
     int currentStop = train->getCurrentStop();
     int nextStop = train->getNextStop();
 
-    // try to lock the track and advance if unoccupied
-    if (lockTrack(currentStop, nextStop)) {
-      train->move(timeStep);
-      if (train->isAtEnd()) {
-        numTrainsExpected--;
+    if (!train->isAtEnd()) {
+
+      // try to lock the track and advance if unoccupied
+      if (lockTrack(currentStop, nextStop)) {
+        train->move(timeStep);
+      } else {
+        train->stay(timeStep);
       }
-    } else {
-      train->stay(timeStep);
+
     }
 
     // hit barrier to wait for the rest of the threads
@@ -79,6 +79,7 @@ void runTrain(Train* train, int numTrains) {
 
     // increment to next time step
     timeStep++;
+
   }
 
   // hit barrier to wait for the rest of the threads
@@ -96,9 +97,6 @@ int main(int argc, char* argv[]) {
   int numTrains, numStations;
   file >> numTrains >> numStations;
 
-  // initialize number of trains barrier should expect
-  numTrainsExpected = numTrains;
-
   // initialize all the trains
   Train** trains = new Train*[numTrains];
 
@@ -107,6 +105,9 @@ int main(int argc, char* argv[]) {
     // get number of stops
     int numStops;
     file >> numStops;
+
+    if (numStops > longestRoute)
+      longestRoute = numStops;
 
     // get the route
     int* route = new int[numStops];
