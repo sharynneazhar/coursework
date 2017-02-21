@@ -1,3 +1,0 @@
-3a4,5
-> /home/sazhar/coursework/eecs678/project1-quash/test-cases/t2_cd/sandbox/dir3
-> /home/sazhar/coursework/eecs678/project1-quash/test-cases/t2_cd/sandbox/dir3

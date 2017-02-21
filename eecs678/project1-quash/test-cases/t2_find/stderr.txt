@@ -1,7 +1,16 @@
-==9144== Memcheck, a memory error detector
-==9144== Copyright (C) 2002-2015, and GNU GPL'd, by Julian Seward et al.
-==9144== Using Valgrind-3.11.0 and LibVEX; rerun with -h for copyright info
-==9144== Command: /home/sazhar/coursework/eecs678/project1-quash/quash
-==9144== 
-IMPLEMENT ME: src/execute.c(line 64): check_jobs_bg_status()
-IMPLEMENT ME: src/execute.c(line 319): create_process()
+==20184== Memcheck, a memory error detector
+==20184== Copyright (C) 2002-2015, and GNU GPL'd, by Julian Seward et al.
+==20184== Using Valgrind-3.11.0 and LibVEX; rerun with -h for copyright info
+==20184== Command: /home/sazhar/coursework/eecs678/project1-quash/quash
+==20184== 
+IMPLEMENT ME: src/execute.c(line 67): check_jobs_bg_status()
+IMPLEMENT ME: src/execute.c(line 358): run_script()
+==20184== 
+==20184== HEAP SUMMARY:
+==20184==     in use at exit: 0 bytes in 0 blocks
+==20184==   total heap usage: 11 allocs, 11 frees, 1,069,714 bytes allocated
+==20184== 
+==20184== All heap blocks were freed -- no leaks are possible
+==20184== 
+==20184== For counts of detected and suppressed errors, rerun with: -v
+==20184== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)

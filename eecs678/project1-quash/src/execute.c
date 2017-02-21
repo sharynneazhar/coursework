@@ -7,6 +7,7 @@
  * @note As you add things to this file you may want to change the method signature
  */
 
+#include <errno.h>
 #include <limits.h>
 #include <stdio.h>
 #include <string.h>
@@ -14,7 +15,9 @@
 #include "execute.h"
 #include "quash.h"
 
-// Remove this and all expansion calls to it
+#define BSIZE PATH_MAX + 1 // max buffer size
+
+// TODO: Remove this and all expansion calls to it
 /**
  * @brief Note calls to any function that requires implementation
  */
@@ -30,9 +33,9 @@ char* get_current_directory(bool* should_free) {
 
   // set buffer size of PATH_MAX - maximum number of bytes in a pathname
   char* cwd_path;
-  char buf[PATH_MAX + 1];
+  char buf[BSIZE];
 
-  cwd_path = getcwd(buf, PATH_MAX + 1);
+  cwd_path = getcwd(buf, BSIZE);
 
   if (cwd_path == NULL) {
     perror("ERROR: Could not obtain working directory.");
@@ -305,21 +308,29 @@ void create_process(CommandHolder holder) {
   bool p_out = holder.flags & PIPE_OUT;
   bool r_in  = holder.flags & REDIRECT_IN;
   bool r_out = holder.flags & REDIRECT_OUT;
-  bool r_app = holder.flags & REDIRECT_APPEND; // This can only be true if r_out
-                                               // is true
+  bool r_app = holder.flags & REDIRECT_APPEND; // This can only be true if r_out is true
 
-  // TODO: Remove warning silencers
-  (void) p_in;  // Silence unused variable warning
-  (void) p_out; // Silence unused variable warning
-  (void) r_in;  // Silence unused variable warning
-  (void) r_out; // Silence unused variable warning
-  (void) r_app; // Silence unused variable warning
+  // Setup pipes, redirects, and new process
+  int status;
+  pid_t pid;
 
-  // TODO: Setup pipes, redirects, and new process
-  IMPLEMENT_ME();
+  pid = fork();
+  if (pid == 0) {
+    // child process
+    child_run_command(holder.cmd);
+    
+    exit(EXIT_SUCCESS);
+  }
 
-  parent_run_command(holder.cmd); // This should be done in the parent branch of a fork
-  child_run_command(holder.cmd); // This should be done in the child branch of a fork
+  // parent process
+  parent_run_command(holder.cmd);
+
+
+  if ((waitpid(pid, &status, 0)) == -1) {
+    fprintf(stderr, "Child process encountered an error. ERROR %d", errno);
+    exit(EXIT_FAILURE);
+  }
+
 }
 
 // Run a list of commands
