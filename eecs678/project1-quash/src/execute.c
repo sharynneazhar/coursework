@@ -17,7 +17,7 @@
 /**
  * @brief Note calls to any function that requires implementation
  */
-#define IMPLEMENT_ME()                                                  \
+#define IMPLEMENT_ME() \
   fprintf(stderr, "IMPLEMENT ME: %s(line %d): %s()\n", __FILE__, __LINE__, __FUNCTION__)
 
 /***************************************************************************
@@ -33,7 +33,7 @@ char* get_current_directory(bool* should_free) {
   char* cwd_name = getcwd(buf, PATH_MAX + 1);
 
   if (cwd_name == NULL) {
-    printf("\nERROR: Could not obtain working directory.\n");
+    perror("ERROR: Could not obtain working directory.");
   }
 
   // Change this to true if necessary
@@ -48,7 +48,7 @@ const char* lookup_env(const char* env_var) {
   char* env_ptr = getenv(env_var);
 
   if (env_ptr == NULL) {
-    printf("\nERROR: Could not find environment variable.\n");
+    perror("ERROR: Could not find environment variable.");
   }
 
   return env_ptr;
@@ -128,13 +128,14 @@ void run_export(ExportCommand cmd) {
   const char* env_var = cmd.env_var;
   const char* val = cmd.val;
 
-  // TODO: Remove warning silencers
-  (void) env_var; // Silence unused variable warning
-  (void) val;     // Silence unused variable warning
-
-  // TODO: Implement export.
-  // HINT: This should be quite simple.
-  IMPLEMENT_ME();
+  // If name does exist in the environment, then its value is changed to value
+  // if overwrite is nonzero; if overwrite is zero, then the value of name
+  // is not changed.
+  if (setenv(env_var, val, 1) == -1) {
+    perror("ERROR: Unable to set environment variable");
+  } else {
+    printf("Environment variable %s successfully changed", env_var);
+  }
 }
 
 // Changes the current working directory
@@ -148,12 +149,16 @@ void run_cd(CDCommand cmd) {
     return;
   }
 
-  // TODO: Change directory
+  // Change directory; returns 0 if successful, -1 otherwise
+  if (chdir(dir) == -1) {
+    perror("ERROR: Failed to change working directory");
+  }
 
-  // TODO: Update the PWD environment variable to be the new current working
+  // Update the PWD environment variable to be the new current working
   // directory and optionally update OLD_PWD environment variable to be the old
   // working directory.
-  IMPLEMENT_ME();
+  setenv("PWD", dir, 1);
+
 }
 
 // Sends a signal to all processes contained in a job
@@ -172,8 +177,13 @@ void run_kill(KillCommand cmd) {
 
 // Prints the current working directory to stdout
 void run_pwd() {
-  // TODO: Print the current working directory
-  IMPLEMENT_ME();
+  bool should_free;
+  char* cwd_path = get_current_directory(&should_free);
+
+  printf("%s\n", cwd_path);
+
+  if (should_free)
+    free(cwd_path);
 
   // Flush the buffer before returning
   fflush(stdout);
@@ -309,9 +319,8 @@ void create_process(CommandHolder holder) {
   // TODO: Setup pipes, redirects, and new process
   IMPLEMENT_ME();
 
-  //parent_run_command(holder.cmd); // This should be done in the parent branch of
-                                  // a fork
-  //child_run_command(holder.cmd); // This should be done in the child branch of a fork
+  parent_run_command(holder.cmd); // This should be done in the parent branch of a fork
+  child_run_command(holder.cmd); // This should be done in the child branch of a fork
 }
 
 // Run a list of commands
