@@ -1,8 +1,8 @@
 prog: main.o
-	g++ -g -Wall -std=c++11 -lpthread main.o -o prog
+	g++ -std=c++11 -g -Wall main.o -o prog -lpthread
 
 main.o: main.cpp Barrier.h Train.h
-	g++ -g -Wall -std=c++11 -c main.cpp
+	g++ -std=c++11 -g -Wall -c main.cpp
 
 clean:
 	rm *.o prog
