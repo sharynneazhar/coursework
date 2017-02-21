@@ -38,8 +38,8 @@ std::atomic<int> numExpected;
 // track i-j is the same as track j-i; returns true if track is lockable
 bool lockTrack(int stationI, int stationJ) {
   std::lock_guard<std::mutex> guard(lockMtx);
-  bool locked = trackMtxs[stationI][stationJ].try_lock() && trackMtxs[stationJ][stationI].try_lock();
-  return locked;
+  return trackMtxs[stationI][stationJ].try_lock()
+    && trackMtxs[stationJ][stationI].try_lock();
 }
 
 // unlocks the tracks that were in use
@@ -80,7 +80,7 @@ void runTrain(Train* train, int numTrains) {
     }
 
     // hit barrier to wait for the rest of the threads
-    theBarrier.barrier(numExpected);
+    theBarrier.barrier(numTrains);
 
     // unlock the track mutex
     unlockTrack(currentStop, nextStop);
