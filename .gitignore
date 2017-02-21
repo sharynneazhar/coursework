@@ -10,6 +10,7 @@ eecs678/lab3-ipc/bash-4.2
 
 *.o
 *.exe
+*.pdf
 
 node_modules
 dist
