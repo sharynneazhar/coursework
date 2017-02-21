@@ -7,7 +7,7 @@
  * @note As you add things to this file you may want to change the method signature
  */
 
-#include <limits.h> /* PATH_MAX */
+#include <limits.h>
 #include <stdio.h>
 
 #include "execute.h"
@@ -28,11 +28,9 @@
 char* get_current_directory(bool* should_free) {
 
   // set buffer size of PATH_MAX - maximum number of bytes in a pathname
-  char buf[PATH_MAX + 1];
+  char* cwd_name = (char *) malloc(sizeof(PATH_MAX) + 1);
 
-  char* cwd_name = getcwd(buf, PATH_MAX + 1);
-
-  if (cwd_name == NULL) {
+  if (getcwd(cwd_name, PATH_MAX + 1) == NULL) {
     perror("ERROR: Could not obtain working directory.");
   }
 
@@ -112,11 +110,10 @@ void run_echo(EchoCommand cmd) {
   // string is always NULL) list of strings.
   char** str = cmd.args;
 
-  // TODO: Remove warning silencers
-  (void) str; // Silence unused variable warning
-
-  // TODO: Implement echo
-  IMPLEMENT_ME();
+  for (int i = 0; str[i] != '\0'; i++) {
+    printf("%s ", str[i]);
+  }
+  printf("\n");
 
   // Flush the buffer before returning
   fflush(stdout);
@@ -152,12 +149,16 @@ void run_cd(CDCommand cmd) {
   // Change directory; returns 0 if successful, -1 otherwise
   if (chdir(dir) == -1) {
     perror("ERROR: Failed to change working directory");
+    exit(EXIT_FAILURE);
   }
+
+  bool should_free;
+  char* cwd_path = get_current_directory(&should_free);
 
   // Update the PWD environment variable to be the new current working
   // directory and optionally update OLD_PWD environment variable to be the old
   // working directory.
-  setenv("PWD", dir, 1);
+  setenv("PWD", cwd_path, 1);
 
 }
 
@@ -180,13 +181,12 @@ void run_pwd() {
   bool should_free;
   char* cwd_path = get_current_directory(&should_free);
 
-  printf("%s\n", cwd_path);
-
-  if (should_free)
-    free(cwd_path);
+  printf("%s \n", cwd_path);
 
   // Flush the buffer before returning
   fflush(stdout);
+
+  free(cwd_path);
 }
 
 // Prints all background jobs currently in the job list to stdout
