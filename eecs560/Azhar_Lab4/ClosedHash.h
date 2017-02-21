@@ -19,6 +19,8 @@ class ClosedHash {
 
     char m_hashMethod;
 
+    T m_stopFactor;
+
     int m_tableSize;
 
     ClosedHashNode<T>* closedHashTable;
@@ -46,9 +48,10 @@ class ClosedHash {
 
   public:
 
-    ClosedHash(int tableSize, char hashMethod) {
+    ClosedHash(int tableSize, T stopFactor, char hashMethod) {
       m_tableSize = tableSize;
       m_hashMethod = hashMethod;
+      m_stopFactor = stopFactor;
       closedHashTable = new ClosedHashNode<T>[tableSize];
       for (int i = 0; i < m_tableSize; i++) {
         closedHashTable[i] = ClosedHashNode<T>();
@@ -77,7 +80,7 @@ class ClosedHash {
           return;
         }
         iter++;
-      } while (iter < 60000);
+      } while (iter < 600);
     }
 
     void deleteValue(const T value) {

@@ -14,6 +14,7 @@
 #include "OpenHash.h"
 #include "ClosedHash.h"
 
+const long MAX_VALUE = 2147483647;
 const int DEFAULT_TABLE_SIZE = 600011;
 
 // adds horizontal line
@@ -33,101 +34,65 @@ int main(int argc, char* argv[]) {
   // initialize our timer
   Timer timer;
 
-  std::cout << "\n\nThis benchmark will run each hash algorithms 5 times.\nThis might take a while...";
+  std::cout << "\n\nThis benchmark will run each hash algorithms 5 times.\nThis might take a while...\n\n";
   std::ofstream hashResults;
   hashResults.open("results.csv", std::ios_base::out | std::ios_base::trunc);
 
-  // run 5 different trials
-  // start open hashing
-  std::cout << "\n\nOpen Hashing\n"; hr();
-  hashResults << "Open Hashing Results";
-  for (int seedIdx = 1; seedIdx <= 5; seedIdx++) {
-    std::cout << "\nSeed #" << seedIdx << std::left << std::setw(5) << std::setfill(' ') << ":";
-    hashResults << "\nSeed #" << seedIdx << ", ";
-    srand(seedIdx);
-    timer.start();
-    for (int i = 0; i < 8; i++) {
-      int numElements = floor(DEFAULT_TABLE_SIZE * loadFactors[i]);
-      OpenHash<long>* openHash = new OpenHash<long>(numElements);
+  for (int i = 0; i < 8; i++) {
+    std::cout << "\nLoad Factor: " << loadFactors[i] << "\n";
+    std::cout << std::left << std::setw(13) << std::setfill(' ') << "Open Hash";
+    std::cout << std::left << std::setw(13) << std::setfill(' ') << "Quadratic";
+    std::cout << std::left << std::setw(13) << std::setfill(' ') << "Double Hash";
+    std::cout << std::endl;
+
+    int numElements = floor(DEFAULT_TABLE_SIZE * loadFactors[i]);
+
+    OpenHash<long> openHash(DEFAULT_TABLE_SIZE);
+    ClosedHash<long> quadraticHash(DEFAULT_TABLE_SIZE, 60000, 'Q');
+    ClosedHash<long> doubleHash(DEFAULT_TABLE_SIZE, 60000, 'D');
+
+    for (int seedIdx = 0; seedIdx < 5; seedIdx++) {
+
+      srand(seedIdx);
+      timer.start();
       for (int j = 0; j < numElements; j++) {
-        openHash->insertValue(rand() % 2147483647L);
+        openHash.insertValue(rand() % MAX_VALUE);
       }
-      double _time = timer.stop();
-      std::cout << std::left << std::setw(13) << std::setfill(' ') << _time;
-      hashResults << _time << ", ";
-      openHashTotalTime[i] += _time;
-      delete openHash;
+      double openTime = timer.stop();
+      std::cout << std::left << std::setw(13) << std::setfill(' ') << openTime;
+      openHashTotalTime[i] += openTime;
+
+      srand(seedIdx);
+      timer.start();
+      for (int j = 0; j < numElements; j++) {
+        quadraticHash.insertValue(rand() % MAX_VALUE);
+      }
+      double quadraticTime = timer.stop();
+      std::cout << std::left << std::setw(13) << std::setfill(' ') << quadraticTime;
+      quadraticTotalTime[i] += quadraticTime;
+
+      srand(seedIdx);
+      timer.start();
+      for (int j = 0; j < numElements; j++) {
+        doubleHash.insertValue(rand() % MAX_VALUE);
+      }
+      double doubleHashTime = timer.stop();
+      std::cout << std::left << std::setw(13) << std::setfill(' ') << doubleHashTime;
+      doubleHashTotalTime[i] += doubleHashTime;
+
+      std::cout << std::endl;
+
     }
   }
 
-  std::cout << std::endl; hr();
-  std::cout << "\nAverage" << std::left << std::setw(5) << std::setfill(' ') << ":";
-  hashResults << "\nAverage, ";
+  std::cout << "\n\n\nAverage" << std::left << std::setw(5) << std::setfill(' ') << ":";
+  // hashResults << "\nAverage, ";
   for (int i = 0; i < 8; i++) {
     std::cout << std::left << std::setw(13) << std::setfill(' ') << openHashTotalTime[i] / 5;
-    hashResults << openHashTotalTime[i] / 5 << ", ";
+    // hashResults << openHashTotalTime[i] / 5 << ", ";
   }
 
 
-  // start quadratic probing
-  std::cout << "\n\n\nQuadratic Probing\n"; hr();
-  hashResults << "\n\nQuadratic Probing Results";
-  for (int seedIdx = 1; seedIdx <= 5; seedIdx++) {
-    std::cout << "\nSeed #" << seedIdx << std::left << std::setw(5) << std::setfill(' ') << ":";
-    hashResults << "\nSeed #" << seedIdx << ", ";
-    srand(seedIdx);
-    timer.start();
-    for (int i = 0; i < 8; i++) {
-      int numElements = floor(DEFAULT_TABLE_SIZE * loadFactors[i]);
-      ClosedHash<long>* quadraticHash = new ClosedHash<long>(numElements, 'Q');
-      for (int j = 0; j < numElements; j++) {
-        quadraticHash->insertValue(rand() % 2147483647L);
-      }
-      double _time = timer.stop();
-      std::cout << std::left << std::setw(13) << std::setfill(' ') << _time;
-      hashResults << _time << ", ";
-      quadraticTotalTime[i] += _time;
-      delete quadraticHash;
-    }
-  }
-
-  std::cout << std::endl; hr();
-  std::cout << "\nAverage" << std::left << std::setw(5) << std::setfill(' ') << ":";
-  hashResults << "\nAverage, ";
-  for (int i = 0; i < 8; i++) {
-    std::cout << std::left << std::setw(13) << std::setfill(' ') << quadraticTotalTime[i] / 5;
-    hashResults << quadraticTotalTime[i] / 5 << ", ";
-  }
-
-  // start double hashing
-  std::cout << "\n\n\nDouble Hashing\n"; hr();
-  hashResults << "\n\nDouble Hashing Results";
-  for (int seedIdx = 1; seedIdx <= 5; seedIdx++) {
-    std::cout << "\nSeed #" << seedIdx << std::left << std::setw(5) << std::setfill(' ') << ":";
-    hashResults << "\nSeed #" << seedIdx << ", ";
-    srand(seedIdx);
-    timer.start();
-    for (int i = 0; i < 8; i++) {
-      int numElements = floor(DEFAULT_TABLE_SIZE * loadFactors[i]);
-      ClosedHash<long>* doubleHash = new ClosedHash<long>(numElements, 'D');
-      for (int j = 0; j < numElements; j++) {
-        doubleHash->insertValue(rand() % 2147483647L);
-      }
-      double _time = timer.stop();
-      std::cout << std::left << std::setw(13) << std::setfill(' ') << _time;
-      hashResults << _time << ", ";
-      doubleHashTotalTime[i] += _time;
-      delete doubleHash;
-    }
-  }
-
-  std::cout << std::endl; hr();
-  std::cout << "\nAverage" << std::left << std::setw(5) << std::setfill(' ') << ":";
-  hashResults << "\nAverage, ";
-  for (int i = 0; i < 8; i++) {
-    std::cout << std::left << std::setw(13) << std::setfill(' ') << doubleHashTotalTime[i] / 5;
-    hashResults << doubleHashTotalTime[i] / 5 << ", ";
-  }
 
   std::cout << "\n\n\nAll done! Results saved in \"results.txt\".\n";
   hashResults.close();
