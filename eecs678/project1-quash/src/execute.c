@@ -9,6 +9,7 @@
 
 #include <limits.h>
 #include <stdio.h>
+#include <string.h>
 
 #include "execute.h"
 #include "quash.h"
@@ -28,16 +29,19 @@
 char* get_current_directory(bool* should_free) {
 
   // set buffer size of PATH_MAX - maximum number of bytes in a pathname
-  char* cwd_name = (char *) malloc(sizeof(PATH_MAX) + 1);
+  char* cwd_path;
+  char buf[PATH_MAX + 1];
 
-  if (getcwd(cwd_name, PATH_MAX + 1) == NULL) {
+  cwd_path = getcwd(buf, PATH_MAX + 1);
+
+  if (cwd_path == NULL) {
     perror("ERROR: Could not obtain working directory.");
   }
 
   // Change this to true if necessary
   *should_free = false;
 
-  return cwd_name;
+  return cwd_path;
 }
 
 // Returns the value of an environment variable env_var
@@ -94,12 +98,7 @@ void run_generic(GenericCommand cmd) {
   char* exec = cmd.args[0];
   char** args = cmd.args;
 
-  // TODO: Remove warning silencers
-  (void) exec; // Silence unused variable warning
-  (void) args; // Silence unused variable warning
-
-  // TODO: Implement run generic
-  IMPLEMENT_ME();
+  execvp(exec, args);
 
   perror("ERROR: Failed to execute program");
 }
@@ -113,6 +112,7 @@ void run_echo(EchoCommand cmd) {
   for (int i = 0; str[i] != '\0'; i++) {
     printf("%s ", str[i]);
   }
+
   printf("\n");
 
   // Flush the buffer before returning
@@ -130,9 +130,8 @@ void run_export(ExportCommand cmd) {
   // is not changed.
   if (setenv(env_var, val, 1) == -1) {
     perror("ERROR: Unable to set environment variable");
-  } else {
-    printf("Environment variable %s successfully changed", env_var);
   }
+
 }
 
 // Changes the current working directory
@@ -143,17 +142,18 @@ void run_cd(CDCommand cmd) {
   // Check if the directory is valid
   if (dir == NULL) {
     perror("ERROR: Failed to resolve path");
-    return;
+
   }
 
   // Change directory; returns 0 if successful, -1 otherwise
   if (chdir(dir) == -1) {
     perror("ERROR: Failed to change working directory");
-    exit(EXIT_FAILURE);
+    return;
   }
 
-  bool should_free;
-  char* cwd_path = get_current_directory(&should_free);
+  char* cwd_path;
+  char buf[PATH_MAX + 1];
+  cwd_path = getcwd(buf, PATH_MAX + 1);
 
   // Update the PWD environment variable to be the new current working
   // directory and optionally update OLD_PWD environment variable to be the old
@@ -178,15 +178,14 @@ void run_kill(KillCommand cmd) {
 
 // Prints the current working directory to stdout
 void run_pwd() {
-  bool should_free;
-  char* cwd_path = get_current_directory(&should_free);
+  char* cwd_path;
+  char buf[PATH_MAX + 1];
+  cwd_path = getcwd(buf, PATH_MAX + 1);
 
-  printf("%s \n", cwd_path);
+  printf("%s\n", cwd_path);
 
   // Flush the buffer before returning
   fflush(stdout);
-
-  free(cwd_path);
 }
 
 // Prints all background jobs currently in the job list to stdout
