@@ -18,6 +18,8 @@
 
 // mutex to prevent output messages from being garbled
 std::mutex coutMtx;
+std::mutex lockMtx;
+std::mutex unlockMtx;
 
 // mutex array to store track mutex instances
 std::mutex** trackMtxs;
@@ -31,15 +33,18 @@ bool ready = false;
 
 // the value to keep track of how many trains are done
 int numTrainsDone = 0;
+std::atomic<int> numExpected;
 
 // track i-j is the same as track j-i; returns true if track is lockable
 bool lockTrack(int stationI, int stationJ) {
-  return trackMtxs[stationI][stationJ].try_lock()
-    && trackMtxs[stationJ][stationI].try_lock();
+  std::lock_guard<std::mutex> guard(lockMtx);
+  bool locked = trackMtxs[stationI][stationJ].try_lock() && trackMtxs[stationJ][stationI].try_lock();
+  return locked;
 }
 
 // unlocks the tracks that were in use
 void unlockTrack(int stationI, int stationJ) {
+  std::lock_guard<std::mutex> guard(unlockMtx);
   trackMtxs[stationI][stationJ].unlock();
   trackMtxs[stationJ][stationI].unlock();
 }
@@ -75,7 +80,7 @@ void runTrain(Train* train, int numTrains) {
     }
 
     // hit barrier to wait for the rest of the threads
-    theBarrier.barrier(numTrains);
+    theBarrier.barrier(numExpected);
 
     // unlock the track mutex
     unlockTrack(currentStop, nextStop);
@@ -84,9 +89,6 @@ void runTrain(Train* train, int numTrains) {
     timeStep++;
 
   }
-
-  // hit barrier to wait for the rest of the threads
-  theBarrier.barrier(numTrains);
 
   if (numTrainsDone == numTrains) {
     theBarrier.notifyAll();
@@ -103,6 +105,8 @@ int main(int argc, char* argv[]) {
   // get total number of trains and stations
   int numTrains, numStations;
   file >> numTrains >> numStations;
+
+  numExpected = numTrains;
 
   // initialize all the trains
   Train** trains = new Train*[numTrains];
@@ -150,6 +154,13 @@ int main(int argc, char* argv[]) {
 
   // All threads are done
   std::cout << "\n\nSimulation complete.\n";
+
+  for(int i = 0; i < numTrains; i++) {
+    delete trains[i];
+  }
+
+  delete [] trains;
+  delete [] trackMtxs;
 
   return 0;
 }
