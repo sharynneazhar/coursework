@@ -32,6 +32,10 @@ public:
 			barrierCV.notify_all();
 		}
 	}
+
+  void notifyAll() {
+    barrierCV.notify_all();
+  }
 };
 
 #endif

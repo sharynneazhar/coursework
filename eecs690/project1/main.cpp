@@ -32,8 +32,6 @@ bool ready = false;
 // the value to keep track of how many trains are done
 int numTrainsDone = 0;
 
-int longestRoute = 0;
-
 // track i-j is the same as track j-i; returns true if track is lockable
 bool lockTrack(int stationI, int stationJ) {
   return trackMtxs[stationI][stationJ].try_lock()
@@ -54,7 +52,7 @@ void runTrain(Train* train, int numTrains) {
   // the timestep for each train should be synchronized
   int timeStep = 0;
 
-  while (timeStep != longestRoute) {
+  while (numTrainsDone != numTrains) {
 
     // get the train current stop and next stop
     int currentStop = train->getCurrentStop();
@@ -65,6 +63,11 @@ void runTrain(Train* train, int numTrains) {
       // try to lock the track and advance if unoccupied
       if (lockTrack(currentStop, nextStop)) {
         train->move(timeStep);
+
+        if (train->isAtEnd()) {
+          numTrainsDone++;
+        }
+
       } else {
         train->stay(timeStep);
       }
@@ -84,6 +87,10 @@ void runTrain(Train* train, int numTrains) {
 
   // hit barrier to wait for the rest of the threads
   theBarrier.barrier(numTrains);
+
+  if (numTrainsDone == numTrains) {
+    theBarrier.notifyAll();
+  }
 
 }
 
@@ -105,9 +112,6 @@ int main(int argc, char* argv[]) {
     // get number of stops
     int numStops;
     file >> numStops;
-
-    if (numStops > longestRoute)
-      longestRoute = numStops;
 
     // get the route
     int* route = new int[numStops];
