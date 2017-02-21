@@ -37,7 +37,6 @@ std::atomic<int> numExpected;
 
 // track i-j is the same as track j-i; returns true if track is lockable
 bool lockTrack(int stationI, int stationJ) {
-  std::lock_guard<std::mutex> guard(lockMtx);
   return trackMtxs[stationI][stationJ].try_lock()
     && trackMtxs[stationJ][stationI].try_lock();
 }
