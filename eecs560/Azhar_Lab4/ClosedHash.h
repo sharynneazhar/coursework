@@ -80,7 +80,7 @@ class ClosedHash {
           return;
         }
         iter++;
-      } while (iter < 600);
+      } while (iter < m_stopFactor);
     }
 
     void deleteValue(const T value) {

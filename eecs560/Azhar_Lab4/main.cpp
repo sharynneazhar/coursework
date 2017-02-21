@@ -45,11 +45,8 @@ int main(int argc, char* argv[]) {
     std::cout << std::left << std::setw(13) << std::setfill(' ') << "Double Hash";
     std::cout << std::endl;
 
-    hashResults << "Load Factor: " << loadFactors[i] << "\n";
-    hashResults << std::left << std::setw(13) << std::setfill(' ') << "Open Hash";
-    hashResults << std::left << std::setw(13) << std::setfill(' ') << "Quadratic";
-    hashResults << std::left << std::setw(13) << std::setfill(' ') << "Double Hash";
-    hashResults << std::endl;
+    hashResults << "Load Factor: " << loadFactors[i] << std::endl;
+    hashResults << "Open Hash, Quadratic, Double Hash" << std::endl;
 
     int numElements = floor(DEFAULT_TABLE_SIZE * loadFactors[i]);
 
@@ -90,6 +87,7 @@ int main(int argc, char* argv[]) {
       doubleHashTotalTime[i] += doubleHashTime;
 
       std::cout << std::endl;
+      hashResults << std::endl;
 
     }
 
@@ -103,21 +101,21 @@ int main(int argc, char* argv[]) {
   hashResults << "\nOpen Hash\n";
   for (int i = 0; i < 8; i++) {
     std::cout << std::left << std::setw(13) << std::setfill(' ') << openHashTotalTime[i] / 5;
-    hashResults << openHashTotalTime[i] / 5 << ", ";
+    hashResults << openHashTotalTime[i] / 5.0 << ", ";
   }
 
   std::cout << "\nQuadratic" << std::left << std::setw(5) << std::setfill(' ') << ":";
   hashResults << "\nQuadratic\n";
   for (int i = 0; i < 8; i++) {
     std::cout << std::left << std::setw(13) << std::setfill(' ') << quadraticTotalTime[i] / 5;
-    hashResults << quadraticTotalTime[i] / 5 << ", ";
+    hashResults << quadraticTotalTime[i] / 5.0 << ", ";
   }
 
   std::cout << "\nDouble Hash" << std::left << std::setw(5) << std::setfill(' ') << ":";
   hashResults << "\nDouble Hash\n";
   for (int i = 0; i < 8; i++) {
     std::cout << std::left << std::setw(13) << std::setfill(' ') << doubleHashTotalTime[i] / 5;
-    hashResults << doubleHashTotalTime[i] / 5 << ", ";
+    hashResults << doubleHashTotalTime[i] / 5.0 << ", ";
   }
 
 
