@@ -1,23 +1,23 @@
-==20051== Memcheck, a memory error detector
-==20051== Copyright (C) 2002-2015, and GNU GPL'd, by Julian Seward et al.
-==20051== Using Valgrind-3.11.0 and LibVEX; rerun with -h for copyright info
-==20051== Command: /home/sazhar/coursework/eecs678/project1-quash/quash
-==20051== 
-==20301== 
-==20301== HEAP SUMMARY:
-==20301==     in use at exit: 0 bytes in 0 blocks
-==20301==   total heap usage: 10 allocs, 10 frees, 2,116,226 bytes allocated
-==20301== 
-==20301== All heap blocks were freed -- no leaks are possible
-==20301== 
-==20301== For counts of detected and suppressed errors, rerun with: -v
-==20301== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
-==20051== 
-==20051== HEAP SUMMARY:
-==20051==     in use at exit: 0 bytes in 0 blocks
-==20051==   total heap usage: 9 allocs, 9 frees, 1,067,650 bytes allocated
-==20051== 
-==20051== All heap blocks were freed -- no leaks are possible
-==20051== 
-==20051== For counts of detected and suppressed errors, rerun with: -v
-==20051== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==32275== Memcheck, a memory error detector
+==32275== Copyright (C) 2002-2015, and GNU GPL'd, by Julian Seward et al.
+==32275== Using Valgrind-3.11.0 and LibVEX; rerun with -h for copyright info
+==32275== Command: /home/sazhar/coursework/eecs678/project1-quash/quash
+==32275== 
+==32275== 
+==32275== HEAP SUMMARY:
+==32275==     in use at exit: 0 bytes in 0 blocks
+==32275==   total heap usage: 9 allocs, 9 frees, 1,067,650 bytes allocated
+==32275== 
+==32275== All heap blocks were freed -- no leaks are possible
+==32275== 
+==32275== For counts of detected and suppressed errors, rerun with: -v
+==32275== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==32512== 
+==32512== HEAP SUMMARY:
+==32512==     in use at exit: 0 bytes in 0 blocks
+==32512==   total heap usage: 10 allocs, 10 frees, 2,116,226 bytes allocated
+==32512== 
+==32512== All heap blocks were freed -- no leaks are possible
+==32512== 
+==32512== For counts of detected and suppressed errors, rerun with: -v
+==32512== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)

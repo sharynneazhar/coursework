@@ -31,6 +31,30 @@
  */
 #define BUFFER_SIZE PATH_MAX + 1
 
+/**
+ * @brief A job is defined as a single command or a list of commands
+ * separated by pipes
+ */
+typedef struct Job {
+  int jobId;   // a unique job id
+  pid_t pidId; // the pid of a child process tied to the job
+  char* cmd;   // command used to invoke the job
+} Job;
+
+// Generate the Jobs deque structure and implement the methods
+IMPLEMENT_DEQUE_STRUCT(job_queue, Job);
+PROTOTYPE_DEQUE(job_queue, Job);
+IMPLEMENT_DEQUE(job_queue, Job);
+
+// Generate the pid deque structure and implement the methods
+IMPLEMENT_DEQUE_STRUCT(pid_queue, int);
+PROTOTYPE_DEQUE(pid_queue, int);
+IMPLEMENT_DEQUE(pid_queue, int);
+
+// Global declaration for the pid and job queues
+pid_queue processQueue;
+job_queue jobQueue;
+
 /***************************************************************************
  * Interface Functions
  ***************************************************************************/
@@ -317,26 +341,15 @@ void create_process(CommandHolder holder) {
   bool r_app = holder.flags & REDIRECT_APPEND; // This can only be true if r_out is true
 
   // Setup pipes, redirects, and new process
-  int status;
-  pid_t pid;
-
-  pid = fork();
+  int pid = fork();
   if (pid == 0) {
     // child process
     child_run_command(holder.cmd);
-
     exit(EXIT_SUCCESS);
+  } else {
+    // parent process
+    parent_run_command(holder.cmd);
   }
-
-  // parent process
-  parent_run_command(holder.cmd);
-
-
-  if ((waitpid(pid, &status, 0)) == -1) {
-    fprintf(stderr, "Child process encountered an error. ERROR %d", errno);
-    exit(EXIT_FAILURE);
-  }
-
 }
 
 // Run a list of commands
@@ -359,7 +372,7 @@ void run_script(CommandHolder* holders) {
     create_process(holders[i]);
 
   if (!(holders[0].flags & BACKGROUND)) {
-    // Not a background Job
+    // A foreground job
     // TODO: Wait for all processes under the job to complete
     IMPLEMENT_ME();
   }
@@ -371,4 +384,7 @@ void run_script(CommandHolder* holders) {
     // TODO: Once jobs are implemented, uncomment and fill the following line
     // print_job_bg_start(job_id, pid, cmd);
   }
+
+  // destroy_pid_queue(&processQueue);
+  // destroy_job_queue(&jobQueue);
 }
