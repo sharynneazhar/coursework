@@ -11,7 +11,9 @@
 #include <limits.h>
 #include <stdio.h>
 #include <string.h>
+#include <sys/wait.h>
 
+#include "deque.h"
 #include "execute.h"
 #include "quash.h"
 
@@ -24,18 +26,22 @@
 #define IMPLEMENT_ME() \
   fprintf(stderr, "IMPLEMENT ME: %s(line %d): %s()\n", __FILE__, __LINE__, __FUNCTION__)
 
+/**
+ * @brief The maximum buffer size allocated
+ */
+#define BUFFER_SIZE PATH_MAX + 1
+
 /***************************************************************************
  * Interface Functions
  ***************************************************************************/
-
 // Return a string containing the current working directory.
 char* get_current_directory(bool* should_free) {
 
   // set buffer size of PATH_MAX - maximum number of bytes in a pathname
   char* cwd_path;
-  char buf[BSIZE];
+  char buf[BUFFER_SIZE];
 
-  cwd_path = getcwd(buf, BSIZE);
+  cwd_path = getcwd(buf, BUFFER_SIZE);
 
   if (cwd_path == NULL) {
     perror("ERROR: Could not obtain working directory.");
@@ -318,7 +324,7 @@ void create_process(CommandHolder holder) {
   if (pid == 0) {
     // child process
     child_run_command(holder.cmd);
-    
+
     exit(EXIT_SUCCESS);
   }
 
