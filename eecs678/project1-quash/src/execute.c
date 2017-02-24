@@ -362,12 +362,12 @@ void create_process(CommandHolder holder) {
 
     if (p_in) {
       dup2(fd2[READ_END], STDIN_FILENO);
-      close(fd2[1]);
+      close(fd2[WRITE_END]);
     }
 
     if (p_out) {
       dup2(fd2[WRITE_END], STDOUT_FILENO);
-      close(fd2[0]);
+      close(fd2[READ_END]);
     }
 
     if (r_in) {
@@ -378,11 +378,11 @@ void create_process(CommandHolder holder) {
 
     if (r_out) {
       if (r_app) {
-        int file_desc = open(holder.redirect_out, O_RDWR | O_CREAT | O_APPEND, 0777);
+        int file_desc = open(holder.redirect_out, O_RDWR | O_APPEND | O_CREAT, 0777);
         dup2(file_desc, 1);
         close(file_desc);
       } else {
-        int file_desc = open(holder.redirect_out, O_RDWR | O_CREAT, 0777);
+        int file_desc = open(holder.redirect_out, O_RDWR | O_TRUNC | O_CREAT, 0777);
         dup2(file_desc, 1);
         close(file_desc);
       }
