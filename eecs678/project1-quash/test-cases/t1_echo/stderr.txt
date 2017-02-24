@@ -1,25 +1,31 @@
-==32163== Memcheck, a memory error detector
-==32163== Copyright (C) 2002-2015, and GNU GPL'd, by Julian Seward et al.
-==32163== Using Valgrind-3.11.0 and LibVEX; rerun with -h for copyright info
-==32163== Command: /home/sazhar/coursework/eecs678/project1-quash/quash
-==32163== 
-IMPLEMENT ME: src/execute.c(line 98): check_jobs_bg_status()
-IMPLEMENT ME: src/execute.c(line 379): run_script()
-==32163== 
-==32163== HEAP SUMMARY:
-==32163==     in use at exit: 0 bytes in 0 blocks
-==32163==   total heap usage: 9 allocs, 9 frees, 1,067,650 bytes allocated
-==32163== 
-==32163== All heap blocks were freed -- no leaks are possible
-==32163== 
-==32163== For counts of detected and suppressed errors, rerun with: -v
-==32163== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
-==32534== 
-==32534== HEAP SUMMARY:
-==32534==     in use at exit: 0 bytes in 0 blocks
-==32534==   total heap usage: 10 allocs, 10 frees, 2,116,226 bytes allocated
-==32534== 
-==32534== All heap blocks were freed -- no leaks are possible
-==32534== 
-==32534== For counts of detected and suppressed errors, rerun with: -v
-==32534== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==40034== Memcheck, a memory error detector
+==40034== Copyright (C) 2002-2015, and GNU GPL'd, by Julian Seward et al.
+==40034== Using Valgrind-3.11.0 and LibVEX; rerun with -h for copyright info
+==40034== Command: /home/sazhar/coursework/eecs678/project1-quash/quash
+==40034== 
+IMPLEMENT ME: src/execute.c(line 108): check_jobs_bg_status()
+==40379== 
+==40379== HEAP SUMMARY:
+==40379==     in use at exit: 20 bytes in 2 blocks
+==40379==   total heap usage: 12 allocs, 10 frees, 2,116,246 bytes allocated
+==40379== 
+==40379== LEAK SUMMARY:
+==40379==    definitely lost: 0 bytes in 0 blocks
+==40379==    indirectly lost: 0 bytes in 0 blocks
+==40379==      possibly lost: 0 bytes in 0 blocks
+==40379==    still reachable: 20 bytes in 2 blocks
+==40379==         suppressed: 0 bytes in 0 blocks
+==40379== Reachable blocks (those to which a pointer was found) are not shown.
+==40379== To see them, rerun with: --leak-check=full --show-leak-kinds=all
+==40379== 
+==40379== For counts of detected and suppressed errors, rerun with: -v
+==40379== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==40034== 
+==40034== HEAP SUMMARY:
+==40034==     in use at exit: 0 bytes in 0 blocks
+==40034==   total heap usage: 12 allocs, 12 frees, 1,067,678 bytes allocated
+==40034== 
+==40034== All heap blocks were freed -- no leaks are possible
+==40034== 
+==40034== For counts of detected and suppressed errors, rerun with: -v
+==40034== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)

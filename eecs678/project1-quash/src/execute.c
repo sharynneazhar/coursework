@@ -8,19 +8,20 @@
  */
 
 #include <errno.h>
+#include <fcntl.h>
 #include <limits.h>
 #include <stdio.h>
 #include <string.h>
+#include <sys/stat.h>
+#include <sys/types.h>
 #include <sys/wait.h>
 
 #include "deque.h"
 #include "execute.h"
 #include "quash.h"
 
-#define BSIZE PATH_MAX + 1 // max buffer size
-
-// TODO: Remove this and all expansion calls to it
 /**
+ * TODO: Remove this and all expansion calls to it
  * @brief Note calls to any function that requires implementation
  */
 #define IMPLEMENT_ME() \
@@ -30,6 +31,16 @@
  * @brief The maximum buffer size allocated
  */
 #define BUFFER_SIZE PATH_MAX + 1
+
+/**
+ * @brief Macro for the read end of a pipe
+ */
+#define READ_END 0
+
+/**
+ * @brief Macro for the write end of a pipe
+ */
+#define WRITE_END 1
 
 /**
  * @brief A job is defined as a single command or a list of commands
@@ -51,7 +62,7 @@ IMPLEMENT_DEQUE_STRUCT(pid_queue, int);
 PROTOTYPE_DEQUE(pid_queue, int);
 IMPLEMENT_DEQUE(pid_queue, int);
 
-// Global declaration for the pid and job queues
+// Declaration for the pid and job queues
 pid_queue processQueue;
 job_queue jobQueue;
 
@@ -341,15 +352,53 @@ void create_process(CommandHolder holder) {
   bool r_app = holder.flags & REDIRECT_APPEND; // This can only be true if r_out is true
 
   // Setup pipes, redirects, and new process
-  int pid = fork();
-  if (pid == 0) {
+  pid_t m_pid = fork();
+
+  int fd2[2];
+  pipe(fd2);
+
+  if (m_pid == 0) {
     // child process
+
+    if (p_in) {
+      dup2(fd2[READ_END], STDIN_FILENO);
+      close(fd2[1]);
+    }
+
+    if (p_out) {
+      dup2(fd2[WRITE_END], STDOUT_FILENO);
+      close(fd2[0]);
+    }
+
+    if (r_in) {
+      int file_desc = open(holder.redirect_in, O_RDONLY);
+      dup2(file_desc, STDIN_FILENO);
+      close(file_desc);
+    }
+
+    if (r_out) {
+      if (r_app) {
+        int file_desc = open(holder.redirect_out, O_RDWR | O_CREAT | O_APPEND, 0777);
+        dup2(file_desc, 1);
+        close(file_desc);
+      } else {
+        int file_desc = open(holder.redirect_out, O_RDWR | O_CREAT, 0777);
+        dup2(file_desc, 1);
+        close(file_desc);
+      }
+    }
+
     child_run_command(holder.cmd);
     exit(EXIT_SUCCESS);
   } else {
     // parent process
+    push_back_pid_queue(&processQueue, m_pid);
     parent_run_command(holder.cmd);
   }
+
+  close(fd2[0]);
+  close(fd2[1]);
+
 }
 
 // Run a list of commands
@@ -367,14 +416,23 @@ void run_script(CommandHolder* holders) {
 
   CommandType type;
 
+  // instantiate the pid and job queues
+  processQueue = new_pid_queue(1);
+  jobQueue = new_job_queue(1);
+
   // Run all commands in the `holder` array
   for (int i = 0; (type = get_command_holder_type(holders[i])) != EOC; ++i)
     create_process(holders[i]);
 
+  pid_t pid;
+  int status;
+
   if (!(holders[0].flags & BACKGROUND)) {
     // A foreground job
-    // TODO: Wait for all processes under the job to complete
-    IMPLEMENT_ME();
+    while(!is_empty_pid_queue(&processQueue)) {
+      pid = pop_back_pid_queue(&processQueue);
+      waitpid(pid, &status, 0);
+    }
   }
   else {
     // A background job.
@@ -385,6 +443,6 @@ void run_script(CommandHolder* holders) {
     // print_job_bg_start(job_id, pid, cmd);
   }
 
-  // destroy_pid_queue(&processQueue);
-  // destroy_job_queue(&jobQueue);
+  destroy_pid_queue(&processQueue);
+  destroy_job_queue(&jobQueue);
 }

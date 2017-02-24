@@ -1,10 +1,4 @@
-1,5c1,12
-< dir1
-< dir2
-< dir3
-< lorem_ipsum.txt
-< valgrind_expected.txt
----
+0a1,12
 > interdum nulla nec vulputate. Integer vestibulum maximus magna in euismod.
 > interdum nulla nec vulputate. Integer vestibulum maximus magna in euismod.
 > lacinia. Nunc ut turpis ante. Cras ac commodo tellus. Fusce consectetur

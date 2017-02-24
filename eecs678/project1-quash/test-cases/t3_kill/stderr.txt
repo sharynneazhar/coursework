@@ -1,41 +1,52 @@
-==32495== Memcheck, a memory error detector
-==32495== Copyright (C) 2002-2015, and GNU GPL'd, by Julian Seward et al.
-==32495== Using Valgrind-3.11.0 and LibVEX; rerun with -h for copyright info
-==32495== Command: /home/sazhar/coursework/eecs678/project1-quash/quash
-==32495== 
-IMPLEMENT ME: src/execute.c(line 98): check_jobs_bg_status()
-IMPLEMENT ME: src/execute.c(line 384): run_script()
-IMPLEMENT ME: src/execute.c(line 98): check_jobs_bg_status()
-IMPLEMENT ME: src/execute.c(line 209): run_kill()
-IMPLEMENT ME: src/execute.c(line 379): run_script()
-IMPLEMENT ME: src/execute.c(line 98): check_jobs_bg_status()
-IMPLEMENT ME: src/execute.c(line 379): run_script()
-IMPLEMENT ME: src/execute.c(line 98): check_jobs_bg_status()
-IMPLEMENT ME: src/execute.c(line 379): run_script()
-==32735== 
-==32735== HEAP SUMMARY:
-==32735==     in use at exit: 0 bytes in 0 blocks
-==32735==   total heap usage: 16 allocs, 16 frees, 1,071,522 bytes allocated
-==32735== 
-==32735== All heap blocks were freed -- no leaks are possible
-==32735== 
-==32735== For counts of detected and suppressed errors, rerun with: -v
-==32735== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
-==32749== 
-==32749== HEAP SUMMARY:
-==32749==     in use at exit: 0 bytes in 0 blocks
-==32749==   total heap usage: 24 allocs, 24 frees, 2,123,970 bytes allocated
-==32749== 
-==32749== All heap blocks were freed -- no leaks are possible
-==32749== 
-==32749== For counts of detected and suppressed errors, rerun with: -v
-==32749== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
-==32495== 
-==32495== HEAP SUMMARY:
-==32495==     in use at exit: 0 bytes in 0 blocks
-==32495==   total heap usage: 30 allocs, 30 frees, 1,079,266 bytes allocated
-==32495== 
-==32495== All heap blocks were freed -- no leaks are possible
-==32495== 
-==32495== For counts of detected and suppressed errors, rerun with: -v
-==32495== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==40354== Memcheck, a memory error detector
+==40354== Copyright (C) 2002-2015, and GNU GPL'd, by Julian Seward et al.
+==40354== Using Valgrind-3.11.0 and LibVEX; rerun with -h for copyright info
+==40354== Command: /home/sazhar/coursework/eecs678/project1-quash/quash
+==40354== 
+IMPLEMENT ME: src/execute.c(line 108): check_jobs_bg_status()
+IMPLEMENT ME: src/execute.c(line 440): run_script()
+IMPLEMENT ME: src/execute.c(line 108): check_jobs_bg_status()
+IMPLEMENT ME: src/execute.c(line 219): run_kill()
+==40419== 
+==40419== HEAP SUMMARY:
+==40419==     in use at exit: 20 bytes in 2 blocks
+==40419==   total heap usage: 21 allocs, 19 frees, 1,071,570 bytes allocated
+==40419== 
+==40419== LEAK SUMMARY:
+==40419==    definitely lost: 0 bytes in 0 blocks
+==40419==    indirectly lost: 0 bytes in 0 blocks
+==40419==      possibly lost: 0 bytes in 0 blocks
+==40419==    still reachable: 20 bytes in 2 blocks
+==40419==         suppressed: 0 bytes in 0 blocks
+==40419== Reachable blocks (those to which a pointer was found) are not shown.
+==40419== To see them, rerun with: --leak-check=full --show-leak-kinds=all
+==40419== 
+==40419== For counts of detected and suppressed errors, rerun with: -v
+==40419== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+IMPLEMENT ME: src/execute.c(line 108): check_jobs_bg_status()
+==40470== 
+==40470== HEAP SUMMARY:
+==40470==     in use at exit: 20 bytes in 2 blocks
+==40470==   total heap usage: 32 allocs, 30 frees, 2,124,046 bytes allocated
+==40470== 
+==40470== LEAK SUMMARY:
+==40470==    definitely lost: 0 bytes in 0 blocks
+==40470==    indirectly lost: 0 bytes in 0 blocks
+==40470==      possibly lost: 0 bytes in 0 blocks
+==40470==    still reachable: 20 bytes in 2 blocks
+==40470==         suppressed: 0 bytes in 0 blocks
+==40470== Reachable blocks (those to which a pointer was found) are not shown.
+==40470== To see them, rerun with: --leak-check=full --show-leak-kinds=all
+==40470== 
+==40470== For counts of detected and suppressed errors, rerun with: -v
+==40470== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+IMPLEMENT ME: src/execute.c(line 108): check_jobs_bg_status()
+==40354== 
+==40354== HEAP SUMMARY:
+==40354==     in use at exit: 0 bytes in 0 blocks
+==40354==   total heap usage: 42 allocs, 42 frees, 1,079,378 bytes allocated
+==40354== 
+==40354== All heap blocks were freed -- no leaks are possible
+==40354== 
+==40354== For counts of detected and suppressed errors, rerun with: -v
+==40354== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
