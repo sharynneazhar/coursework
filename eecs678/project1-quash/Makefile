@@ -95,6 +95,9 @@ submit: clean src/parsing/parse.tab.c src/parsing/parse.tab.h src/parsing/lex.yy
 
 #	Move all the renamed files into the temporary directory
 	mv Makefile.txt $(STUDENTID)-project1-quash
+	cp -r test-cases/ $(STUDENTID)-project1-quash
+	cp .valgrind_expected.txt $(STUDENTID)-project1-quash
+	cp run_tests.bash $(STUDENTID)-project1-quash
 	$(foreach file, $(RAWH), mv $(file)-h.txt $(STUDENTID)-project1-quash/$(file)-h.txt &&) \
 	$(foreach file, $(RAWC), mv $(file)-c.txt $(STUDENTID)-project1-quash/$(file)-c.txt &&) \
 	zip -r $(STUDENTID)-project1-quash.zip $(STUDENTID)-project1-quash # Create submission zip
