@@ -1,2 +1,4 @@
-This should be the last line 
+Background job started: [1]	#PID#	delayed_echo Hello World! 1 & 
 Hello World!
+Completed: 	[1]	#PID#	delayed_echo Hello World! 1 & 
+This should be the last line 
