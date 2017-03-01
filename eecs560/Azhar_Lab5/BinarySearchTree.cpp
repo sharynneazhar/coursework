@@ -23,7 +23,7 @@ void BinarySearchTree<T>::destroyTree(BinaryNode<T>* subTreePtr) {
 }
 
 template<typename T>
-void BinarySearchTree<T>::insertItem(const T& item) {
+void BinarySearchTree<T>::insertItem(const T& item) { // leaky, but weird behavior if delete newNode
   BinaryNode<T>* newNode = new BinaryNode<T>(item);
   rootPtr = insertInorder(rootPtr, newNode);
 }

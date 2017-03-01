@@ -20,6 +20,8 @@ CFLAGS := -g -Wall
 INCLUDES = $(wildcard ./*.h)
 SRC_FILES = $(filter-out ./test.txt, $(wildcard ./*))
 
+all: clean $(PROG_NAME)
+
 # A generalized rule for compiling the executable object
 $(PROG_NAME): main.o
 	$(CC) $(CFLAGS) main.o -o $(PROG_NAME)
