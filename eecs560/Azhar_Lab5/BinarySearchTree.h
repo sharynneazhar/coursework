@@ -16,7 +16,6 @@
 
 template<typename T>
 class BinarySearchTree {
-
   private:
     BinaryNode<T>* rootPtr;
 

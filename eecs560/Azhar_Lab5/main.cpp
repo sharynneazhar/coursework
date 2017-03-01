@@ -73,6 +73,8 @@ int main(int argc, char* argv[]) {
         break;
       default:
         std::cout << "\nERROR: Invalid selection. Try again.\n";
+        std::cin.clear();
+        std::cin.ignore(256, '\n');
         break;
     }
   }
