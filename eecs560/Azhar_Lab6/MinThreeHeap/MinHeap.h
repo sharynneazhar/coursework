@@ -21,9 +21,9 @@ class MinHeap {
   private:
     int m_k;
 
-    int m_heapSize;
+    int m_maxHeapSize;
 
-    int m_lastIndex;
+    int m_numEntries;
 
     T* m_heapArr;
 

@@ -8,10 +8,10 @@
 template<typename T>
 MinHeap<T>::MinHeap(const T k, const int size) {
   m_k = k;
-  m_heapSize = size;
-  m_lastIndex = 0;
+  m_maxHeapSize = size;
+  m_numEntries = 0;
   m_heapArr = new T[size];
-  for (int i = 0; i < m_heapSize; i++) {
+  for (int i = 0; i < m_maxHeapSize; i++) {
     m_heapArr[i] = -1;
   }
 }
@@ -27,19 +27,22 @@ MinHeap<T>::MinHeap(const T k, const int size, const std::string fileName) {
   }
 
   m_k = k;
-  m_heapSize = size;
-  m_lastIndex = 0;
+  m_maxHeapSize = size;
+  m_numEntries = 0;
   m_heapArr = new T[size];
 
   // read data from file
-  int value;
+  int value, idx = 0;
   while (file >> value) {
-    m_heapArr[m_lastIndex] = value;
-    m_lastIndex++;
+    m_heapArr[idx] = value;
+    idx++;
+    m_numEntries++;
   }
 
+  file.close();
+
   // fill empty slots with -1
-  for (int i = m_lastIndex; i < m_heapSize; i++) {
+  for (int i = m_numEntries; i < m_maxHeapSize; i++) {
     m_heapArr[i] = -1;
   }
 
@@ -61,14 +64,14 @@ int MinHeap<T>::getParentIndex(int childIndex) const {
 template<typename T>
 int MinHeap<T>::getChildIndex(int parentIndex, int childNum) const {
   int child = (m_k * parentIndex) + childNum;
-  if (child >= m_heapSize)
+  if (child >= m_maxHeapSize)
     return -1;
   return child;
 }
 
 template<typename T>
 void MinHeap<T>::buildHeap() {
-  int firstNonLeafIndex = getParentIndex(m_lastIndex - 1);
+  int firstNonLeafIndex = getParentIndex(m_numEntries - 1);
   for (int i = firstNonLeafIndex; i >= 0; i--) {
     heapify(i);
   }
@@ -83,7 +86,7 @@ void MinHeap<T>::heapify(const int index) {
   int minChildNum = 0;
   for (int i = 1; i <= m_k; i++) {
     int childIndex = getChildIndex(index, i);
-    if (childIndex != -1 && childIndex < m_lastIndex) {
+    if (childIndex != -1 && childIndex < m_numEntries) {
       // get child
       T child = m_heapArr[childIndex];
 
@@ -114,17 +117,15 @@ void MinHeap<T>::trickleUp(const int index) {
   int thisChildIndex = index;
 
   // trickleUp until compared with root of heap
-  while (m_heapArr[thisChildIndex] < m_heapArr[parentIndex]) {
-    if (parentIndex != -1) {
-      // swap child and parent
-      T temp = m_heapArr[parentIndex];
-      m_heapArr[parentIndex] = m_heapArr[thisChildIndex];
-      m_heapArr[thisChildIndex] = temp;
+  while (m_heapArr[thisChildIndex] < m_heapArr[parentIndex] && parentIndex != -1) {
+    // swap child and parent
+    T temp = m_heapArr[parentIndex];
+    m_heapArr[parentIndex] = m_heapArr[thisChildIndex];
+    m_heapArr[thisChildIndex] = temp;
 
-      // compare next parent
-      thisChildIndex = parentIndex;
-      parentIndex = getParentIndex(parentIndex);
-    }
+    // compare next parent
+    thisChildIndex = parentIndex;
+    parentIndex = getParentIndex(parentIndex);
   }
 }
 
@@ -135,15 +136,15 @@ void MinHeap<T>::trickleDown(const int index) {
 
 template<typename T>
 void MinHeap<T>::insertItem(const T item) throw (PVE) {
-  if (m_lastIndex + 1 >= m_heapSize)
+  if (m_numEntries + 1 >= m_maxHeapSize)
     throw PVE("\nHeap full!\n");
 
   // insert the new item at leftmost opening
-  m_heapArr[m_lastIndex] = item;
+  m_heapArr[m_numEntries] = item;
 
-  trickleUp(m_lastIndex);
+  trickleUp(m_numEntries);
 
-  m_lastIndex++;
+  m_numEntries++;
 }
 
 template<typename T>
@@ -153,21 +154,32 @@ void MinHeap<T>::removeItem(const T item) {
 
 template<typename T>
 void MinHeap<T>::deleteMin() throw (PVE) {
-  if (m_lastIndex == 0)
+  if (m_numEntries == 0)
     throw PVE("\nHeap empty.\n");
 
-  m_heapArr[0] = m_heapArr[m_lastIndex];
-  m_heapArr[m_lastIndex] = -1;
-  m_lastIndex--;
+  m_heapArr[0] = m_heapArr[m_numEntries - 1];
+  m_heapArr[m_numEntries - 1] = -1;
+  m_numEntries--;
 
-  trickleDown(0);
+  heapify(0);
 }
 
 template<typename T>
 void MinHeap<T>::deleteMax() throw (PVE) {
-  if (m_lastIndex == 0)
+  if (m_numEntries == 0)
     throw PVE("\nHeap empty.\n");
 
+  int firstLeafIndex = floor((m_numEntries - 2) / m_k) + 1;
+  int maxIndex = firstLeafIndex;
+  for (int i = firstLeafIndex; i < m_numEntries; i++) {
+    if (m_heapArr[i] > m_heapArr[maxIndex]) {
+      maxIndex = i;
+    }
+  }
+
+  m_heapArr[maxIndex] = m_heapArr[m_numEntries - 1];
+  m_heapArr[m_numEntries - 1]= -1;
+  m_numEntries--;
 }
 
 template<typename T>
@@ -176,7 +188,7 @@ void MinHeap<T>::levelorder() const {
   int nextLevel = 1;
   int childNum = 1;
 
-  for (int i = 0; i < m_lastIndex; i++) {
+  for (int i = 0; i < m_numEntries; i++) {
     bool levelFull = ((childNum != 3) || (i + 1 == nextLevel));
     bool isRightMostSubTree = m_heapArr[i + 1] == -1;
 
