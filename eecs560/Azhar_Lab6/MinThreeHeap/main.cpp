@@ -1,7 +1,8 @@
 /**
-*	@file : main.cpp
+*	@file   : main.cpp
 *	@author : Sharynne Azhar
-*	@date : 03-02-2017
+*	@date   : 03-02-2017
+* @brief  : Main driver for the Min 3 Heap program
 */
 
 #include <fstream>

@@ -32,9 +32,7 @@ template<typename T>
 BinaryNode<T>* BinarySearchTree<T>::insertInorder(BinaryNode<T>* subTreePtr, BinaryNode<T>* newNodePtr) {
   if (!subTreePtr) {
     return newNodePtr;
-  } else if (subTreePtr->getItem() == newNodePtr->getItem()){
-    return subTreePtr;
-  } else if (subTreePtr->getItem() > newNodePtr->getItem()) {
+  } else if (newNodePtr->getItem() < subTreePtr->getItem()) {
     BinaryNode<T>* tempPtr = insertInorder(subTreePtr->getLeftChildPtr(), newNodePtr);
     subTreePtr->setLeftChildPtr(tempPtr);
   } else {

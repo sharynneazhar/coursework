@@ -6,6 +6,17 @@
 */
 
 template<typename T>
+MinHeap<T>::MinHeap() {
+  m_k = 3;
+  m_maxHeapSize = 200;
+  m_numEntries = 0;
+  m_heapArr = new T[m_maxHeapSize];
+  for (int i = 0; i < m_maxHeapSize; i++) {
+    m_heapArr[i] = -1;
+  }
+}
+
+template<typename T>
 MinHeap<T>::MinHeap(const T k, const int size) {
   m_k = k;
   m_maxHeapSize = size;
@@ -74,40 +85,6 @@ void MinHeap<T>::buildHeap() {
   int firstNonLeafIndex = getParentIndex(m_numEntries - 1);
   for (int i = firstNonLeafIndex; i >= 0; i--) {
     trickleDown(i);
-  }
-}
-
-template<typename T>
-void MinHeap<T>::trickleDown(const int index) {
-  // initialize min value
-  T minValue = m_heapArr[index];
-
-  // compare with all children to see if any of them has lower value
-  int minChildNum = 0;
-  for (int i = 1; i <= m_k; i++) {
-    int childIndex = getChildIndex(index, i);
-    if (childIndex != -1 && childIndex < m_numEntries) {
-      // get child
-      T child = m_heapArr[childIndex];
-
-      // compare and keep track if min changes
-      if (child < minValue) {
-        minValue = child;
-        minChildNum = i;
-      }
-    }
-  }
-
-  // swap if there is a child with lower value
-  if (minChildNum != 0) {
-    int minChildIndex = getChildIndex(index, minChildNum);
-
-    T temp = m_heapArr[minChildIndex];
-    m_heapArr[minChildIndex] = m_heapArr[index];
-    m_heapArr[index] = temp;
-
-    // trickleDown again until height of heap
-    trickleDown(minChildIndex);
   }
 }
 

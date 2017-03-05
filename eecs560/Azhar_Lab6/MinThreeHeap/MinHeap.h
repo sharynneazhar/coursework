@@ -42,6 +42,8 @@ class MinHeap {
     bool removeDuplicates(const T item);
 
   public:
+    MinHeap();
+
     MinHeap(const T k, const int size);
 
     MinHeap(const T k, const int size, const std::string fileName);

@@ -1,7 +1,8 @@
 /**
-*	@file : main.cpp
+*	@file   : main.cpp
 *	@author : Sharynne Azhar
-*	@date : 02-27-2017
+*	@date   : 02-27-2017
+* @brief  : Main driver for the BinarySearchTree program
 */
 
 #include <fstream>
