@@ -39,6 +39,8 @@ class MinHeap {
 
     void trickleDown(const int index);
 
+    bool removeDuplicates(const T item);
+
   public:
     MinHeap(const T k, const int size);
 

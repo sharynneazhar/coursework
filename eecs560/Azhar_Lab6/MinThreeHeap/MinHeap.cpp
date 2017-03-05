@@ -73,12 +73,12 @@ template<typename T>
 void MinHeap<T>::buildHeap() {
   int firstNonLeafIndex = getParentIndex(m_numEntries - 1);
   for (int i = firstNonLeafIndex; i >= 0; i--) {
-    heapify(i);
+    trickleDown(i);
   }
 }
 
 template<typename T>
-void MinHeap<T>::heapify(const int index) {
+void MinHeap<T>::trickleDown(const int index) {
   // initialize min value
   T minValue = m_heapArr[index];
 
@@ -106,8 +106,8 @@ void MinHeap<T>::heapify(const int index) {
     m_heapArr[minChildIndex] = m_heapArr[index];
     m_heapArr[index] = temp;
 
-    // heapify again until height of heap
-    heapify(minChildIndex);
+    // trickleDown again until height of heap
+    trickleDown(minChildIndex);
   }
 }
 
@@ -131,7 +131,36 @@ void MinHeap<T>::trickleUp(const int index) {
 
 template<typename T>
 void MinHeap<T>::trickleDown(const int index) {
+  // initialize min value
+  T minValue = m_heapArr[index];
 
+  // compare with all children to see if any of them has lower value
+  int minChildNum = 0;
+  for (int i = 1; i <= m_k; i++) {
+    int childIndex = getChildIndex(index, i);
+    if (childIndex != -1 && childIndex < m_numEntries) {
+      // get child
+      T child = m_heapArr[childIndex];
+
+      // compare and keep track if min changes
+      if (child < minValue) {
+        minValue = child;
+        minChildNum = i;
+      }
+    }
+  }
+
+  // swap if there is a child with lower value
+  if (minChildNum != 0) {
+    int minChildIndex = getChildIndex(index, minChildNum);
+
+    T temp = m_heapArr[minChildIndex];
+    m_heapArr[minChildIndex] = m_heapArr[index];
+    m_heapArr[index] = temp;
+
+    // trickleDown again until height of heap
+    trickleDown(minChildIndex);
+  }
 }
 
 template<typename T>
@@ -149,7 +178,37 @@ void MinHeap<T>::insertItem(const T item) throw (PVE) {
 
 template<typename T>
 void MinHeap<T>::removeItem(const T item) {
+  while (removeDuplicates(item));
+}
 
+template<typename T>
+bool MinHeap<T>::removeDuplicates(const T item) {
+  for (int i = 0; i < m_numEntries; i++) {
+    if (m_heapArr[i] == item) {
+      // value is the last leaf
+      if (i == m_numEntries) {
+        m_heapArr[m_numEntries] = -1;
+        m_numEntries--;
+        return true;
+      }
+
+      // value isn't a leaf
+      m_heapArr[i] = m_heapArr[m_numEntries - 1];
+      m_heapArr[m_numEntries - 1] = -1;
+      m_numEntries--;
+
+      // trickleDown as need
+      if (m_heapArr[i] < m_heapArr[getParentIndex(i)]) {
+        trickleUp(i);
+      } else if (m_heapArr[i] > m_heapArr[getParentIndex(i)]) {
+        trickleDown(i);
+      }
+
+      return true;
+    }
+  }
+
+  return false;
 }
 
 template<typename T>
@@ -161,7 +220,7 @@ void MinHeap<T>::deleteMin() throw (PVE) {
   m_heapArr[m_numEntries - 1] = -1;
   m_numEntries--;
 
-  heapify(0);
+  trickleDown(0);
 }
 
 template<typename T>
