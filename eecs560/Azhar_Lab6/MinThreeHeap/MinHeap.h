@@ -13,7 +13,6 @@
 #include <math.h>
 #include <stdlib.h>
 
-#include "PVE.h"
 #include "Queue.h"
 
 template<typename T>
@@ -50,13 +49,13 @@ class MinHeap {
 
     virtual ~MinHeap();
 
-    void insertItem(const T item) throw (PVE);
+    void insertItem(const T item);
 
     void removeItem(const T item);
 
-    void deleteMin() throw (PVE);
+    void deleteMin();
 
-    void deleteMax() throw (PVE);
+    void deleteMax();
 
     void levelorder() const;
 

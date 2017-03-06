@@ -51,7 +51,7 @@ void BinarySearchTree<T>::removeItem(const T& item) {
 template<typename T>
 BinaryNode<T>* BinarySearchTree<T>::removeItem(BinaryNode<T>* subTreePtr, const T item, bool& isRemoved) {
   if (!subTreePtr) {
-    std::cout << "\nElement " << item << " is not in the tree.\n";
+    // std::cout << "\nElement " << item << " is not in the tree.\n";
     isRemoved = false;
     return nullptr;
   } else if (subTreePtr->getItem() == item) {
