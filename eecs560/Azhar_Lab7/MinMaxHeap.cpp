@@ -5,30 +5,71 @@
 * @desc   : Implementation file for the min-max-heap class
 */
 
+#define MAX_HEAP_SIZE 1000;
+
 template<typename T>
 MinMaxHeap<T>::MinMaxHeap() {
-
+  m_heapArr = new T[0];
 }
 
 template<typename T>
-MinMaxHeap<T>::MinMaxHeap(const int size) {
+MinMaxHeap<T>::MinMaxHeap(const T values[], const int numEntries) {
+  m_maxHeapSize = MAX_HEAP_SIZE + 1;
+  m_numEntries = numEntries;
 
-}
+  m_heapArr = new T[m_maxHeapSize];
 
-template<typename T>
-MinMaxHeap<T>::MinMaxHeap(const std::string fileName) {
+  for (int i = 0; i < m_numEntries; i++) {
+    m_heapArr[i] = values[i];
+  }
 
+  for (int i = m_numEntries + 1; i < m_maxHeapSize; i++) {
+    m_heapArr[i] = -1;
+  }
+
+  buildHeap();
 }
 
 template<typename T>
 MinMaxHeap<T>::~MinMaxHeap() {
-
+  delete [] m_heapArr;
 }
 
 template<typename T>
 void MinMaxHeap<T>::buildHeap() {
   // trickle min
   // trickle max
+
+}
+
+template<typename T>
+void MinMaxHeap<T>::trickleDown(int index) {
+
+}
+
+template<typename T>
+void MinMaxHeap<T>::trickleDownMin(int index) {
+
+}
+
+template<typename T>
+void MinMaxHeap<T>::trickleDownMax(int index) {
+
+}
+
+template<typename T>
+void MinMaxHeap<T>::bubbleUp(int index) {
+
+}
+
+template<typename T>
+void MinMaxHeap<T>::bubbleUpMin(int index) {
+
+}
+
+template<typename T>
+void MinMaxHeap<T>::bubbleUpMax(int index) {
+
 }
 
 template<typename T>
@@ -53,5 +94,8 @@ void MinMaxHeap<T>::deleteMax() {
 
 template<typename T>
 void MinMaxHeap<T>::levelorder() const {
+  Queue<T> queue;
 
+
+  std::cout << std::endl;
 }

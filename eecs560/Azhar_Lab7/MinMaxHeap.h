@@ -5,28 +5,41 @@
 * @desc   : Header file for the min-max-heap class (bottom up approach)
 */
 
-#ifndef MIN_HEAP_H
-#define MIN_HEAP_H
+#ifndef MIN_MAX_HEAP_H
+#define MIN_MAX_HEAP_H
 
-#include <fstream>
 #include <iostream>
 #include <math.h>
-#include <stdlib.h>
 
 #include "Queue.h"
 
 template<typename T>
 class MinMaxHeap {
   private:
+    T* m_heapArr;
+
+    int m_maxHeapSize;
+
+    int m_numEntries;
 
     void buildHeap();
+
+    void trickleDown(int index);
+
+    void trickleDownMin(int index);
+
+    void trickleDownMax(int index);
+
+    void bubbleUp(int index);
+
+    void bubbleUpMin(int index);
+
+    void bubbleUpMax(int index);
 
   public:
     MinMaxHeap();
 
-    MinMaxHeap(const int size);
-
-    MinMaxHeap(const std::string fileName);
+    MinMaxHeap(const T values[], const int numEntries);
 
     virtual ~MinMaxHeap();
 
