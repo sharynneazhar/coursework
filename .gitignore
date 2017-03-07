@@ -6,6 +6,8 @@
 .DS_Store
 *.dSYM/
 
+eecs560/**/*.png
+eecs560/**/*.csv
 eecs678/lab3-ipc/bash-4.2
 *-master/*
 
