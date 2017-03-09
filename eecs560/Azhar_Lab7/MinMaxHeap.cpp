@@ -169,22 +169,53 @@ void MinMaxHeap<T>::trickleDownMax(int index) {
 
 template<typename T>
 void MinMaxHeap<T>::bubbleUp(int index) {
-
+  int parent = getParentIndex(index);
+  if ((int) floor(log2(index)) % 2 == 0) {
+    if (parent != -1 && m_heapArr[index] > m_heapArr[parent]) {
+      swap(index, parent);
+      bubbleUpMax(parent);
+    } else {
+      bubbleUpMin(index);
+    }
+  } else {
+    if (parent != -1 && m_heapArr[index] < m_heapArr[parent]) {
+      swap(index, parent);
+      bubbleUpMin(parent);
+    } else {
+      bubbleUpMax(index);
+    }
+  }
 }
 
 template<typename T>
 void MinMaxHeap<T>::bubbleUpMin(int index) {
-
+  int parent = getParentIndex(index);
+  int grandparent = getParentIndex(parent);
+  if (grandparent != -1 && m_heapArr[index] < m_heapArr[grandparent]) {
+    swap(index, grandparent);
+    bubbleUpMin(grandparent);
+  }
 }
 
 template<typename T>
 void MinMaxHeap<T>::bubbleUpMax(int index) {
-
+  int parent = getParentIndex(index);
+  int grandparent = getParentIndex(parent);
+  if (grandparent != -1 && m_heapArr[index] > m_heapArr[grandparent]) {
+    swap(index, grandparent);
+    bubbleUpMin(grandparent);
+  }
 }
 
 template<typename T>
 void MinMaxHeap<T>::insertItem(const T item) {
-  // bubble up
+  if (m_numEntries < m_maxHeapSize) {
+    m_heapArr[m_numEntries + 1] = item;
+    bubbleUp(m_numEntries + 1);
+    m_numEntries++;
+  } else {
+    std::cout << "\nHeap is full.\n";
+  }
 }
 
 template<typename T>

@@ -22,6 +22,9 @@ SRC_FILES = $(wildcard ./*)
 
 all: clean $(PROG_NAME)
 
+test: all
+	./$(PROG_NAME) < input.txt
+
 # A generalized rule for compiling the executable object
 $(PROG_NAME): main.o
 	$(CC) $(CFLAGS) main.o -o $(PROG_NAME)

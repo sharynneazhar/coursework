@@ -65,7 +65,7 @@ int main(int argc, char* argv[]) {
         minMaxHeap.deleteMax();
         break;
       case 4:
-        std::cout << "\nLevelorder:\n\n";
+        std::cout << "\nLevelorder:";
         minMaxHeap.levelorder();
         break;
       case 5:
