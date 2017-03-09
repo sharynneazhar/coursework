@@ -3,9 +3,8 @@
 *	@author : Sharynne Azhar
 *	@date   : 03-07-2017
 * @desc   : Implementation file for the min-max-heap class
+*           Reference - https://people.eecs.ku.edu/~mhajiarb/minmax1.pdf
 */
-
-#define MAX_HEAP_SIZE 1000;
 
 template<typename T>
 MinMaxHeap<T>::MinMaxHeap() {
@@ -16,18 +15,11 @@ template<typename T>
 MinMaxHeap<T>::MinMaxHeap(const T values[], const int numEntries) {
   m_maxHeapSize = MAX_HEAP_SIZE + 1;
   m_numEntries = numEntries;
-
   m_heapArr = new T[m_maxHeapSize];
-
-  for (int i = 0; i < m_numEntries; i++) {
-    m_heapArr[i] = values[i];
-  }
-
-  for (int i = m_numEntries + 1; i < m_maxHeapSize; i++) {
+  for (int i = 0; i < m_maxHeapSize; i++) {
     m_heapArr[i] = -1;
   }
-
-  buildHeap();
+  buildHeap(values);
 }
 
 template<typename T>
@@ -36,15 +28,37 @@ MinMaxHeap<T>::~MinMaxHeap() {
 }
 
 template<typename T>
-void MinMaxHeap<T>::buildHeap() {
-  // trickle min
-  // trickle max
-
+int MinMaxHeap<T>::getParentIndex(int index) {
+  return floor(index / 2);
 }
 
 template<typename T>
-void MinMaxHeap<T>::trickleDown(int index) {
+int MinMaxHeap<T>::getLeftChildIndex(int index) {
+  return 2 * index;
+}
 
+template<typename T>
+int MinMaxHeap<T>::getRightChildIndex(int index) {
+  return 2 * index + 1;
+}
+
+template<typename T>
+void MinMaxHeap<T>::swap(int index1, int index2) {
+  T temp = m_heapArr[index1];
+  m_heapArr[index1] = m_heapArr[index2];
+  m_heapArr[index2] = temp;
+}
+
+template<typename T>
+void MinMaxHeap<T>::buildHeap(const T values[]) {
+  for (int i = 0; i < m_numEntries; i++) {
+      m_heapArr[i + 1] = values[i];
+  }
+
+  for (int i = m_numEntries; i != 0; i--) {
+    trickleDown(i);
+  }
+}
 }
 
 template<typename T>
