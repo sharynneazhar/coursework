@@ -13,6 +13,8 @@
 
 #include "Queue.h"
 
+const int MAX_HEAP_SIZE = 500;
+
 template<typename T>
 class MinMaxHeap {
   private:
@@ -22,7 +24,15 @@ class MinMaxHeap {
 
     int m_numEntries;
 
-    void buildHeap();
+    int getParentIndex(int index);
+
+    int getLeftChildIndex(int index);
+
+    int getRightChildIndex(int index);
+
+    void swap(int index1, int index2);
+
+    void buildHeap(const T values[]);
 
     void trickleDown(int index);
 
@@ -45,13 +55,11 @@ class MinMaxHeap {
 
     void insertItem(const T item);
 
-    void removeItem(const T item);
-
     void deleteMin();
 
     void deleteMax();
 
-    void levelorder() const;
+    void levelorder();
 
 };
 

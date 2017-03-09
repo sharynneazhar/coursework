@@ -92,11 +92,6 @@ void MinMaxHeap<T>::insertItem(const T item) {
 }
 
 template<typename T>
-void MinMaxHeap<T>::removeItem(const T item) {
-
-}
-
-template<typename T>
 void MinMaxHeap<T>::deleteMin() {
   // trickle down min
 }
@@ -107,9 +102,45 @@ void MinMaxHeap<T>::deleteMax() {
 }
 
 template<typename T>
-void MinMaxHeap<T>::levelorder() const {
-  Queue<T> queue;
+void MinMaxHeap<T>::levelorder() {
+  Queue<int> queue;
 
+  // if the node type (min or max) changes then we know the level changes
+  // let true be one type and false be the other
+  bool lastNodeType = false;
+  bool currNodeType = false;
+
+  // set the root to be first index to visit
+  int indexToVisit = 1;
+  queue.enqueue(1);
+
+  do {
+    indexToVisit = queue.peek();
+
+    // check if this is a min or max node
+    currNodeType = ((int) floor(log2(indexToVisit)) % 2 == 0);
+
+    // print end line if the node type changes
+    if (currNodeType != lastNodeType) {
+      std::cout << "\n";
+    }
+
+    std::cout << m_heapArr[indexToVisit] << " ";
+
+    int lc = getLeftChildIndex(indexToVisit);
+    int rc = getRightChildIndex(indexToVisit);
+
+    if (lc < m_numEntries + 1 && lc != -1) {
+      queue.enqueue(lc);
+    }
+
+    if (rc < m_numEntries + 1 && rc != -1) {
+      queue.enqueue(rc);
+    }
+
+    lastNodeType = currNodeType;
+    queue.dequeue();
+  } while (!queue.isEmpty());
 
   std::cout << std::endl;
 }
