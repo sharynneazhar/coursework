@@ -59,16 +59,112 @@ void MinMaxHeap<T>::buildHeap(const T values[]) {
     trickleDown(i);
   }
 }
+
+template<typename T>
+void MinMaxHeap<T>::trickleDown(int index) {
+  if ((int) floor(log2(index)) % 2 == 0) {
+    // min node if floor(lg(i)) is even
+    trickleDownMin(index);
+  } else {
+    // max node if floor(lg(i)) is odd
+    trickleDownMax(index);
+  }
 }
 
 template<typename T>
 void MinMaxHeap<T>::trickleDownMin(int index) {
+  // get left child and its children
+  int lc = getLeftChildIndex(index);
+  int lclc = getLeftChildIndex(lc);
+  int lcrc = getRightChildIndex(lc);
 
+  // get right child and its children
+  int rc = getRightChildIndex(index);
+  int rclc = getLeftChildIndex(rc);
+  int rcrc = getRightChildIndex(rc);
+
+  // the index of the smallest of the children and grandchildren
+  int m = 0;
+
+  // find the smallest of children and grandchildren
+  if (lc < m_numEntries + 1 && lc != -1)
+    m = lc;
+  if (rc < m_numEntries + 1 && rc != -1 && m_heapArr[rc] < m_heapArr[m])
+    m = rc;
+  if (lclc < m_numEntries + 1 && lclc != -1 && m_heapArr[lclc] < m_heapArr[m])
+    m = lclc;
+  if (lcrc < m_numEntries + 1 && lcrc != -1 && m_heapArr[lcrc] < m_heapArr[m])
+    m = lcrc;
+  if (rclc < m_numEntries + 1 && rclc != -1 && m_heapArr[rclc] < m_heapArr[m])
+    m = rclc;
+  if (rcrc < m_numEntries + 1 && rcrc != -1 && m_heapArr[rcrc] < m_heapArr[m])
+    m = rcrc;
+
+  // do swaps as needed
+  if (m != 0) {
+    if (m == lc || m == rc) {
+      // m is a child
+      if (m_heapArr[m] < m_heapArr[index])
+        swap(m, index);
+    } else {
+      // m is a grandchild
+      if (m_heapArr[m] < m_heapArr[index]) {
+        swap(m, index);
+        int parent = getParentIndex(m);
+        if (m_heapArr[m] > m_heapArr[parent])
+          swap(m, parent);
+      }
+      trickleDownMin(m);
+    }
+  }
 }
 
 template<typename T>
 void MinMaxHeap<T>::trickleDownMax(int index) {
+  // get left child and its children
+  int lc = getLeftChildIndex(index);
+  int lclc = getLeftChildIndex(lc);
+  int lcrc = getRightChildIndex(lc);
 
+  // get right child and its children
+  int rc = getRightChildIndex(index);
+  int rclc = getLeftChildIndex(rc);
+  int rcrc = getRightChildIndex(rc);
+
+  // the index of the largest of the children and grandchildren
+  int m = 0;
+
+  // find the smallest of children and grandchildren
+  if (lc < m_numEntries + 1 && lc != -1)
+    m = lc;
+  if (rc < m_numEntries + 1 && rc != -1 && m_heapArr[rc] > m_heapArr[m])
+    m = rc;
+  if (lclc < m_numEntries + 1 && lclc != -1 && m_heapArr[lclc] > m_heapArr[m])
+    m = lclc;
+  if (lcrc < m_numEntries + 1 && lcrc != -1 && m_heapArr[lcrc] > m_heapArr[m])
+    m = lcrc;
+  if (rclc < m_numEntries + 1 && rclc != -1 && m_heapArr[rclc] > m_heapArr[m])
+    m = rclc;
+  if (rcrc < m_numEntries + 1 && rcrc != -1 && m_heapArr[rcrc] > m_heapArr[m])
+    m = rcrc;
+
+  // do swaps as needed
+  if (m != 0) {
+    if (m == lc || m == rc) {
+      // m is a child
+      if (m_heapArr[m] > m_heapArr[index])
+        swap(m, index);
+    } else {
+      // m is a grandchild
+      if (m_heapArr[m] > m_heapArr[index]) {
+        swap(m, index);
+        int parent = getParentIndex(m);
+        if (m_heapArr[m] < m_heapArr[parent])
+          swap(m, parent);
+      }
+      trickleDownMax(m);
+    }
+  }
 }
 
 template<typename T>
@@ -94,11 +190,39 @@ void MinMaxHeap<T>::insertItem(const T item) {
 template<typename T>
 void MinMaxHeap<T>::deleteMin() {
   // trickle down min
+  if (m_numEntries == 0) {
+    std::cout << "\nHeap is empty.\n";
+  } else if (m_numEntries == 1) {
+    m_heapArr[1] = -1;
+    m_numEntries--;
+  } else {
+    m_heapArr[1] = m_heapArr[m_numEntries];
+    m_heapArr[m_numEntries] = -1;
+    m_numEntries--;
+    trickleDownMin(1);
+  }
 }
 
 template<typename T>
 void MinMaxHeap<T>::deleteMax() {
   // trickle down max
+  if (m_numEntries == 0) {
+    std::cout << "\nHeap is empty.\n";
+  } else if (m_numEntries == 1) {
+      m_heapArr[1] = -1;
+      m_numEntries--;
+  } else {
+    if (m_heapArr[2] > m_heapArr[3]) {
+      m_heapArr[2] = m_heapArr[m_numEntries];
+      m_heapArr[m_numEntries] = -1;
+      trickleDownMax(2);
+    } else {
+      m_heapArr[3] = m_heapArr[m_numEntries];
+      m_heapArr[m_numEntries] = -1;
+      trickleDownMax(3);
+    }
+    m_numEntries--;
+  }
 }
 
 template<typename T>
