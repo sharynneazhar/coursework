@@ -8,6 +8,8 @@
 
 eecs560/**/*.png
 eecs560/**/*.csv
+eecs690/**/*.csv
+eecs690/**/*.json
 eecs678/lab3-ipc/bash-4.2
 *-master/*
 

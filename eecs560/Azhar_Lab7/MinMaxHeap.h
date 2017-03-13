@@ -13,6 +13,7 @@
 
 #include "Queue.h"
 
+// default maximum heap size - reasonable?
 const int MAX_HEAP_SIZE = 500;
 
 template<typename T>

@@ -51,10 +51,12 @@ void MinMaxHeap<T>::swap(int index1, int index2) {
 
 template<typename T>
 void MinMaxHeap<T>::buildHeap(const T values[]) {
+  // initialize a heap
   for (int i = 0; i < m_numEntries; i++) {
-      m_heapArr[i + 1] = values[i];
+    m_heapArr[i + 1] = values[i];
   }
 
+  // heapify using the bottom up approach 
   for (int i = m_numEntries; i != 0; i--) {
     trickleDown(i);
   }
