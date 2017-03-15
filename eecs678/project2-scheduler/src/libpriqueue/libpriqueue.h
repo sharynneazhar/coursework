@@ -5,15 +5,27 @@
 #define LIBPRIQUEUE_H_
 
 /**
-  Priqueue Data Structure
-*/
+   Node Data Structure
+ */
+typedef struct node_t node_t;
+struct node_t
+{
+        void *m_ptr;  /**< Pointer to value stored in the node object */
+        node_t *m_next; /**< Pointer to the next node in queue */
+};
+
+/**
+   Priqueue Data Structure
+ */
 typedef struct _priqueue_t
 {
-
+        node_t *m_head;    /**< Pointer to the first node of the queue */
+        size_t m_size;      /**< Size of the queue */
+        int (*m_comparer)(const void *, const void*); /**< Compare function */
 } priqueue_t;
 
 
-void   priqueue_init     (priqueue_t *q, int(*comparer)(const void *, const void *));
+void   priqueue_init     (priqueue_t *q, int (*comparer)(const void *, const void *));
 
 int    priqueue_offer    (priqueue_t *q, void *ptr);
 void * priqueue_peek     (priqueue_t *q);
