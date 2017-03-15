@@ -24,9 +24,7 @@ int main (void)
 	op[3] = divide;
 
 	int result = (*op[operation])(6, 3);
-
 	printf("x = %d\n", result);
-
 
 	return 0;
 }

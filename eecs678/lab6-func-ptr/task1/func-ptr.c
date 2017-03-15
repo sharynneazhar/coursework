@@ -10,7 +10,7 @@
 
 /**
  * Signature for an function pointer that can compare
- * You need to cast the input into its actual 
+ * You need to cast the input into its actual
  * type and then compare them according to your
  * custom logic
  */
@@ -18,13 +18,26 @@ typedef int (*Comparer) (const void *a, const void *b);
 
 /**
  * compares 2 processes
- * You can assume: 
+ * You can assume:
  * - Process ids will be unique
  * - No 2 processes will have same arrival time
  */
 int my_comparer(const void *this, const void *that)
 {
-	//TODO: IMPLEMENT ME!
+	/* if it is sorted based on arrival time, it should be ascending order.
+  if it is sorted based on priority, it should be descending order.
+	However, if two priority values are equal, smaller arrival time with equal
+	priority comes first. */
+
+	const Process *a = this;
+	const Process *b = that;
+
+	/* Return 1 if first argument is greater, -1 if less, 0 if equal */
+	if (a->priority > b->priority) return -1;
+	if (a->priority < b->priority) return 1;
+	if (a->arrival_time > b->arrival_time) return 1;
+	if (a->arrival_time < b->arrival_time) return -1;
+
 	return 0;
 }
 
