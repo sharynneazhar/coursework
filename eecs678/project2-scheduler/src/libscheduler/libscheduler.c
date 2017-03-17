@@ -32,6 +32,17 @@ typedef struct _job_t
 
 } job_t;
 
+/**
+  Details about the scheduler
+*/
+int numCores; 					// number of cores in use
+job_t **coreArr;				// array of cores to track which cores are running
+scheme_t mScheme;				// the scheme scheduler is running
+int numJobs;						// the number of numbers for the scheduler to run
+float waitingTime;			// the total waiting time
+float turnAroundTime;		// the total turnAround time
+float responseTime;			// the total response time
+
 
 /***************************************************************************
  * Compare Functions
@@ -74,7 +85,7 @@ int PRIComparer(const void *a, const void *b)
 				// if the priorities are equal, compare the arrival times
 				if (((job_t *)a)->priority == ((job_t *)b)->priority)
 				{
-								return jobA->arrivalTime - jobB->arrivalTime;
+								return ((job_t *)a)->arrivalTime - ((job_t *)b)->arrivalTime;
 				}
 
 				return ((job_t *)a)->priority - ((job_t *)b)->priority;
@@ -123,7 +134,40 @@ int RRComparer(const void *a, const void *b)
 */
 void scheduler_start_up(int cores, scheme_t scheme)
 {
+				numCores = cores;
+				coreArr = malloc(cores * sizeof(job_t));
+				for (int i = 0; i < cores; i++)
+				{
+								coreArr[i] = NULL;
+				}
 
+				mScheme = scheme;
+				numJobs = 0;
+				waitingTime = 0.0;
+				responseTime = 0.0;
+				turnAroundTime = 0.0;
+
+				switch (scheme)
+				{
+								case FCFS:
+												priqueue_init(&q, FCFSComparer);
+												break;
+								case SJF:
+												priqueue_init(&q, SJFComparer);
+												break;
+								case PSJF:
+												priqueue_init(&q, PSJFComparer);
+												break;
+								case PRI:
+												priqueue_init(&q, PRIComparer);
+												break;
+								case PPRI:
+												priqueue_init(&q, PPRIComparer);
+												break;
+								case RR:
+												priqueue_init(&q, RRComparer);
+												break;
+				}
 }
 
 
