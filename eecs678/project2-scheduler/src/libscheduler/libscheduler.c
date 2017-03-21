@@ -189,8 +189,10 @@ void scheduler_start_up(int cores, scheme_t scheme)
 
   @param job_number a globally unique identification number of the job arriving.
   @param time the current time of the simulator.
-  @param running_time the total number of time units this job will run before it will be finished.
-  @param priority the priority of the job. (The lower the value, the higher the priority.)
+  @param running_time the total number of time units this job will run before
+				 it will be finished.
+  @param priority the priority of the job. (The lower the value, the higher
+	       the priority.)
   @return index of core job should be scheduled on
   @return -1 if no scheduling changes should be made.
 
@@ -204,7 +206,8 @@ int scheduler_new_job(int job_number, int time, int running_time, int priority)
 /**
   Called when a job has completed execution.
 
-  The core_id, job_number and time parameters are provided for convenience. You may be able to calculate the values with your own data structure.
+  The core_id, job_number and time parameters are provided for convenience.
+	You may be able to calculate the values with your own data structure.
   If any job should be scheduled to run on the core free'd up by the
   finished job, return the job_number of the job that should be scheduled to
   run on core core_id.
@@ -217,7 +220,38 @@ int scheduler_new_job(int job_number, int time, int running_time, int priority)
  */
 int scheduler_job_finished(int core_id, int job_number, int time)
 {
-	return -1;
+					totalResponseTime += coreArr[core_id]->responseTime;
+					totalWaitingTime += coreArr[core_id]->waitTime;
+					totalTurnAroundTime += time - coreArr[core_id]->arrivalTime;
+					numJobs++;
+
+					free(coreArr[core_id]);
+					coreArr[core_id] = NULL;
+
+					if (priqueue_size(&q) > 0)
+					{
+									job_t *nextJob = (job_t*)priqueue_poll(&q);
+									coreArr[core_id] = nextJob;
+
+									if (coreArr[core_id]->responseTime == -1)
+									{
+													coreArr[core_id]->lastScheduledTime = time;
+													coreArr[core_id]->responseTime = time - coreArr[core_id]->arrivalTime;
+									}
+
+									if (mScheme == PSJF)
+									{
+													nextJob->lastScheduledTime = time;
+													if (coreArr[core_id]->responseTime == -1)
+													{
+																	coreArr[core_id]->responseTime = time - coreArr[core_id]->arrivalTime;
+													}
+									}
+
+									return coreArr[core_id]->pid;
+					}
+
+					return -1;
 }
 
 
@@ -257,7 +291,8 @@ int scheduler_quantum_expired(int core_id, int time)
 				coreArr[core_id] = priqueue_poll(&q);
 				if (coreArr[core_id]->responseTime == -1)
 				{
-								coreArr[core_id]->responseTime = time - coreArr[core_id]->arrivalTime;
+								int resTime = time - coreArr[core_id]->arrivalTime;
+								coreArr[core_id]->responseTime = resTime;
 				}
 
 				return coreArr[core_id]->pid;
@@ -268,7 +303,8 @@ int scheduler_quantum_expired(int core_id, int time)
   Returns the average waiting time of all jobs scheduled by your scheduler.
 
   Assumptions:
-    - This function will only be called after all scheduling is complete (all jobs that have arrived will have finished and no new jobs will arrive).
+    - This function will only be called after all scheduling is complete (all j
+		obs that have arrived will have finished and no new jobs will arrive).
 
   @return the average waiting time of all jobs scheduled.
  */
@@ -282,7 +318,8 @@ float scheduler_average_waiting_time()
   Returns the average turnaround time of all jobs scheduled by your scheduler.
 
   Assumptions:
-    - This function will only be called after all scheduling is complete (all jobs that have arrived will have finished and no new jobs will arrive).
+    - This function will only be called after all scheduling is complete (all
+		jobs that have arrived will have finished and no new jobs will arrive).
 
   @return the average turnaround time of all jobs scheduled.
  */
@@ -296,7 +333,8 @@ float scheduler_average_turnaround_time()
   Returns the average response time of all jobs scheduled by your scheduler.
 
   Assumptions:
-    - This function will only be called after all scheduling is complete (all jobs that have arrived will have finished and no new jobs will arrive).
+    - This function will only be called after all scheduling is complete (all
+		jobs that have arrived will have finished and no new jobs will arrive).
 
   @return the average response time of all jobs scheduled.
  */
@@ -332,7 +370,12 @@ void scheduler_clean_up()
   This function may print out any debugging information you choose. This
   function will be called by the simulator after every call the simulator
   makes to your scheduler.
-  In our provided output, we have implemented this function to list the jobs in the order they are to be scheduled. Furthermore, we have also listed the current state of the job (either running on a given core or idle). For example, if we have a non-preemptive algorithm and job(id=4) has began running, job(id=2) arrives with a higher priority, and job(id=1) arrives with a lower priority, the output in our sample output will be:
+  In our provided output, we have implemented this function to list the jobs
+	in the order they are to be scheduled. Furthermore, we have also listed the
+	current state of the job (either running on a given core or idle). For
+	example, if we have a non-preemptive algorithm and job(id=4) has began
+	running, job(id=2) arrives with a higher priority, and job(id=1) arrives
+	with a lower priority, the output in our sample output will be:
 
     2(-1) 4(0) 1(-1)
 
