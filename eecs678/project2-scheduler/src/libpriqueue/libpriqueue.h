@@ -10,8 +10,8 @@
 typedef struct node_t node_t;
 struct node_t
 {
-        void *m_ptr;  /**< Pointer to value stored in the node object */
-        node_t *m_next; /**< Pointer to the next node in queue */
+        void *m_ptr;     /**< Pointer to value stored in the node object */
+        node_t *m_next;  /**< Pointer to the next node in queue */
 };
 
 /**
@@ -19,8 +19,8 @@ struct node_t
  */
 typedef struct _priqueue_t
 {
-        node_t *m_head;    /**< Pointer to the first node of the queue */
-        size_t m_size;      /**< Size of the queue */
+        node_t *m_head;   /**< Pointer to the first node of the queue */
+        size_t m_size;    /**< Size of the queue */
         int (*m_comparer)(const void *, const void*); /**< Compare function */
 } priqueue_t;
 

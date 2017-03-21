@@ -136,7 +136,7 @@ void *priqueue_peek(priqueue_t *q)
  */
 void *priqueue_poll(priqueue_t *q)
 {
-				if (q->m_size > 0)
+				if (q->m_size != 0)
 				{
 								node_t *tempNode = q->m_head;
 
@@ -175,7 +175,7 @@ void *priqueue_poll(priqueue_t *q)
 void *priqueue_at(priqueue_t *q, int index)
 {
 				// make sure the index is within the boundaries of the queue
-				if (index > 0 && index < (int) q->m_size - 1)
+				if (index >= 0 && index <= (int) q->m_size - 1)
 				{
 								// start traversal from head of queue which has index 0
 								node_t *currNode = q->m_head;
@@ -211,7 +211,7 @@ void *priqueue_at(priqueue_t *q, int index)
  */
 int priqueue_remove(priqueue_t *q, void *ptr)
 {
-				if (q->m_size > 0)
+				if (q->m_size != 0)
 				{
 								int count = 0;
 
@@ -262,7 +262,7 @@ int priqueue_remove(priqueue_t *q, void *ptr)
  */
 void *priqueue_remove_at(priqueue_t *q, int index)
 {
-				if (q->m_size > 0)
+				if (q->m_size != 0)
 				{
 								// check if element is at said index
 								if (priqueue_at(q, index) != NULL)
@@ -326,7 +326,7 @@ void priqueue_destroy(priqueue_t *q)
 								node_t *currNode = q->m_head;
 								node_t *nextNode = q->m_head;
 
-								// traverse the queue and delete as needed 
+								// traverse the queue and delete as needed
 								while (currNode != NULL)
 								{
 												nextNode = currNode->m_next;
