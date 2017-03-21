@@ -236,7 +236,31 @@ int scheduler_job_finished(int core_id, int job_number, int time)
  */
 int scheduler_quantum_expired(int core_id, int time)
 {
-	return -1;
+				// find job in array of cores
+				job_t *thisJob = coreArr[core_id];
+
+				// if null then the job isn't running
+				// else put the job back in queue
+				if (thisJob == NULL)
+				{
+								if (priqueue_size(&q) == 0)
+								{
+												return -1;
+								}
+				}
+				else
+				{
+								priqueue_offer(&q, thisJob);
+				}
+
+				// run the next job in the queue
+				coreArr[core_id] = priqueue_poll(&q);
+				if (coreArr[core_id]->responseTime == -1)
+				{
+								coreArr[core_id]->responseTime = time - coreArr[core_id]->arrivalTime;
+				}
+
+				return coreArr[core_id]->pid;
 }
 
 
