@@ -23,25 +23,27 @@ priqueue_t q;
 =*/
 typedef struct _job_t
 {
-				int pid;						// the unique id
-				int arrivalTime;		// the job arrival time
-				int priority;				// the job priority
-				int burstTime;			// the job burst time
-				int remainingTime;  // the time this job has left until completion
-				int waitTime;				// the time this job has been waiting
-
+				int pid;								// the unique id
+				int priority;						// the job priority
+				int core;								// the core assigned (zero-indexed), -1 if idle
+				int arrivalTime;				// the job arrival time
+				int burstTime;					// the total time units before job is finished
+				int remainingTime;  		// the total time units remaining
+				int waitTime;						// the total time units job has been waiting
+				int responseTime;				// the total time units job takes to respond
+				int lastScheduledTime;	// the time this job was last scheduled
 } job_t;
 
 /**
   Details about the scheduler
 */
-int numCores; 					// number of cores in use
-job_t **coreArr;				// array of cores to track which cores are running
-scheme_t mScheme;				// the scheme scheduler is running
-int numJobs;						// the number of numbers for the scheduler to run
-float waitingTime;			// the total waiting time
-float turnAroundTime;		// the total turnAround time
-float responseTime;			// the total response time
+scheme_t mScheme;						// the scheme scheduler is running
+job_t **coreArr;						// the array of cores
+int numCores; 							// the number of cores in use
+int numJobs;								// the number of jobs in the scheduler
+float totalWaitingTime;			// the total waiting time
+float totalTurnAroundTime;	// the total turnAround time
+float totalResponseTime;		// the total response time
 
 
 /***************************************************************************
@@ -129,8 +131,10 @@ int RRComparer(const void *a, const void *b)
     - You may assume that cores is a positive, non-zero number.
     - You may assume that scheme is a valid scheduling scheme.
 
-  @param cores the number of cores that is available by the scheduler. These cores will be known as core(id=0), core(id=1), ..., core(id=cores-1).
-  @param scheme  the scheduling scheme that should be used. This value will be one of the six enum values of scheme_t
+  @param cores the number of cores that is available by the scheduler. These
+	       cores will be known as core(id=0), core(id=1), ..., core(id=cores-1).
+  @param scheme  the scheduling scheme that should be used. This value will be
+	       one of the six enum values of scheme_t
 */
 void scheduler_start_up(int cores, scheme_t scheme)
 {
@@ -143,9 +147,9 @@ void scheduler_start_up(int cores, scheme_t scheme)
 
 				mScheme = scheme;
 				numJobs = 0;
-				waitingTime = 0.0;
-				responseTime = 0.0;
-				turnAroundTime = 0.0;
+				totalWaitingTime = 0.0;
+				totalResponseTime = 0.0;
+				totalTurnAroundTime = 0.0;
 
 				switch (scheme)
 				{
@@ -241,11 +245,12 @@ int scheduler_quantum_expired(int core_id, int time)
 
   Assumptions:
     - This function will only be called after all scheduling is complete (all jobs that have arrived will have finished and no new jobs will arrive).
+
   @return the average waiting time of all jobs scheduled.
  */
 float scheduler_average_waiting_time()
 {
-	return 0.0;
+				return ((float) totalWaitingTime / (float) numJobs);
 }
 
 
@@ -254,11 +259,12 @@ float scheduler_average_waiting_time()
 
   Assumptions:
     - This function will only be called after all scheduling is complete (all jobs that have arrived will have finished and no new jobs will arrive).
+
   @return the average turnaround time of all jobs scheduled.
  */
 float scheduler_average_turnaround_time()
 {
-	return 0.0;
+				return ((float) totalTurnAroundTime / (float) numJobs);
 }
 
 
@@ -267,11 +273,12 @@ float scheduler_average_turnaround_time()
 
   Assumptions:
     - This function will only be called after all scheduling is complete (all jobs that have arrived will have finished and no new jobs will arrive).
+
   @return the average response time of all jobs scheduled.
  */
 float scheduler_average_response_time()
 {
-	return 0.0;
+				return ((float) totalResponseTime / (float) numJobs);
 }
 
 
@@ -283,7 +290,17 @@ float scheduler_average_response_time()
 */
 void scheduler_clean_up()
 {
+				priqueue_destroy(&q);
 
+				for (int i = 0; i < numCores; i++)
+				{
+								if (coreArr[i] != NULL)
+								{
+												free(coreArr[i]);
+								}
+				}
+
+				free(coreArr);
 }
 
 
