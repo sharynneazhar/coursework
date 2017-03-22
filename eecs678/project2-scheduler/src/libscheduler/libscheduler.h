@@ -17,11 +17,9 @@ typedef struct _job_t
 {
 				int pid;								// the unique id
 				int priority;						// the job priority
-				int core;								// the core assigned (zero-indexed), -1 if idle
 				int arrivalTime;				// the job arrival time
-				int burstTime;					// the total time units before job is finished
+				int runningTime;				// the total time units before job is finished
 				int remainingTime;  		// the total time units remaining
-				int waitTime;						// the total time units job has been waiting
 				int responseTime;				// the total time units job takes to respond
 				int lastScheduledTime;	// the time this job was last scheduled
 } job_t;
