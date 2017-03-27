@@ -8,6 +8,8 @@
 #ifndef LEFTIST_HEAP_H
 #define LEFTIST_HEAP_H
 
+#include <iostream>
+
 #include "LeftistHeapNode/LeftistHeapNode.h"
 #include "Queue/Queue.h"
 

@@ -17,7 +17,7 @@ CC := g++ -std=c++11
 CFLAGS := -g -Wall
 
 # Specify the files needed for compilation
-INCLUDES = $(wildcard ./*.h)
+INCLUDES = ./Queue/Queue.h ./SkewHeapNode/SkewHeapNode.h ./SkewHeap.h
 SRC_FILES = $(wildcard ./*)
 
 all: clean $(PROG_NAME)

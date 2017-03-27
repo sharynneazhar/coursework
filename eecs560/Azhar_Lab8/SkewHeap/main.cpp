@@ -2,7 +2,7 @@
 *	@file   : main.cpp
 *	@author : Sharynne Azhar
 *	@date   : 03-27-2017
-* @brief  : Main driver for the min-leftist heap and min-skew heap program
+* @brief  : Main driver for the min-skew heap heap program
 */
 
 #include <fstream>
@@ -10,12 +10,12 @@
 #include <math.h>
 #include <stdlib.h>
 
-#include "MinMaxHeap.h"
+#include "SkewHeap.h"
 
 void printMenu() {
   std::cout << "\n\nPlease choose one of the following commands: "
-            << "\n1 - insert\n2 - deleteMin\n3 - deleteMax"
-            << "\n4 - levelorder\n5 - exit"
+            << "\n1 - insert\n2 - deleteMin\n3 - preorder"
+            << "\n4 - inorder\n5 - levelorder\n6 - end"
             << "\n\nYour choice: ";
 }
 
@@ -28,24 +28,16 @@ int main(int argc, char* argv[]) {
     exit(EXIT_FAILURE);
   }
 
-  // get number of entries in file
-  int value, numEntries = 0;
-  while (file >> value) { numEntries++; }
-  file.clear();
-  file.seekg(0, file.beg);
+  // declare the min-skew heap
+  SkewHeap<int> skewHeap;
 
-  // read in the data
-  int index = 0;
-  int values[numEntries];
+  // read file
+  int value;
   while (file >> value) {
-    values[index] = value;
-    index++;
+    skewHeap.insert(value);
   }
 
   file.close();
-
-  // initialze min-max-heap
-  MinMaxHeap<int> minMaxHeap(values, numEntries);
 
   bool done = false;
   int menuChoice, input;
@@ -56,19 +48,21 @@ int main(int argc, char* argv[]) {
       case 1:
         std::cout << "\nEnter a number to be inserted: ";
         std::cin >> input;
-        minMaxHeap.insertItem(input);
+        skewHeap.insert(input);
         break;
       case 2:
-        minMaxHeap.deleteMin();
+        skewHeap.deleteMin();
         break;
       case 3:
-        minMaxHeap.deleteMax();
+        skewHeap.preorder();
         break;
       case 4:
-        std::cout << "\nLevelorder:";
-        minMaxHeap.levelorder();
+        skewHeap.inorder();
         break;
       case 5:
+        skewHeap.levelorder();
+        break;
+      case 6:
         std::cout << "\nBye!\n";
         done = true;
         break;
