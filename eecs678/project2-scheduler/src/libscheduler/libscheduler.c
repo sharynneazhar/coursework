@@ -17,13 +17,17 @@ scheme_t mScheme;						// the scheme scheduler is running
 job_t **coreArr;						// the array of cores
 int numCores; 							// the number of cores in use
 int numJobs;								// the number of jobs in the scheduler
-float totalWaitTime;			// the total waiting time
+float totalWaitTime;			  // the total waiting time
 float totalTurnAroundTime;	// the total turnAround time
 float totalResponseTime;		// the total response time
 
 
 /***************************************************************************
  * Compare Functions
+
+ The return value of this function should represent whether elem1 is considered
+ less than, equal to, or greater than elem2 by returning, respectively, a
+ negative value, zero or a positive value.
  ***************************************************************************/
 
 /**
@@ -106,19 +110,19 @@ int RRComparer(const void *a, const void *b) {
 */
 void scheduler_start_up(int cores, scheme_t scheme) {
 
-				// set up the cores array
-				numCores = cores;
-				coreArr = malloc(cores * sizeof(job_t));
-				for (int i = 0; i < cores; i++) {
-								coreArr[i] = NULL;
-				}
-
-				// set the scheduling scheme and reset times
+				// initialize variables
 				mScheme = scheme;
+				numCores = cores;
 				numJobs = 0;
 				totalWaitTime = 0.0;
 				totalResponseTime = 0.0;
 				totalTurnAroundTime = 0.0;
+
+				// initialize core array with null values
+				coreArr = malloc(cores * sizeof(job_t));
+				for (int i = 0; i < cores; i++) {
+								coreArr[i] = NULL;
+				}
 
 				// initialize the priority queue based on the scheduling scheme
 				switch (scheme) {
@@ -372,8 +376,9 @@ int scheduler_new_job(int job_number, int time, int running_time, int priority) 
  */
 int scheduler_job_finished(int core_id, int job_number, int time) {
 					int _responseTime = coreArr[core_id]->responseTime;
-					int _waitTime = time - coreArr[core_id]->arrivalTime - coreArr[core_id]->runningTime;
 					int _turnAroundTime = time - coreArr[core_id]->arrivalTime;
+					int _waitTime = time - coreArr[core_id]->arrivalTime -
+									coreArr[core_id]->runningTime;
 
 					totalResponseTime += _responseTime;
 					totalWaitTime += _waitTime;
@@ -391,13 +396,15 @@ int scheduler_job_finished(int core_id, int job_number, int time) {
 									// update the response time of the next job
 									if (coreArr[core_id]->responseTime == -1) {
 													coreArr[core_id]->lastScheduledTime = time;
-													coreArr[core_id]->responseTime = time - coreArr[core_id]->arrivalTime;
+													coreArr[core_id]->responseTime = time -
+																	coreArr[core_id]->arrivalTime;
 									}
 
 									if (mScheme == PSJF) {
 													coreArr[core_id]->lastScheduledTime = time;
 													if (coreArr[core_id]->responseTime == -1) {
-																	coreArr[core_id]->responseTime = time - coreArr[core_id]->arrivalTime;
+																	coreArr[core_id]->responseTime = time -
+																					coreArr[core_id]->arrivalTime;
 													}
 									}
 
@@ -430,10 +437,8 @@ int scheduler_quantum_expired(int core_id, int time) {
 								return -1;
 				}
 
-				// else, put job back on the queue
+				// else, put job back on the queue and run the next job
 				priqueue_offer(&q, thisJob);
-
-				// run the next job in the queue
 				coreArr[core_id] = priqueue_poll(&q);
 				if (coreArr[core_id]->responseTime == -1) {
 								int _responseTime = time - coreArr[core_id]->arrivalTime;
@@ -525,5 +530,10 @@ void scheduler_clean_up() {
   blank if you do not find it useful.
  */
 void scheduler_show_queue() {
-
+				// node_t *currNode = q.m_head;
+				// for (int i = 0; i < priqueue_size(&q); i++) {
+				// 				job_t* currJob = (job_t*)(currNode->m_ptr);
+				// 				printf(" %d(%d) ", currJob->pid, currJob->core);
+				// 				currNode = currNode->m_next;
+				// }
 }
