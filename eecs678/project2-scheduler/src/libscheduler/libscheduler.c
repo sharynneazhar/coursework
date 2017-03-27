@@ -25,9 +25,9 @@ float totalResponseTime;		// the total response time
 /***************************************************************************
  * Compare Functions
 
- The return value of this function should represent whether elem1 is considered
- less than, equal to, or greater than elem2 by returning, respectively, a
- negative value, zero or a positive value.
+ The return value of this function should represent whether elem1 is
+ considered less than, equal to, or greater than elem2 by returning,
+ respectively, a negative value, zero or a positive value.
  ***************************************************************************/
 
 /**
@@ -104,9 +104,9 @@ int RRComparer(const void *a, const void *b) {
     - You may assume that scheme is a valid scheduling scheme.
 
   @param cores the number of cores that is available by the scheduler. These
-	       cores will be known as core(id=0), core(id=1), ..., core(id=cores-1).
-  @param scheme  the scheduling scheme that should be used. This value will be
-	       one of the six enum values of scheme_t
+	       cores will be known as core(id=0), core(id=1), ... core(id=cores-1).
+  @param scheme  the scheduling scheme that should be used. This value will
+				 be one of the six enum values of scheme_t
 */
 void scheduler_start_up(int cores, scheme_t scheme) {
 
@@ -160,7 +160,8 @@ void scheduler_start_up(int cores, scheme_t scheme) {
   Assumptions:
     - You may assume that every job wil have a unique arrival time.
 
-  @param job_number a globally unique identification number of the job arriving.
+  @param job_number a globally unique identification number of the job
+	       arriving.
   @param time the current time of the simulator.
   @param running_time the total number of time units this job will run before
 				 it will be finished.
@@ -269,8 +270,11 @@ int scheduler_new_job(int job_number, int time, int running_time, int priority) 
 												coreArr[0]->remainingTime -= time - coreArr[0]->lastScheduledTime;
 												coreArr[0]->lastScheduledTime = time;
 
-												int greatestRemainingTime = coreArr[0]->remainingTime;
-												int highestIndex = 0;
+												// track the longest remaining time
+												int longestRemainingTime = coreArr[0]->remainingTime;
+
+												// track the highest core index
+												int highest = 0;
 
 												// find the shortest remainingTime
 												for (int i = 0; i < numCores; i++) {
@@ -278,31 +282,31 @@ int scheduler_new_job(int job_number, int time, int running_time, int priority) 
 																coreArr[i]->remainingTime -= time - coreArr[i]->lastScheduledTime;
 																coreArr[i]->lastScheduledTime = time;
 
-																// see if current remainingTime is lower than greatestRemainingTime
-																if (coreArr[i]->remainingTime > greatestRemainingTime) {
-																					highestIndex = i;
-																					greatestRemainingTime = coreArr[i]->remainingTime;
+																if (coreArr[i]->remainingTime > longestRemainingTime) {
+																					highest = i;
+																					longestRemainingTime = coreArr[i]->remainingTime;
 																}
 												}
 
-												if (greatestRemainingTime > running_time) {
-																if (coreArr[highestIndex]->responseTime == (time - coreArr[highestIndex]->arrivalTime)) {
-																				coreArr[highestIndex]->responseTime = -1;
+												if (longestRemainingTime > running_time) {
+																if (coreArr[highest]->responseTime == time - coreArr[highest]->arrivalTime) {
+																				coreArr[highest]->responseTime = -1;
 																}
 
-																priqueue_offer(&q, coreArr[highestIndex]);
-																coreArr[highestIndex] = newJob;
+																priqueue_offer(&q, coreArr[highest]);
+																coreArr[highest] = newJob;
 
-																if (coreArr[highestIndex]->responseTime == -1) {
-																				coreArr[highestIndex]->responseTime = time - coreArr[highestIndex]->arrivalTime;
+																if (coreArr[highest]->responseTime == -1) {
+																				coreArr[highest]->responseTime = time - coreArr[highest]->arrivalTime;
 																}
 
-																return highestIndex;
+																return highest;
 												}
 
 												priqueue_offer(&q, newJob);
 												return -1;
 								} else if (mScheme == PPRI) {
+												// track lowest priority value and index
 												int lowestPriority = coreArr[0]->priority;
 												int lowestIndex = 0;
 
@@ -371,7 +375,8 @@ int scheduler_new_job(int job_number, int time, int running_time, int priority) 
   @param core_id the zero-based index of the core where the job was located.
   @param job_number a globally unique identification number of the job.
   @param time the current time of the simulator.
-  @return job_number of the job that should be scheduled to run on core core_id
+  @return job_number of the job that should be scheduled to run on core
+	        core_id
   @return -1 if core should remain idle.
  */
 int scheduler_job_finished(int core_id, int job_number, int time) {
@@ -423,7 +428,8 @@ int scheduler_job_finished(int core_id, int job_number, int time) {
   the quantum expiration, return the job_number of the job that should be
   scheduled to run on core core_id.
 
-  @param core_id the zero-based index of the core where the quantum has expired.
+  @param core_id the zero-based index of the core where the quantum has
+	       expired.
   @param time the current time of the simulator.
   @return job_number of the job that should be scheduled on core cord_id
   @return -1 if core should remain idle
@@ -453,8 +459,9 @@ int scheduler_quantum_expired(int core_id, int time) {
   Returns the average waiting time of all jobs scheduled by your scheduler.
 
   Assumptions:
-    - This function will only be called after all scheduling is complete (all j
-		obs that have arrived will have finished and no new jobs will arrive).
+    - This function will only be called after all scheduling is complete
+		(all jobs that have arrived will have finished and no new jobs will
+		arrive).
 
   @return the average waiting time of all jobs scheduled.
  */
