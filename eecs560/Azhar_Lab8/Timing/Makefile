@@ -17,8 +17,8 @@ CC := g++ -std=c++11
 CFLAGS := -g -Wall
 
 # Specify the files needed for compilation
+SRC = ../
 INCLUDES = ./Timer.h ../LeftistHeap/LeftistHeap.h ../SkewHeap/SkewHeap.h
-SRC_FILES = $(wildcard ./*)
 
 all: clean $(PROG_NAME)
 
@@ -39,7 +39,7 @@ clean:
 
 # Target for compressing the files into archive
 zip: clean
-	zip -r $(FOLDER_NAME).zip $(SRC_FILES)
+	zip -r $(FOLDER_NAME).zip $(SRC)
 
 
 .PHONY: clean zip
