@@ -181,147 +181,102 @@ int scheduler_new_job(int job_number, int time, int running_time, int priority) 
 				newJob->remainingTime = running_time;
 				newJob->responseTime = -1;
 
-				// if scheduler is a single core
-				// else we have a multicore scheduler
-				if (numCores == 1) {
+				// find an lowest indexed core that is open
+				int coreIndex = -1;
+				for (int i = 0; i < numCores; i++) {
+								if (coreArr[i] == NULL) {
+												coreIndex = i;
+												break;
+								}
+				}
+
+				// if we have an open core, add the new job
+				// else, schedule the job accordingly
+				if (coreIndex != -1) {
+								coreArr[coreIndex] = newJob;
+								coreArr[coreIndex]->responseTime = time - coreArr[coreIndex]->arrivalTime;
+
 								if (mScheme == PSJF) {
-													if (coreArr[0] == NULL) {
-																	coreArr[0] = newJob;
-																	coreArr[0]->responseTime = time - coreArr[0]->arrivalTime;
-																	coreArr[0]->lastScheduledTime = time;
-																	return 0;
-													}
-
-													coreArr[0]->remainingTime -= time - coreArr[0]->lastScheduledTime;
-
-													if (coreArr[0]->remainingTime > running_time) {
-																	if (coreArr[0]->responseTime == time - coreArr[0]->arrivalTime) {
-																					coreArr[0]->responseTime = -1;
-																	}
-
-																	priqueue_offer(&q, coreArr[0]);
-																	coreArr[0] = newJob;
-																	coreArr[0]->responseTime = time - coreArr[0]->arrivalTime;
-																	coreArr[0]->lastScheduledTime = time;
-																	return 0;
-													}
-
-													priqueue_offer(&q, newJob);
-													return -1;
-								} else if (mScheme == PPRI) {
-												if (coreArr[0] == NULL) {
-																coreArr[0] = newJob;
-																coreArr[0]->responseTime = time - coreArr[0]->arrivalTime;
-																return 0;
-												}
-
-												int currPriority = coreArr[0]->priority;
-												int currArrivalTime = coreArr[0]->arrivalTime;
-
-												if (priority < currPriority || (priority == currPriority && time < currArrivalTime)) {
-																if (coreArr[0]->lastScheduledTime == time) {
-																				coreArr[0]->responseTime = -1;
-																}
-
-																priqueue_offer(&q, coreArr[0]);
-																coreArr[0] = newJob;
-																coreArr[0]->responseTime = time - coreArr[0]->arrivalTime;
-																return 0;
-												}
-
-												priqueue_offer(&q, newJob);
-												return -1;
-								} else {
-												if (coreArr[0] == NULL) {
-																coreArr[0] = newJob;
-																coreArr[0]->responseTime = time - coreArr[0]->arrivalTime;
-																coreArr[0]->lastScheduledTime = time;
-																return 0;
-												}
-
-												priqueue_offer(&q, newJob);
-												return -1;
+												coreArr[coreIndex]->lastScheduledTime = time;
 								}
 
-				} else {
-								// find an lowest indexed core that is open
-								int index = -1;
+								return coreIndex;
+				}
+
+				if (mScheme == PSJF) {
+								coreArr[0]->remainingTime -= time - coreArr[0]->lastScheduledTime;
+								coreArr[0]->lastScheduledTime = time;
+
+								// track the longest remaining time
+								int longestRemainingTime = coreArr[0]->remainingTime;
+
+								// track the highest core index
+								int highest = 0;
+
+								// find the shortest remainingTime
 								for (int i = 0; i < numCores; i++) {
-												if (coreArr[i] == NULL) {
-																index = i;
-																break;
+												// calculate new remainingTime
+												coreArr[i]->remainingTime -= time - coreArr[i]->lastScheduledTime;
+												coreArr[i]->lastScheduledTime = time;
+
+												if (coreArr[i]->remainingTime > longestRemainingTime) {
+																	highest = i;
+																	longestRemainingTime = coreArr[i]->remainingTime;
 												}
 								}
 
-								// if we have an open core, add the new job
-								if (index != -1) {
-												coreArr[index] = newJob;
-												coreArr[index]->responseTime = time - coreArr[index]->arrivalTime;
-
-												if (mScheme == PSJF) {
-																coreArr[index]->lastScheduledTime = time;
+								if (longestRemainingTime > running_time) {
+												if (coreArr[highest]->responseTime == time - coreArr[highest]->arrivalTime) {
+																coreArr[highest]->responseTime = -1;
 												}
 
-												return index;
+												priqueue_offer(&q, coreArr[highest]);
+												coreArr[highest] = newJob;
+
+												if (coreArr[highest]->responseTime == -1) {
+																coreArr[highest]->responseTime = time - coreArr[highest]->arrivalTime;
+												}
+
+												return highest;
 								}
 
-								// else we have to schedule the job
-								if (mScheme == PSJF) {
-												coreArr[0]->remainingTime -= time - coreArr[0]->lastScheduledTime;
-												coreArr[0]->lastScheduledTime = time;
+								priqueue_offer(&q, newJob);
+								return -1;
+				}
 
-												// track the longest remaining time
-												int longestRemainingTime = coreArr[0]->remainingTime;
+				if (mScheme == PPRI) {
+								// track lowest priority value and index
+								int lowestPriority = coreArr[0]->priority;
+								int lowestIndex = 0;
 
-												// track the highest core index
-												int highest = 0;
-
-												// find the shortest remainingTime
-												for (int i = 0; i < numCores; i++) {
-																// calculate new remainingTime
-																coreArr[i]->remainingTime -= time - coreArr[i]->lastScheduledTime;
-																coreArr[i]->lastScheduledTime = time;
-
-																if (coreArr[i]->remainingTime > longestRemainingTime) {
-																					highest = i;
-																					longestRemainingTime = coreArr[i]->remainingTime;
-																}
-												}
-
-												if (longestRemainingTime > running_time) {
-																if (coreArr[highest]->responseTime == time - coreArr[highest]->arrivalTime) {
-																				coreArr[highest]->responseTime = -1;
-																}
-
-																priqueue_offer(&q, coreArr[highest]);
-																coreArr[highest] = newJob;
-
-																if (coreArr[highest]->responseTime == -1) {
-																				coreArr[highest]->responseTime = time - coreArr[highest]->arrivalTime;
-																}
-
-																return highest;
-												}
-
-												priqueue_offer(&q, newJob);
-												return -1;
-								} else if (mScheme == PPRI) {
-												// track lowest priority value and index
-												int lowestPriority = coreArr[0]->priority;
-												int lowestIndex = 0;
-
-												for (int i = 0; i < numCores; i++) {
-																if (coreArr[i]->priority > lowestPriority) {
-																				lowestPriority = coreArr[i]->priority;
+								for (int i = 0; i < numCores; i++) {
+												if (coreArr[i]->priority > lowestPriority) {
+																lowestPriority = coreArr[i]->priority;
+																lowestIndex = i;
+												} else if (coreArr[i]->priority == lowestPriority) {
+																if (coreArr[i]->arrivalTime > coreArr[lowestIndex]->arrivalTime) {
 																				lowestIndex = i;
-																} else if (coreArr[i]->priority == lowestPriority) {
-																				if (coreArr[i]->arrivalTime > coreArr[lowestIndex]->arrivalTime) {
-																								lowestIndex = i;
-																				}
+																}
+												}
+								}
+
+								if (lowestPriority > priority) {
+												if (coreArr[lowestIndex]->lastScheduledTime == time) {
+																coreArr[lowestIndex]->responseTime = -1;
+												}
+
+												priqueue_offer(&q, coreArr[lowestIndex]);
+												coreArr[lowestIndex] = newJob;
+												coreArr[lowestIndex]->responseTime = time - coreArr[lowestIndex]->arrivalTime;
+												return lowestIndex;
+								} else if (lowestPriority == priority) {
+												for (int i = lowestIndex; i < numCores; i++) {
+																if (coreArr[i]->arrivalTime > coreArr[lowestIndex]->arrivalTime) {
+																				lowestIndex = i;
 																}
 												}
 
-												if (lowestPriority > priority) {
+												if (coreArr[lowestIndex]->arrivalTime > time) {
 																if (coreArr[lowestIndex]->lastScheduledTime == time) {
 																				coreArr[lowestIndex]->responseTime = -1;
 																}
@@ -330,36 +285,17 @@ int scheduler_new_job(int job_number, int time, int running_time, int priority) 
 																coreArr[lowestIndex] = newJob;
 																coreArr[lowestIndex]->responseTime = time - coreArr[lowestIndex]->arrivalTime;
 																return lowestIndex;
-												} else if (lowestPriority == priority) {
-																for (int i = lowestIndex; i < numCores; i++) {
-																				if (coreArr[i]->arrivalTime > coreArr[lowestIndex]->arrivalTime) {
-																								lowestIndex = i;
-																				}
-																}
-
-																if (coreArr[lowestIndex]->arrivalTime > time) {
-																				if (coreArr[lowestIndex]->lastScheduledTime == time) {
-																								coreArr[lowestIndex]->responseTime = -1;
-																				}
-
-																				priqueue_offer(&q, coreArr[lowestIndex]);
-																				coreArr[lowestIndex] = newJob;
-																				coreArr[lowestIndex]->responseTime = time - coreArr[lowestIndex]->arrivalTime;
-																				return lowestIndex;
-																}
-
-																priqueue_offer(&q, newJob);
-																return -1;
 												}
 
 												priqueue_offer(&q, newJob);
 												return -1;
-								} else {
-												priqueue_offer(&q, newJob);
-												return -1;
 								}
+
+								priqueue_offer(&q, newJob);
+								return -1;
 				}
 
+				priqueue_offer(&q, newJob);
 				return -1;
 }
 
