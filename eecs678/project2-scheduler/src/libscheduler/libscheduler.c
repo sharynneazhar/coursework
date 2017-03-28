@@ -194,7 +194,8 @@ int scheduler_new_job(int job_number, int time, int running_time, int priority) 
 				// else, schedule the job accordingly
 				if (coreIndex != -1) {
 								coreArr[coreIndex] = newJob;
-								coreArr[coreIndex]->responseTime = time - coreArr[coreIndex]->arrivalTime;
+								coreArr[coreIndex]->responseTime = time -
+									coreArr[coreIndex]->arrivalTime;
 
 								if (mScheme == PSJF) {
 												coreArr[coreIndex]->lastScheduledTime = time;
@@ -204,7 +205,8 @@ int scheduler_new_job(int job_number, int time, int running_time, int priority) 
 				}
 
 				if (mScheme == PSJF) {
-								coreArr[0]->remainingTime -= time - coreArr[0]->lastScheduledTime;
+								coreArr[0]->remainingTime -= time -
+									coreArr[0]->lastScheduledTime;
 								coreArr[0]->lastScheduledTime = time;
 
 								// track the longest remaining time
@@ -216,17 +218,20 @@ int scheduler_new_job(int job_number, int time, int running_time, int priority) 
 								// find the shortest remainingTime
 								for (int i = 0; i < numCores; i++) {
 												// calculate new remainingTime
-												coreArr[i]->remainingTime -= time - coreArr[i]->lastScheduledTime;
+												coreArr[i]->remainingTime -= time -
+													coreArr[i]->lastScheduledTime;
 												coreArr[i]->lastScheduledTime = time;
 
 												if (coreArr[i]->remainingTime > longestRemainingTime) {
 																	highest = i;
-																	longestRemainingTime = coreArr[i]->remainingTime;
+																	longestRemainingTime =
+																		coreArr[i]->remainingTime;
 												}
 								}
 
 								if (longestRemainingTime > running_time) {
-												if (coreArr[highest]->responseTime == time - coreArr[highest]->arrivalTime) {
+												if (coreArr[highest]->responseTime == time -
+														coreArr[highest]->arrivalTime) {
 																coreArr[highest]->responseTime = -1;
 												}
 
@@ -234,7 +239,8 @@ int scheduler_new_job(int job_number, int time, int running_time, int priority) 
 												coreArr[highest] = newJob;
 
 												if (coreArr[highest]->responseTime == -1) {
-																coreArr[highest]->responseTime = time - coreArr[highest]->arrivalTime;
+																coreArr[highest]->responseTime = time -
+																	coreArr[highest]->arrivalTime;
 												}
 
 												return highest;
@@ -254,7 +260,8 @@ int scheduler_new_job(int job_number, int time, int running_time, int priority) 
 																lowestPriority = coreArr[i]->priority;
 																lowestIndex = i;
 												} else if (coreArr[i]->priority == lowestPriority) {
-																if (coreArr[i]->arrivalTime > coreArr[lowestIndex]->arrivalTime) {
+																if (coreArr[i]->arrivalTime >
+																		coreArr[lowestIndex]->arrivalTime) {
 																				lowestIndex = i;
 																}
 												}
@@ -267,11 +274,13 @@ int scheduler_new_job(int job_number, int time, int running_time, int priority) 
 
 												priqueue_offer(&q, coreArr[lowestIndex]);
 												coreArr[lowestIndex] = newJob;
-												coreArr[lowestIndex]->responseTime = time - coreArr[lowestIndex]->arrivalTime;
+												coreArr[lowestIndex]->responseTime = time -
+													coreArr[lowestIndex]->arrivalTime;
 												return lowestIndex;
 								} else if (lowestPriority == priority) {
 												for (int i = lowestIndex; i < numCores; i++) {
-																if (coreArr[i]->arrivalTime > coreArr[lowestIndex]->arrivalTime) {
+																if (coreArr[i]->arrivalTime >
+																		coreArr[lowestIndex]->arrivalTime) {
 																				lowestIndex = i;
 																}
 												}
@@ -283,7 +292,8 @@ int scheduler_new_job(int job_number, int time, int running_time, int priority) 
 
 																priqueue_offer(&q, coreArr[lowestIndex]);
 																coreArr[lowestIndex] = newJob;
-																coreArr[lowestIndex]->responseTime = time - coreArr[lowestIndex]->arrivalTime;
+																coreArr[lowestIndex]->responseTime = time -
+																	coreArr[lowestIndex]->arrivalTime;
 																return lowestIndex;
 												}
 
