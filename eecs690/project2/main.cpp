@@ -33,6 +33,48 @@ std::string columnNames[117] = {
   "DA", "DB", "DC", "DD", "DE", "DF", "DG", "DH", "DI", "DJ", "DK", "DL", "DM"
 };
 
+/* Parses the data from a CSV file */
+std::vector<record_t> parseFile() {
+  std::ifstream file("500_Cities__City-level_Data__GIS_Friendly_Format_.csv");
+
+  if (!file) {
+    std::cerr << "\nUnable to open file.\n";
+    exit(EXIT_FAILURE);
+  }
+
+  // parse record columns
+  std::vector<record_t> data;
+  std::string line;
+
+  while (std::getline(file, line)) {
+    record_t record;
+    std::istringstream iss(line);
+    std::string field;
+
+    while (std::getline(iss, field, ',')) {
+      // take care of ranged columns that have comma in the field
+      while (iss && field[0] == '"' && field[field.size() - 1] != '"') {
+        std::string next;
+        std::getline(iss, next, ',');
+        field += ',' + next;
+      }
+
+      if (field[0] == '"' && field[field.size() - 1] == '"') {
+        field = field.substr(1, field.size() - 2);
+      }
+
+      record.push_back(field);
+    }
+
+    iss.str("");
+    data.push_back(record);
+  }
+
+  file.close();
+
+  return data;
+}
+
 /* Finds the index of a given column key */
 int convert(std::string query) {
   std::string* index = std::find(std::begin(columnNames), std::end(columnNames), query);
@@ -62,48 +104,6 @@ record_t getRecord(double value, int column, std::vector<record_t> bigData) {
     }
   }
   return {};
-}
-
-/* Parses the data from a CSV file */
-std::vector<record_t> parseFile() {
-  std::vector<record_t> data;
-  std::string line;
-
-  std::ifstream file("city-data.csv");
-
-  if (!file) {
-    std::cerr << "\nUnable to open file.\n";
-    exit(EXIT_FAILURE);
-  }
-
-  // parse record columns
-  while (std::getline(file, line)) {
-    record_t record;
-    std::istringstream iss(line);
-    std::string field;
-
-    while (std::getline(iss, field, ',')) {
-      // take care of ranged columns that have comma in the field
-      while (iss && field[0] == '"' && field[field.size() - 1] != '"') {
-        std::string next;
-        std::getline(iss, next, ',');
-        field += ',' + next;
-      }
-
-      if (field[0] == '"' && field[field.size() - 1] == '"') {
-        field = field.substr(1, field.size() - 2);
-      }
-
-      record.push_back(field);
-    }
-
-    iss.str("");
-    data.push_back(record);
-  }
-
-  file.close();
-
-  return data;
 }
 
 /* Returns the maximum of an array of numbers */
@@ -163,7 +163,7 @@ int main (int argc, char **argv) {
 	MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 	MPI_Comm_size(MPI_COMM_WORLD, &communicatorSize);
 
-  // get the desired queries
+  // check arguments passed in
   if (argc < 4) {
     if (rank == 0) {
       std::cerr << "\nMissing arguments. "
@@ -181,7 +181,6 @@ int main (int argc, char **argv) {
 		if (rank == 0) {
 			std::cerr << "\nThe communicatorSize does not evenly divide 500\n";
     }
-    return 0;
 	}
 
   // read arguments
