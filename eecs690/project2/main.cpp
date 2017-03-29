@@ -75,9 +75,9 @@ std::vector<record_t> parseFile() {
   return data;
 }
 
-/* Finds the index of a given column key */
-int convert(std::string query) {
-  std::string* index = std::find(std::begin(columnNames), std::end(columnNames), query);
+/* Finds the index of a given column name */
+int convert(std::string column) {
+  std::string* index = std::find(std::begin(columnNames), std::end(columnNames), column);
   if (index != std::end(columnNames)) {
     return std::distance(columnNames, index);
   }
@@ -85,11 +85,11 @@ int convert(std::string query) {
 }
 
 /* Returns the data from a column */
-double* getColumn(int column, std::vector<record_t> bigData) {
+float* getColumn(int column, std::vector<record_t> bigData) {
   if (column != -1) {
-    double* data = new double[500];
+    float* data = new float[500];
     for (int i = 0; i < 500; i++) {
-      data[i] = std::stod(bigData[i + 1][column]);
+      data[i] = std::stof(bigData[i + 1][column]);
     }
     return data;
   }
@@ -97,9 +97,9 @@ double* getColumn(int column, std::vector<record_t> bigData) {
 }
 
 /* Find record by value */
-record_t getRecord(double value, int column, std::vector<record_t> bigData) {
+record_t getRecord(float value, int column, std::vector<record_t> bigData) {
   for (int i = 0; i < 500; i++) {
-    if (std::stod(bigData[i + 1][column]) == value) {
+    if (std::stof(bigData[i + 1][column]) == value) {
       return bigData[i + 1];
     }
   }
@@ -107,7 +107,7 @@ record_t getRecord(double value, int column, std::vector<record_t> bigData) {
 }
 
 /* Returns the maximum of an array of numbers */
-double findMax(double currMax, double* values, int size) {
+float findMax(float currMax, float* values, int size) {
   for (int i = 0; i < size; i++) {
     if (values[i] > currMax) {
       currMax = values[i];
@@ -117,7 +117,7 @@ double findMax(double currMax, double* values, int size) {
 }
 
 /* Returns the minimum of an array of numbers */
-double findMin(double currMin, double* values, int size) {
+float findMin(float currMin, float* values, int size) {
   for (int i = 0; i < size; i++) {
     if (values[i] < currMin) {
       currMin = values[i];
@@ -127,17 +127,17 @@ double findMin(double currMin, double* values, int size) {
 }
 
 /* Returns the average of an array of numbers */
-double findAvg(double* values, int size) {
-  double sum = 0;
+float findAvg(float* values, int size) {
+  float sum = 0;
   for (int i = 0; i < size; i++) {
     sum += values[i];
   }
-  return sum / (double) 500;
+  return sum / (float) 500;
 }
 
 /* Returns the number of elements that satisfies the filter */
-double filter(std::string filter, double filterValue, double* values, int size) {
-  double count = 0;
+float filter(std::string filter, float filterValue, float* values, int size) {
+  float count = 0;
   if (filter == "gt") {
     for (int i = 0; i < size; i++) {
       if (values[i] > filterValue) {
@@ -181,47 +181,51 @@ int main (int argc, char **argv) {
 		if (rank == 0) {
 			std::cerr << "\nThe communicatorSize does not evenly divide 500\n";
     }
+    return 0;
 	}
 
   // read arguments
   std::string strategyArg = argv[1];
   std::string operationArg = argv[2];
   std::string conditionalArg;
-  double conditionalValue;
+  float conditionalValue;
 
   // parse file
   std::vector<record_t> data = parseFile();
 
   // either "scatter–reduce" (sr) or "broadcast–gather" (bg)
   if (strategyArg == "sr") {
-    int rowsToCompute = 500 / communicatorSize;       // number of rows each process will receive
-    int colIndex = convert(argv[3]);                  // the column index queried
-    double* columnData = getColumn(colIndex, data);   // the entire column queried
-    double columnDataChunk[rowsToCompute];            // the chunk of data each process will receive
-    double resultFromProcesses = 0;                   // the result retreived from each process
-    double finalResult = 0;                           // the final result sent to the rank 0 process
+    int rowsToCompute = 500 / communicatorSize;      // number of rows each process will receive
+    int colIndex = convert(argv[3]);                 // the column index queried
+    float* columnData = getColumn(colIndex, data);   // the entire column queried
+    float columnDataChunk[rowsToCompute];            // the chunk of data each process will receive
+    float resultFromProcesses = 0;                   // the result retreived from each process
+    float finalResult = 0;                           // the final result sent to the rank 0 process
 
-    MPI_Scatter(columnData, rowsToCompute, MPI_DOUBLE,
-                columnDataChunk, rowsToCompute, MPI_DOUBLE,
+    MPI_Scatter(columnData, rowsToCompute, MPI_FLOAT,
+                columnDataChunk, rowsToCompute, MPI_FLOAT,
                 0, MPI_COMM_WORLD);
 
     if (operationArg == "max") {
       resultFromProcesses = findMax(columnData[0], columnDataChunk, rowsToCompute);
-      MPI_Reduce(&resultFromProcesses, &finalResult, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
+      MPI_Reduce(&resultFromProcesses, &finalResult, 1, MPI_FLOAT, MPI_MAX, 0, MPI_COMM_WORLD);
     } else if (operationArg == "min") {
       resultFromProcesses = findMin(columnData[0], columnDataChunk, rowsToCompute);
-      MPI_Reduce(&resultFromProcesses, &finalResult, 1, MPI_DOUBLE, MPI_MIN, 0, MPI_COMM_WORLD);
+      MPI_Reduce(&resultFromProcesses, &finalResult, 1, MPI_FLOAT, MPI_MIN, 0, MPI_COMM_WORLD);
     } else if (operationArg == "avg") {
       resultFromProcesses = findAvg(columnDataChunk, rowsToCompute);
-      MPI_Reduce(&resultFromProcesses, &finalResult, 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
+      MPI_Reduce(&resultFromProcesses, &finalResult, 1, MPI_FLOAT, MPI_SUM, 0, MPI_COMM_WORLD);
     } else {
       conditionalArg = (argv[4] != NULL) ? argv[4] : "none";
-      conditionalValue = (argv[4] != NULL && argv[5] != NULL) ? std::stod(argv[5]) : 0;
+      conditionalValue = (argv[4] != NULL && argv[5] != NULL) ? std::stof(argv[5]) : 0;
       resultFromProcesses = filter(conditionalArg, conditionalValue, columnDataChunk, rowsToCompute);
-      MPI_Reduce(&resultFromProcesses, &finalResult, 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
+      MPI_Reduce(&resultFromProcesses, &finalResult, 1, MPI_FLOAT, MPI_SUM, 0, MPI_COMM_WORLD);
     }
 
     if (rank == 0) {
+      std::cout.setf(std::ios_base::fixed, std::ios_base::floatfield);
+      std::cout.precision(2);
+
       if (operationArg == "max" || operationArg == "min") {
         record_t record = getRecord(finalResult, colIndex, data);
         std::cout << record[1] << ", " << record[0] << " "
@@ -241,11 +245,11 @@ int main (int argc, char **argv) {
     // The number of processes is the same as the number of columns to be examined
     int totalCol = communicatorSize;
 
-    std::string columnArgs[totalCol];       // the columns being queried
-    double columnData[totalCol][500];       // array of columns to process
-    double resultFromProcesses[totalCol];   // array of results retrieved from each process
-    double resultFromProcess;               // results retrieved from a single process
-    double finalResult;                     // the final result send to the rank 0 process
+    std::string columnArgs[totalCol];      // the columns being queried
+    float columnData[totalCol][500];       // array of columns to process
+    float resultFromProcesses[totalCol];   // array of results retrieved from each process
+    float resultFromProcess;               // results retrieved from a single process
+    float finalResult;                     // the final result send to the rank 0 process
 
     if (rank == 0) {
       for (int i = 0; i < totalCol; i++) {
@@ -253,14 +257,14 @@ int main (int argc, char **argv) {
       }
 
       for (int i = 0; i < totalCol; i++) {
-        double* col = getColumn(convert(columnArgs[i]), data);
+        float* col = getColumn(convert(columnArgs[i]), data);
         for (int j = 0; j < 500; j++) {
           columnData[i][j] = col[j];
         }
       }
     }
 
-    MPI_Bcast(&columnData[0][0], 500 * totalCol, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+    MPI_Bcast(&columnData[0][0], 500 * totalCol, MPI_FLOAT, 0, MPI_COMM_WORLD);
 
     if (operationArg == "max") {
       resultFromProcess = columnData[rank][0];
@@ -278,12 +282,12 @@ int main (int argc, char **argv) {
       }
     } else {
       for (int i = 0; i < 500; i++) {
-        resultFromProcess += columnData[rank][i] / (double) 500;
+        resultFromProcess += columnData[rank][i] / (float) 500;
       }
     }
 
-    MPI_Gather(&resultFromProcess, 1, MPI_DOUBLE,
-               resultFromProcesses, 1, MPI_DOUBLE,
+    MPI_Gather(&resultFromProcess, 1, MPI_FLOAT,
+               resultFromProcesses, 1, MPI_FLOAT,
                0, MPI_COMM_WORLD);
 
     if (rank == 0) {
