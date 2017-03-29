@@ -52,7 +52,7 @@ static int available_chopsticks[NUM_CHOPS];
 
 /*
  * Helper functions for grabbing chopsticks, referencing neighbors.
- * Numbering assumptions: 
+ * Numbering assumptions:
  *   Philosophers: 1 -> NUM_PHILS
  *      - Left philosopher is (number + 1) modulo NUM_PHILS
  *      - Right philosopher is (number - 1) modulo NUM_PHILS
@@ -152,8 +152,16 @@ static void *dp_thread(void *arg)
     /*
      * Grab both chopsticks: ASYMMETRIC and WAITER SOLUTION
      */
-    pthread_mutex_lock(left_chop(me));
-    pthread_mutex_lock(right_chop(me));
+    pthread_mutex_lock(&waiter);
+
+    while (!(left_chop_available(me) && right_chop_available(me))) {
+      pthread_cond_wait(&(me->can_eat), &waiter);
+    }
+
+    *left_chop_available(me) = 0;
+    *right_chop_available(me) = 0;
+
+    pthread_mutex_unlock(&waiter);
 
     /*
      * Eat some random amount of food. Again, this involves a
@@ -167,10 +175,17 @@ static void *dp_thread(void *arg)
     /*
      * Release both chopsticks: WAITER SOLUTION
      */
-    pthread_mutex_unlock(right_chop(me));
-    pthread_mutex_unlock(left_chop(me));
+    pthread_mutex_lock(&waiter);
 
-    /* 
+    *left_chop_available(me) = 1;
+    *right_chop_available(me) = 1;
+
+    pthread_cond_signal(&(left_phil(me)->can_eat));
+    pthread_cond_signal(&(right_phil(me)->can_eat));
+
+    pthread_mutex_unlock(&waiter);
+
+    /*
      * Update my progress in current session and for all time.
      */
     me->prog++;
@@ -258,7 +273,7 @@ void print_progress()
        * with a constant width to make things line up in columns for
        * better readability.
        */
-      sprintf(buf, "%d/%d", 
+      sprintf(buf, "%d/%d",
               Diners[i].prog, Diners[i].prog_total);
       printf("p%d=%*s   ", i, STATS_WIDTH, buf);
       i++;
@@ -272,7 +287,7 @@ void print_progress()
     /*
      * Print the 5th on the line, with a newline to end the line
      */
-    sprintf(buf, "%d/%d", 
+    sprintf(buf, "%d/%d",
             Diners[i].prog, Diners[i].prog_total);
     printf("p%d=%*s\n", i, STATS_WIDTH, buf);
     i++;
@@ -368,4 +383,3 @@ int main(int argc, char **argv)
 
   return 0;
 }
-
