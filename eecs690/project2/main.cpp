@@ -35,8 +35,8 @@ std::string columnNames[117] = {
 };
 
 /* Parses the data from a CSV file */
-std::vector<record_t> parseFile() {
-  std::ifstream file("500_Cities__City-level_Data__GIS_Friendly_Format_.csv");
+std::vector<record_t> parseFile(std::string fileName) {
+  std::ifstream file(fileName);
 
   if (!file) {
     std::cerr << "\nUnable to open file.\n";
@@ -97,7 +97,7 @@ double* getColumn(int column, std::vector<record_t> bigData) {
   return {};
 }
 
-/* Find record by value */
+/* Find record by value - ISSUE: assumes no duplicates */
 record_t getRecord(double value, int column, std::vector<record_t> bigData) {
   for (int i = 0; i < 500; i++) {
     if (std::stod(bigData[i + 1][column]) == value) {
@@ -183,36 +183,36 @@ int main (int argc, char **argv) {
     return 0;
   }
 
-  // check communicator size divides evenly into 500
-  if ((500 % communicatorSize) != 0) {
-		if (rank == 0) {
-			std::cerr << "\nThe communicatorSize does not evenly divide 500\n";
-    }
-    return 0;
-	}
-
-  // parse file
-  std::vector<record_t> data;
-  if (rank == 0) {
-    data = parseFile();
-  }
-
-  // read in arguments
+  // read in the strategy and operation queries from the first two arguments passed in
   std::string strategyArg = argv[1];
   std::string operationArg = argv[2];
-  std::string conditionalArg;
-  double conditionalValue;
+
+  // parse file - name hardcoded
+  // only the rank 0 process can read the file and store all the data
+  std::vector<record_t> data;
+  if (rank == 0) {
+    data = parseFile("500_Cities__City-level_Data__GIS_Friendly_Format_.csv");
+  }
 
   // either "scatter–reduce" (sr) or "broadcast–gather" (bg)
   if (strategyArg == "sr") {
-    int rowsToCompute = 500 / communicatorSize;      // number of rows each process will receive
-    double resultFromProcesses = 0;                   // the result retreived from each process
-    double finalResult = 0;                           // the final result sent to the rank 0 process
 
-    int colIndex = convert(argv[3]);                 // the column index queried
-    double columnData[500];                           // the entire column queried
-    double columnDataChunk[rowsToCompute];            // the chunk of data each process will receive
+    // check communicator size divides evenly into 500
+    if ((500 % communicatorSize) != 0) {
+  		if (rank == 0) {
+  			std::cerr << "\nThe communicatorSize does not evenly divide 500\n";
+      }
+      return 0;
+  	}
 
+    int rowsToCompute = 500 / communicatorSize;  // number of rows each process will receive
+    double finalResult = 0;                      // the final result sent to the rank 0 process
+
+    int colIndex = convert(argv[3]);             // the column index based on column name queried
+    double columnData[500];                      // the data set from an column queried
+    double columnDataChunk[rowsToCompute];       // the chunk of data each process will receive
+
+    // rank 0 will be responsible for getting and storing the column values
     if (rank == 0) {
       double* col = getColumn(colIndex, data);
       for (int i = 0; i < 500; i++) {
@@ -220,13 +220,15 @@ int main (int argc, char **argv) {
       }
     }
 
+    // scatter - evenly distribute the work to all processes
     MPI_Scatter(columnData, rowsToCompute, MPI_DOUBLE,
                 columnDataChunk, rowsToCompute, MPI_DOUBLE,
                 0, MPI_COMM_WORLD);
 
+    // Begin reducing results to a final value and rank 0 will display result to user
     if (operationArg == "max") {
-      resultFromProcesses = findMax(columnDataChunk, rowsToCompute);
-      MPI_Reduce(&resultFromProcesses, &finalResult, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
+      double max = findMax(columnDataChunk, rowsToCompute);
+      MPI_Reduce(&max, &finalResult, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
       if (rank == 0) {
         record_t record = getRecord(finalResult, colIndex, data);
         std::cout << record[1] << ", " << record[0] << " "
@@ -234,8 +236,8 @@ int main (int argc, char **argv) {
                   << finalResult << std::endl;
       }
     } else if (operationArg == "min") {
-      resultFromProcesses = findMin(columnDataChunk, rowsToCompute);
-      MPI_Reduce(&resultFromProcesses, &finalResult, 1, MPI_DOUBLE, MPI_MIN, 0, MPI_COMM_WORLD);
+      double min = findMin(columnDataChunk, rowsToCompute);
+      MPI_Reduce(&min, &finalResult, 1, MPI_DOUBLE, MPI_MIN, 0, MPI_COMM_WORLD);
       if (rank == 0) {
         record_t record = getRecord(finalResult, colIndex, data);
         std::cout << record[1] << ", " << record[0] << " "
@@ -243,17 +245,17 @@ int main (int argc, char **argv) {
                   << finalResult << std::endl;
       }
     } else if (operationArg == "avg") {
-      resultFromProcesses = findAvg(columnDataChunk, rowsToCompute);
-      MPI_Reduce(&resultFromProcesses, &finalResult, 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
+      double average = findAvg(columnDataChunk, rowsToCompute);
+      MPI_Reduce(&average, &finalResult, 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
       if (rank == 0) {
         std::cout << "Average " << data[0][colIndex] << " = "
                   << finalResult << std::endl;
       }
     } else {
-      conditionalArg = (argv[4] != NULL) ? argv[4] : "none";
-      conditionalValue = (argv[4] != NULL && argv[5] != NULL) ? std::stod(argv[5]) : 0;
-      resultFromProcesses = filter(conditionalArg, conditionalValue, columnDataChunk, rowsToCompute);
-      MPI_Reduce(&resultFromProcesses, &finalResult, 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
+      std::string conditionalArg = (argv[4] != NULL) ? argv[4] : "none";
+      double conditionalValue = (argv[4] != NULL && argv[5] != NULL) ? std::stod(argv[5]) : 0;
+      double count = filter(conditionalArg, conditionalValue, columnDataChunk, rowsToCompute);
+      MPI_Reduce(&count, &finalResult, 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
       if (rank == 0) {
         record_t record = getRecord(finalResult, colIndex, data);
         std::cout << "Number cities with " << data[0][colIndex] << " "
@@ -261,18 +263,27 @@ int main (int argc, char **argv) {
                   << finalResult << std::endl;
       }
     }
-  }  else {
+  }  else if (strategyArg == "bg") {
+
+    // check communicator size is equal to the number of columns passed in
+    if (communicatorSize != (argc - 3)) {
+  		if (rank == 0) {
+  			std::cerr << "\nThe communicatorSize does not match number of columns given.\n";
+      }
+      return 0;
+  	}
+
     // The number of processes is the same as the number of columns to be examined
     int totalCol = communicatorSize;
 
-    std::string columnArgs[totalCol];      // the columns being queried
+    std::string columnArgs[totalCol];       // the columns being queried
     double columnData[totalCol][500];       // array of columns to process
     double resultFromProcesses[totalCol];   // array of results retrieved from each process
-    double resultFromProcess;               // results retrieved from a single process
     double finalResult;                     // the final result send to the rank 0 process
 
+    // rank 0 is responsible for reading the arguments and storing the column
+    // data accordingly
     if (rank == 0) {
-      // column info starts at argv[3]
       for (int i = 0; i < totalCol; i++) {
         columnArgs[i] = argv[i + 3];
       }
@@ -285,17 +296,19 @@ int main (int argc, char **argv) {
       }
     }
 
+    // broadcast the column data to all processes and later use MPI_Gather
+    // to store the results received back from each process
     MPI_Bcast(&columnData[0][0], 500 * totalCol, MPI_DOUBLE, 0, MPI_COMM_WORLD);
 
     if (operationArg == "max") {
-      resultFromProcess = columnData[rank][0];
+      double max = columnData[rank][0];
       for (int i = 0; i < 500; i++) {
-        if (columnData[rank][i] > resultFromProcess) {
-          resultFromProcess = columnData[rank][i];
+        if (columnData[rank][i] > max) {
+          max = columnData[rank][i];
         }
       }
 
-      MPI_Gather(&resultFromProcess, 1, MPI_DOUBLE,
+      MPI_Gather(&max, 1, MPI_DOUBLE,
                  resultFromProcesses, 1, MPI_DOUBLE,
                  0, MPI_COMM_WORLD);
 
@@ -310,14 +323,14 @@ int main (int argc, char **argv) {
         }
       }
     } else if (operationArg == "min") {
-      resultFromProcess = columnData[rank][0];
+      double min = columnData[rank][0];
       for (int i = 0; i < 500; i++) {
-        if (columnData[rank][i] < resultFromProcess) {
-          resultFromProcess = columnData[rank][i];
+        if (columnData[rank][i] < min) {
+          min = columnData[rank][i];
         }
       }
 
-      MPI_Gather(&resultFromProcess, 1, MPI_DOUBLE,
+      MPI_Gather(&min, 1, MPI_DOUBLE,
                  resultFromProcesses, 1, MPI_DOUBLE,
                  0, MPI_COMM_WORLD);
 
@@ -332,11 +345,13 @@ int main (int argc, char **argv) {
         }
       }
     } else {
+      double average;
+
       for (int i = 0; i < 500; i++) {
-        resultFromProcess += columnData[rank][i] / (double) 500;
+        average += columnData[rank][i] / (double) 500;
       }
 
-      MPI_Gather(&resultFromProcess, 1, MPI_DOUBLE,
+      MPI_Gather(&average, 1, MPI_DOUBLE,
                  resultFromProcesses, 1, MPI_DOUBLE,
                  0, MPI_COMM_WORLD);
 
