@@ -1,8 +1,8 @@
 /**
 *	@file   : main.cpp
 *	@author : Sharynne Azhar
-*	@date   : 03-27-2017
-* @brief  : Main driver for the min-leftist heap program
+*	@date   : 04-03-2017
+* @brief  : Main driver for the binomial queue program
 */
 
 #include <fstream>
@@ -28,13 +28,13 @@ int main(int argc, char* argv[]) {
     exit(EXIT_FAILURE);
   }
 
-  // declare the leftist heap
-  LeftistHeap<int> leftistHeap;
+  // declare the Binomial Queue
+  BinomialQueue<int> binomialQueue;
 
   // read file
   int value;
   while (file >> value) {
-    leftistHeap.insert(value);
+    binomialQueue.insert(value);
   }
 
   file.close();
@@ -48,13 +48,13 @@ int main(int argc, char* argv[]) {
       case 1:
         std::cout << "\nEnter a number to be inserted: ";
         std::cin >> input;
-        leftistHeap.insert(input);
+        binomialQueue.insert(input);
         break;
       case 2:
-        leftistHeap.deleteMin();
+        binomialQueue.deleteMin();
         break;
       case 3:
-        leftistHeap.levelorder();
+        binomialQueue.levelorder();
         break;
       case 4:
         std::cout << "\nBye!\n";

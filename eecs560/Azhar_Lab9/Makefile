@@ -18,7 +18,7 @@ CFLAGS := -g -Wall
 
 # Specify the files needed for compilation
 SRC = ../
-INCLUDES = ./Queue/Queue.h ./BinomialQueue.h
+INCLUDES = ./Queue/Queue.h ./BinomialQueueNode/BinomialQueueNode.h ./BinomialQueue.h
 
 all: clean $(PROG_NAME)
 

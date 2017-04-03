@@ -1,51 +1,35 @@
 /**
-*	@file   : LeftistHeap.h
+*	@file   : BinomialQueue.h
 *	@author : Sharynne Azhar
-*	@date   : 03-27-2017
-* @desc   : Header file for the min-leftist heap data structure
+*	@date   : 04-03-2017
+* @desc   : Header file for the binomial queue data structure
 */
 
-#ifndef LEFTIST_HEAP_H
-#define LEFTIST_HEAP_H
+#ifndef BINOMIAL_QUEUE_H
+#define BINOMIAL_QUEUE_H
 
 #include <iostream>
 
-#include "LeftistHeapNode/LeftistHeapNode.h"
+#include "BinomialQueueNode/BinomialQueueNode.h"
 #include "Queue/Queue.h"
 
 template<typename T>
-class LeftistHeap {
+class BinomialQueue {
   private:
-    LeftistHeapNode<T>* m_rootPtr;
 
-    LeftistHeapNode<T>* merge(LeftistHeapNode<T>* leftTreePtr,
-                              LeftistHeapNode<T>* rightTreePtr);
-
-    void preorderHelper(LeftistHeapNode<T>* subTreePtr);
-
-    void inorderHelper(LeftistHeapNode<T>* subTreePtr);
-
-    void levelorderHelper(LeftistHeapNode<T>* subTreePtr);
-
-    void deleteTree(LeftistHeapNode<T>* subTreePtr);
 
   public:
-    LeftistHeap();
+    BinomialQueue();
 
-    virtual ~LeftistHeap();
+    virtual ~BinomialQueue();
 
     void insert(const T& val);
 
     void deleteMin();
 
-    void preorder();
-
-    void inorder();
-
     void levelorder();
-
 };
 
-#include "LeftistHeap.cpp"
+#include "BinomialQueue.cpp"
 
 #endif
