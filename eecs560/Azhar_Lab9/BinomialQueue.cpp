@@ -4,3 +4,141 @@
 *	@date   : 04-03-2017
 * @desc   : Implementation of the binomial queue data structure
 */
+
+template<typename T>
+BinomialQueue<T>::BinomialQueue() {
+  m_root = nullptr;
+  for (int i = 0; i < MAX_NUM_TREES; i++) {
+    bqTrees[i] = nullptr;
+  }
+}
+
+template<typename T>
+BinomialQueue<T>::~BinomialQueue() {
+
+}
+
+template<typename T>
+void BinomialQueue<T>::resetRootPtr() {
+  for (int i = 0; i < MAX_NUM_TREES; i++) {
+    if (bqTrees[i] != nullptr) {
+      m_root = bqTrees[i];
+      return;
+    }
+  }
+  m_root = nullptr;
+}
+
+template<typename T>
+void BinomialQueue<T>::insert(const T& val) {
+    BinomialQueueNode<T>* newNode = new BinomialQueueNode<T>(val);
+    insertHelper(newNode);
+    resetRootPtr();
+}
+
+template<typename T>
+void BinomialQueue<T>::insertHelper(BinomialQueueNode<T>* newNode) {
+  int order = newNode->getOrder();
+  if (bqTrees[order] == nullptr) {
+    bqTrees[order] = newNode;
+  } else {
+    insertHelper(merge(newNode, bqTrees[order]));
+    bqTrees[order] = nullptr;
+  }
+}
+
+template<typename T>
+BinomialQueueNode<T>* BinomialQueue<T>::merge(BinomialQueueNode<T>* q1, BinomialQueueNode<T>* q2) {
+  if (q1->getValue() > q2->getValue()) {
+    return merge(q2, q1);
+  }
+
+  if (q1->getFirstChildPtr() == nullptr) {
+    q1->setFirstChildPtr(q2);
+    q1->setOrder(q1->getOrder() + 1);
+  } else {
+    q2->setLeftSiblingPtr(q1->getFirstChildPtr()->getLeftSiblingPtr());
+    q1->getFirstChildPtr()->getLeftSiblingPtr()->setRightSiblingPtr(q2);
+    q1->getFirstChildPtr()->setLeftSiblingPtr(q2);
+    q1->setOrder(q1->getOrder() + 1);
+  }
+
+  return q1;
+}
+
+template<typename T>
+void BinomialQueue<T>::deleteMin() {
+  if (m_root == nullptr) {
+    std::cout << "\nQueue is empty.\n";
+  } else {
+    BinomialQueueNode<T>* nodeToDelete = m_root;
+    for (int i = 0; i < MAX_NUM_TREES; i++) {
+      if (bqTrees[i] != nullptr && bqTrees[i]->getValue() < nodeToDelete->getValue()) {
+        nodeToDelete = bqTrees[i];
+      }
+    }
+
+    int order = nodeToDelete->getOrder();
+    BinomialQueueNode<T>** tempQueue = new BinomialQueueNode<T>*[order];
+    BinomialQueueNode<T>* childPtr = nodeToDelete->getFirstChildPtr();
+    for (int i = 0; childPtr != nullptr; i++) {
+      tempQueue[i] = childPtr;
+      childPtr = childPtr->getRightSiblingPtr();
+    }
+
+    delete nodeToDelete;
+    bqTrees[order] = nullptr;
+
+    for (int i = 0; i < order; i++) {
+      BinomialQueueNode<T>* childToInsert = tempQueue[i];
+      childToInsert->setLeftSiblingPtr(childToInsert);
+      childToInsert->setRightSiblingPtr(nullptr);
+      insertHelper(childToInsert);
+    }
+
+    delete [] tempQueue;
+    resetRootPtr();
+  }
+}
+
+template<typename T>
+void BinomialQueue<T>::levelorder() {
+  std::cout << "\nLevelorder:\n\n";
+  for (int i = 0; i < MAX_NUM_TREES; i++) {
+    if (bqTrees[i] != nullptr) {
+      levelorderHelper(bqTrees[i]);
+      std::cout << "---" << std::endl;
+    }
+  }
+}
+
+template<typename T>
+void BinomialQueue<T>::levelorderHelper(BinomialQueueNode<T>* ptr) {
+  Queue<BinomialQueueNode<T>*> levelorderQueue1;
+  Queue<BinomialQueueNode<T>*> levelorderQueue2;
+
+  levelorderQueue1.enqueue(ptr);
+  while (!(levelorderQueue1.isEmpty())) {
+    BinomialQueueNode<T>* nodeToVisitPtr = levelorderQueue1.peek();
+    levelorderQueue1.dequeue();
+
+    if (nodeToVisitPtr != nullptr) {
+      if (nodeToVisitPtr->getFirstChildPtr() != nullptr) {
+        BinomialQueueNode<T>* childPtr = nodeToVisitPtr->getFirstChildPtr();
+        do {
+          levelorderQueue2.enqueue(childPtr);
+          childPtr = childPtr->getRightSiblingPtr();
+        } while (childPtr != nullptr);
+      }
+      std::cout << nodeToVisitPtr->getValue() << " ";
+    }
+
+    if (levelorderQueue1.isEmpty()) {
+      std::cout << std::endl;
+      while(!(levelorderQueue2.isEmpty())) {
+        levelorderQueue1.enqueue(levelorderQueue2.peek());
+        levelorderQueue2.dequeue();
+      }
+    }
+  }
+}

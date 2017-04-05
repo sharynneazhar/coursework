@@ -8,7 +8,7 @@
 template<typename T>
 BinomialQueueNode<T>::BinomialQueueNode() {
   firstChildPtr = nullptr;
-  leftSiblingPtr = nullptr;
+  leftSiblingPtr = this;
   rightSiblingPtr = nullptr;
 }
 
@@ -17,7 +17,7 @@ BinomialQueueNode<T>::BinomialQueueNode(const T& val) {
   m_value = val;
   m_order = 0;
   firstChildPtr = nullptr;
-  leftSiblingPtr = nullptr;
+  leftSiblingPtr = this;
   rightSiblingPtr = nullptr;
 }
 
