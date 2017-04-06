@@ -4,7 +4,7 @@
  KUID          : 2513206
  Date          : 5 April 2017
  Description   : Simulates a level 1 (L1) cache
- To Compile    :
+ To Run        : make simulator; ./simulator [input file]
  ============================================================================
 */
 
@@ -29,7 +29,7 @@ FILE *inputFile;
 #define AssocExp 2
 #define Assoc (1 << AssocExp)
 
-/* Block Size */
+/* Block Offset Size */
 #define BlockSizeExp 6
 #define BlockSize (1 << BlockSizeExp)
 #define BlockSizeMask (BlockSize - 1)
@@ -40,7 +40,7 @@ FILE *inputFile;
 #define LineSizeMask (LineSize - 1)
 
 /* Tag Size */
-#define TagSizeExp (AddressBits - (BlockSizeExp + LineSizeExp))
+#define TagSizeExp (AddressBits - BlockSizeExp - LineSizeExp)
 #define TagSize (1 << TagSizeExp)
 #define TagSizeMask (TagSize - 1)
 
@@ -55,26 +55,22 @@ int missCount = 0;
 Block cache[LineSize][Assoc] = {};
 
 int main(int argc, const char * argv[]) {
-
-  printf("\nCacheSizeExp: %d", CacheSizeExp);
-  printf("\nCacheSize: %d", CacheSize);
-
-  printf("\nAddressBits: %d", AddressBits);
-
-  printf("\nAssocExp: %d", AssocExp);
-  printf("\nAssoc: %d", Assoc);
-
-  printf("\nBlockSizeExp: %d", BlockSizeExp);
-  printf("\nBlockSize: %d", BlockSize);
-  printf("\nBlockSizeMask: %d", BlockSizeMask);
-
-  printf("\nLineSizeExp: %d", LineSizeExp);
-  printf("\nLineSize: %d", LineSize);
-  printf("\nLineSizeMask: %d", LineSizeMask);
-
-  printf("\nTagSizeExp: %d", TagSizeExp);
-  printf("\nTagSize: %d", TagSize);
-  printf("\nTagSizeMask: %d", TagSizeMask);
+  printf("\n=== Cache Parameters ===");
+  printf("\n%-15s: %d", "CacheSizeExp", CacheSizeExp);
+  printf("\n%-15s: %d", "CacheSize", CacheSize);
+  printf("\n%-15s: %d", "AddressBits", AddressBits);
+  printf("\n%-15s: %d", "AssocExp", AssocExp);
+  printf("\n%-15s: %d", "Assoc", Assoc);
+  printf("\n%-15s: %d", "BlockSizeExp", BlockSizeExp);
+  printf("\n%-15s: %d", "BlockSize", BlockSize);
+  printf("\n%-15s: %d", "BlockSizeMask", BlockSizeMask);
+  printf("\n%-15s: %d", "LineSizeExp", LineSizeExp);
+  printf("\n%-15s: %d", "LineSize", LineSize);
+  printf("\n%-15s: %d", "LineSizeMask", LineSizeMask);
+  printf("\n%-15s: %d", "TagSizeExp", TagSizeExp);
+  printf("\n%-15s: %d", "TagSize", TagSize);
+  printf("\n%-15s: %d", "TagSizeMask", TagSizeMask);
+  printf("\n=========================\n\n");
 
   /* ---------------------------------------------------- */
 
@@ -92,16 +88,37 @@ int main(int argc, const char * argv[]) {
   }
 
   // read the contents of the binary file
-  int32_t address;
-  while (fread(&address, 4, 1, inputFile)) {
-    // determine the number of bits in the line index and tag
-    int32_t line = (address & LineSizeMask) >> BlockSizeExp;
-    int32_t tag = (address & TagSizeMask) >> (LineSizeExp + BlockSizeExp);
+  int32_t addressBuf;
+  while (fread(&addressBuf, 4, 1, inputFile)) {
+    // find the line index and tag of the address buffer
+    int32_t line = (addressBuf & LineSizeMask) >> BlockSizeExp;
+    int32_t tag = (addressBuf & TagSizeMask) >> (LineSizeExp + BlockSizeExp);
 
-    bool hit = 0;
+    // initialize hit flag to false
+    bool hit = false;
 
+    // loop through the block data
+    for (int i = 0; i < Assoc; i++) {
+      // if the tag in the address buffer and cache match, we have a hit
+      if (cache[line][tag].tag == tag) {
+        hitCount++;
+        hit = true;
+      }
+    }
+
+    if (!hit) {
+      missCount++;
+    }
   }
 
+  // calculate hit ratio
+  float hitRatio = (float) (100.0 * hitCount / (missCount + hitCount));
+
+  printf("\n====== Cache Results ======");
+  printf("\n%-16s: %d", "Hit Count", hitCount);
+  printf("\n%-16s: %d", "Miss Count", missCount);
+  printf("\n%-16s: %.02f%%", "Hit Probability", hitRatio);
+  printf("\n===========================\n\n");
 
   fclose(inputFile);
 
