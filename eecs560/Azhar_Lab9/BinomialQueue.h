@@ -19,28 +19,39 @@ const int MAX_NUM_TREES = 100;
 template<typename T>
 class BinomialQueue {
   private:
+    /* Points to the queue with the lowest order */
     BinomialQueueNode<T>* m_root;
 
-    BinomialQueueNode<T>* bqTrees[MAX_NUM_TREES];
+    /* The binomial queue of binomial trees a.k.a the forest */
+    BinomialQueueNode<T>* queue[MAX_NUM_TREES];
 
-    void resetRootPtr();
-
-    void insertHelper(BinomialQueueNode<T>* newNode);
-
+    /* Prints out binomial queue using level order traversal */
     void levelorderHelper(BinomialQueueNode<T>* ptr);
 
-    BinomialQueueNode<T>* merge(BinomialQueueNode<T>* q1,
-                                BinomialQueueNode<T>* q2);
+    /* Adjusts the root so that the binomial trees are always in order */
+    void adjustTree();
+
+    /* Merges a node into the binomial queue */
+    void merge(BinomialQueueNode<T>* newNode);
+
+    /* Combines two binomial trees together (q1 is the new tree) */
+    BinomialQueueNode<T>* combine(BinomialQueueNode<T>* q1,
+                                  BinomialQueueNode<T>* q2);
 
   public:
+    /* Constructor */
     BinomialQueue();
 
+    /* Destructor */
     virtual ~BinomialQueue();
 
+    /* Inserts a value into the binomial queue */
     void insert(const T& val);
 
+    /* Removes the smallest value from the binomial queue */
     void deleteMin();
 
+    /* Prints out binomial queue using level order traversal */
     void levelorder();
 };
 
