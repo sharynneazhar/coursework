@@ -67,34 +67,35 @@ template<typename T>
 void BinomialQueue<T>::deleteMin() {
   if (m_root == nullptr) {
     std::cout << "\nQueue is empty.\n";
-  } else {
-    BinomialQueueNode<T>* nodeToDelete = m_root;
-    for (int i = 0; i < MAX_NUM_TREES; i++) {
-      if (queue[i] != nullptr && queue[i]->getValue() < nodeToDelete->getValue()) {
-        nodeToDelete = queue[i];
-      }
-    }
-
-    int order = nodeToDelete->getOrder();
-    BinomialQueueNode<T>** tempQueue = new BinomialQueueNode<T>*[order];
-    BinomialQueueNode<T>* childPtr = nodeToDelete->getFirstChildPtr();
-    for (int i = 0; childPtr != nullptr; i++) {
-      tempQueue[i] = childPtr;
-      childPtr = childPtr->getRightSiblingPtr();
-    }
-
-    delete nodeToDelete;
-    queue[order] = nullptr;
-
-    for (int i = 0; i < order; i++) {
-      BinomialQueueNode<T>* childToInsert = tempQueue[i];
-      childToInsert->setLeftSiblingPtr(childToInsert);
-      childToInsert->setRightSiblingPtr(nullptr);
-      merge(childToInsert);
-    }
-
-    delete [] tempQueue;
+    return;
   }
+
+  BinomialQueueNode<T>* minNode = m_root;
+  for (int i = 0; i < MAX_NUM_TREES; i++) {
+    if (queue[i] != nullptr && queue[i]->getValue() < minNode->getValue()) {
+      minNode = queue[i];
+    }
+  }
+
+  int order = minNode->getOrder();
+  BinomialQueueNode<T>** newQueue = new BinomialQueueNode<T>*[order];
+  BinomialQueueNode<T>* firstChild = minNode->getFirstChildPtr();
+  for (int i = 0; firstChild != nullptr; i++) {
+    newQueue[i] = firstChild;
+    firstChild = firstChild->getRightSiblingPtr();
+  }
+
+  delete minNode;
+  queue[order] = nullptr;
+
+  for (int i = 0; i < order; i++) {
+    BinomialQueueNode<T>* node = newQueue[i];
+    node->setLeftSiblingPtr(node);
+    node->setRightSiblingPtr(nullptr);
+    merge(node);
+  }
+
+  delete [] newQueue;
 }
 
 template<typename T>
