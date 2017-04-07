@@ -30,6 +30,7 @@ template<typename T>
 void BinomialQueue<T>::insert(const T& val) {
   BinomialQueueNode<T>* newNode = new BinomialQueueNode<T>(val);
   merge(newNode);
+  adjustTree();
 }
 
 template<typename T>
@@ -41,7 +42,6 @@ void BinomialQueue<T>::merge(BinomialQueueNode<T>* newNode) {
     merge(combine(newNode, queue[order]));
     queue[order] = nullptr;
   }
-  adjustTree();
 }
 
 template<typename T>
@@ -55,7 +55,7 @@ BinomialQueueNode<T>* BinomialQueue<T>::combine(BinomialQueueNode<T>* q1, Binomi
     q1->setOrder(q1->getOrder() + 1);
   } else {
     q2->setLeftSiblingPtr(q1->getFirstChildPtr()->getLeftSiblingPtr());
-    q1->getFirstChildPtr()->getLeftSiblingPtr()->setRightSiblingPtr(q2);
+    q2->getLeftSiblingPtr()->setRightSiblingPtr(q2);
     q1->getFirstChildPtr()->setLeftSiblingPtr(q2);
     q1->setOrder(q1->getOrder() + 1);
   }

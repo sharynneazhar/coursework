@@ -13,7 +13,7 @@
 #include "BinomialQueue.h"
 
 void printMenu() {
-  std::cout << "\n\nPlease choose one of the following commands: "
+  std::cout << "\nPlease choose one of the following commands: "
             << "\n1 - insert\n2 - deleteMin"
             << "\n3 - levelorder\n4 - exit"
             << "\n\nYour choice: ";
