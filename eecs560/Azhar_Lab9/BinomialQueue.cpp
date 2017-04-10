@@ -16,7 +16,9 @@ BinomialQueue<T>::BinomialQueue() {
 
 template<typename T>
 BinomialQueue<T>::~BinomialQueue() {
-
+  while (!isEmpty()) {
+    deleteMin();
+  }
 }
 
 template<typename T>
