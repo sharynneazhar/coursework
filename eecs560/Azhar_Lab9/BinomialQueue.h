@@ -22,6 +22,9 @@ class BinomialQueue {
     /* Points to the queue with the lowest order */
     BinomialQueueNode<T>* m_root;
 
+    /* Number of elements in the binomial queue */
+    int m_size;
+
     /* The binomial queue of binomial trees a.k.a the forest */
     BinomialQueueNode<T>* queue[MAX_NUM_TREES];
 
@@ -44,6 +47,9 @@ class BinomialQueue {
 
     /* Destructor */
     virtual ~BinomialQueue();
+
+    /* Returns true if queue is empty */
+    bool isEmpty();
 
     /* Inserts a value into the binomial queue */
     void insert(const T& val);

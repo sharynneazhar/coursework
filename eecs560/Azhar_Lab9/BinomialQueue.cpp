@@ -8,6 +8,7 @@
 template<typename T>
 BinomialQueue<T>::BinomialQueue() {
   m_root = nullptr;
+  m_size = 0;
   for (int i = 0; i < MAX_NUM_TREES; i++) {
     queue[i] = nullptr;
   }
@@ -19,11 +20,20 @@ BinomialQueue<T>::~BinomialQueue() {
 }
 
 template<typename T>
+bool BinomialQueue<T>::isEmpty() {
+  return m_size == 0;
+}
+
+template<typename T>
 void BinomialQueue<T>::adjustTree() {
   // find the lowest order tree and set that as the root
-  for (int i = 0; i < MAX_NUM_TREES && queue[i]; i++) {
-    m_root = queue[i];
+  for (int i = 0; i < MAX_NUM_TREES; i++) {
+    if (queue[i] != nullptr) {
+      m_root = queue[i];
+      return;
+    }
   }
+  m_root = nullptr;
 }
 
 template<typename T>
@@ -31,6 +41,7 @@ void BinomialQueue<T>::insert(const T& val) {
   BinomialQueueNode<T>* newNode = new BinomialQueueNode<T>(val);
   merge(newNode);
   adjustTree();
+  m_size++;
 }
 
 template<typename T>
@@ -87,6 +98,7 @@ void BinomialQueue<T>::deleteMin() {
 
   delete minNode;
   queue[order] = nullptr;
+  m_size--;
 
   for (int i = 0; i < order; i++) {
     BinomialQueueNode<T>* node = newQueue[i];
@@ -96,6 +108,7 @@ void BinomialQueue<T>::deleteMin() {
   }
 
   delete [] newQueue;
+  adjustTree();
 }
 
 template<typename T>

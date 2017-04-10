@@ -23,13 +23,17 @@ INCLUDES = ./Queue/Queue.h ./BinomialQueueNode/BinomialQueueNode.h ./BinomialQue
 all: clean $(PROG_NAME)
 
 test: all
-	g++ test/test1.cpp -o test1
-	g++ test/test2.cpp -o test2
+	g++ Test/test1.cpp -o test1
+	g++ Test/test2.cpp -o test2
+	g++ Test/test3.cpp -o test3
 	./test1 > test1out.txt
 	./test2 > test2out.txt
-	diff -wB test1out.txt test/test1exp.txt
-	diff -wB test2out.txt test/test2exp.txt
-	@rm test1 test2 *out.txt
+	./test3 > test3out.txt
+	diff -wB test1out.txt Test/test1exp.txt
+	diff -wB test2out.txt Test/test2exp.txt
+	diff -wB test3out.txt Test/test3exp.txt
+	@echo "No output is good output."
+	@rm -rf test1 test2 test3 *out.txt
 	@make clean
 
 # A generalized rule for compiling the executable object
