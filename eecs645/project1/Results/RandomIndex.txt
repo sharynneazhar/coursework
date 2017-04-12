@@ -1,0 +1,26 @@
+===========================
+Cache Size      : 32768
+Address Bits    : 32
+Associativity   : 1
+Block Size      : 64
+Line Size       : 512
+Tag Size        : 131072
+===========================
+Hit Count       : 8231
+Miss Count      : 67100633
+Hit Probability : 0.01%
+===========================
+
+===========================
+Cache Size      : 32768
+Address Bits    : 32
+Associativity   : 4
+Block Size      : 64
+Line Size       : 128
+Tag Size        : 524288
+===========================
+Hit Count       : 8200
+Miss Count      : 67100664
+Hit Probability : 0.01%
+===========================
+

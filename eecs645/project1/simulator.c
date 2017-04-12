@@ -106,7 +106,7 @@ void runSim(FILE *inputFile, int AssocExp) {
   // calculate hit ratio
   float hitRatio = (float) (100.0 * hitCount / (missCount + hitCount));
 
-  printf("\n===========================");
+  printf("===========================");
   printf("\n%-16s: %d", "Cache Size", CacheSize);
   printf("\n%-16s: %d", "Address Bits", AddressBits);
   printf("\n%-16s: %d", "Associativity", Assoc);
@@ -138,7 +138,7 @@ int main(int argc, const char **argv) {
     return 1;
   }
 
-  // run the simulation
+  // run the simulation with 1-way and 4-way
   runSim(inputFile, 0);
   runSim(inputFile, 2);
 
