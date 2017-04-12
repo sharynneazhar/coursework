@@ -5,7 +5,6 @@
  Date Modified : 11 April 2017
  Description   : Simulates a level 1 (L1) cache
  To Run        : make simulator; ./simulator [input file]
-                 Note: use the flag "info=yes" to show cache description
  ============================================================================
 */
 
