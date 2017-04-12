@@ -10,7 +10,10 @@ last: all
 random: all
 	./simulator AddressTrace_RandomIndex.bin
 
-test: all first last random
+test: all
+	./simulator AddressTrace_FirstIndex.bin
+	./simulator AddressTrace_LastIndex.bin
+	./simulator AddressTrace_RandomIndex.bin
 
 clean:
 	rm -f *~ simulator
