@@ -10,12 +10,15 @@ all: simulator.c
 
 first: all
 	$(PROG) AddressTraces/AddressTrace_FirstIndex.bin
+	@rm simulator
 
 last: all
 	$(PROG) AddressTraces/AddressTrace_LastIndex.bin
+	@rm simulator
 
 random: all
 	$(PROG) AddressTraces/AddressTrace_RandomIndex.bin
+	@rm simulator
 
 test: all
 	@mkdir -p Results
@@ -23,6 +26,4 @@ test: all
 	$(PROG) AddressTraces/AddressTrace_FirstIndex.bin > Results/FirstIndex.txt
 	$(PROG) AddressTraces/AddressTrace_LastIndex.bin > Results/LastIndex.txt
 	$(PROG) AddressTraces/AddressTrace_RandomIndex.bin > Results/RandomIndex.txt
-
-clean:
-	rm -f *~ simulator
+	@rm simulator
