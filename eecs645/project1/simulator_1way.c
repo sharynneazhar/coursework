@@ -21,10 +21,24 @@
 #define CacheSizeExp 15
 #define CacheSize (1 << CacheSizeExp)
 
+/* Set associativity of the cache */
+#define AssocExp 0
+#define Assoc (1 << AssocExp)
+
 /* Block Offset Size */
 #define BlockSizeExp 6
 #define BlockSize (1 << BlockSizeExp)
 #define BlockSizeMask (BlockSize - 1)
+
+/* Line Index Size */
+#define LineSizeExp (CacheSizeExp - BlockSizeExp - AssocExp)
+#define LineSize (1 << LineSizeExp)
+#define LineSizeMask (LineSize - 1)
+
+/* Tag Size */
+#define TagSizeExp (AddressBits - BlockSizeExp - LineSizeExp)
+#define TagSize (1 << TagSizeExp)
+#define TagSizeMask (TagSize - 1)
 
 /* Data structure representing a line index */
 typedef struct line_t {
@@ -32,21 +46,19 @@ typedef struct line_t {
   int32_t tag;
 } line_t;
 
-void runSim(FILE *inputFile, int AssocExp) {
+int main(int argc, const char **argv) {
   int hitCount = 0;     // number of cache hits
   int missCount = 0;    // number of cache misses
   int32_t addressRead;  // address being read in
 
-  // determine number of bits in line index and tag based on associativity
-  int32_t Assoc = (1 << AssocExp);
+  // make sure a file is passed in from command line
+  if (argv[1] == NULL) {
+    printf("\nERROR: Missing file.\n");
+    return 1;
+  }
 
-  int32_t LineSizeExp = (CacheSizeExp - BlockSizeExp - AssocExp);
-  int32_t LineSize = (1 << LineSizeExp);
-  int32_t LineSizeMask = (LineSize - 1);
-
-  int32_t TagSizeExp = (AddressBits - BlockSizeExp - LineSizeExp);
-  int32_t TagSize = (1 << TagSizeExp);
-  int32_t TagSizeMask = (TagSize - 1);
+  // open the binary file passed in from input
+  FILE *inputFile = fopen(argv[1], "rb");
 
   /* 2D array to represent the cache */
   line_t cache[LineSize][Assoc];
@@ -92,9 +104,9 @@ void runSim(FILE *inputFile, int AssocExp) {
 
       // if cache is full, then overwrite a victim
       if (isReplaced == 0) {
-        int temp = (rand() % ((Assoc - 1) + 1 - 0) + 0);
-        cache[line][temp].tag = tag;
-        cache[line][temp].valid = 1;
+        int victim = rand() % Assoc;
+        cache[line][victim].tag = tag;
+        cache[line][victim].valid = 1;
       }
 
       // increase cache miss count
@@ -105,41 +117,20 @@ void runSim(FILE *inputFile, int AssocExp) {
   // calculate hit ratio
   float hitRatio = (float) (100.0 * hitCount / (missCount + hitCount));
 
-  printf("===========================");
+  printf("============================");
+  printf("\n       CACHE REPORT         ");
+  printf("\n============================");
   printf("\n%-16s: %d", "Cache Size", CacheSize);
   printf("\n%-16s: %d", "Address Bits", AddressBits);
   printf("\n%-16s: %d", "Associativity", Assoc);
   printf("\n%-16s: %d", "Block Size", BlockSize);
   printf("\n%-16s: %d", "Line Size", LineSize);
   printf("\n%-16s: %d", "Tag Size", TagSize);
-  printf("\n===========================");
+  printf("\n----------------------------");
   printf("\n%-16s: %d", "Hit Count", hitCount);
   printf("\n%-16s: %d", "Miss Count", missCount);
   printf("\n%-16s: %.02f%%", "Hit Probability", hitRatio);
-  printf("\n===========================\n\n");
-}
-
-int main(int argc, const char **argv) {
-  // make sure a file is passed in from command line
-  if (argv[1] == NULL) {
-    printf("\nERROR: Missing file.\n");
-    return 1;
-  }
-
-  // open the binary file passed in from input
-  FILE *inputFile;
-  const char * filename = argv[1];
-  inputFile = fopen(filename, "rb");
-
-  // check if file is valid
-  if (!inputFile) {
-    printf("\nERROR: Unable to open file.\n");
-    return 1;
-  }
-
-  // run the simulation with 1-way and 4-way
-  runSim(inputFile, 0);
-  runSim(inputFile, 2);
+  printf("\n============================\n\n");
 
   // close file
   fclose(inputFile);

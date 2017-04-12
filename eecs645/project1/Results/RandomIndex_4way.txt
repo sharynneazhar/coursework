@@ -1,0 +1,15 @@
+============================
+       CACHE REPORT         
+============================
+Cache Size      : 32768
+Address Bits    : 32
+Associativity   : 4
+Block Size      : 64
+Line Size       : 128
+Tag Size        : 524288
+----------------------------
+Hit Count       : 8120
+Miss Count      : 67100744
+Hit Probability : 0.01%
+============================
+

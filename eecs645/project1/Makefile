@@ -3,25 +3,32 @@
 # Author : Sharynne Azhar
 #######################################################################
 
-all: simulator.c
-	gcc simulator.c -o simulator
+all:
+	gcc simulator_1way.c -o simulator_1way
+	gcc simulator_4way.c -o simulator_4way
 
 first: all
-	./simulator AddressTraces/AddressTrace_FirstIndex.bin
-	@rm simulator
+	./simulator_1way AddressTraces/AddressTrace_FirstIndex.bin
+	./simulator_4way AddressTraces/AddressTrace_FirstIndex.bin
+	@rm simulator_1way simulator_4way
 
 last: all
-	./simulator AddressTraces/AddressTrace_LastIndex.bin
-	@rm simulator
+	./simulator_1way AddressTraces/AddressTrace_LastIndex.bin
+	./simulator_4way AddressTraces/AddressTrace_LastIndex.bin
+	@rm simulator_1way simulator_4way
 
 random: all
-	./simulator AddressTraces/AddressTrace_RandomIndex.bin
-	@rm simulator
+	./simulator_1way AddressTraces/AddressTrace_RandomIndex.bin
+	./simulator_4way AddressTraces/AddressTrace_LastIndex.bin
+	@rm simulator_1way simulator_4way
 
 test: all
 	@mkdir -p Results
 	@echo "Running all address traces... This may take a bit..."
-	./simulator AddressTraces/AddressTrace_FirstIndex.bin > Results/FirstIndex.txt
-	./simulator AddressTraces/AddressTrace_LastIndex.bin > Results/LastIndex.txt
-	./simulator AddressTraces/AddressTrace_RandomIndex.bin > Results/RandomIndex.txt
-	@rm simulator
+	./simulator_1way AddressTraces/AddressTrace_FirstIndex.bin > Results/FirstIndex_1way.txt
+	./simulator_1way AddressTraces/AddressTrace_LastIndex.bin > Results/LastIndex_1way.txt
+	./simulator_1way AddressTraces/AddressTrace_RandomIndex.bin > Results/RandomIndex_1way.txt
+	./simulator_4way AddressTraces/AddressTrace_FirstIndex.bin > Results/FirstIndex_4way.txt
+	./simulator_4way AddressTraces/AddressTrace_LastIndex.bin > Results/LastIndex_4way.txt
+	./simulator_4way AddressTraces/AddressTrace_RandomIndex.bin > Results/RandomIndex_4way.txt
+	@rm simulator_1way simulator_4way
