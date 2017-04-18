@@ -22,7 +22,7 @@ class MinSpanTree {
     int dim;
 
     bool element(int elem, int *V);
-    void sort(EdgeNode **edgesQueue, int size);
+    void sort(EdgeNode **queue, int size);
 
     EdgeNode *dequeue(EdgeNode **queue, int size);
     void updateQueue(EdgeNode **queue, int *V);

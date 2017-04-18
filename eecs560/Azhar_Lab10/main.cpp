@@ -45,6 +45,8 @@ int main(int argc, char **argv) {
     mst.runPrim();
   }
 
+  std::cout << std::endl;
+
   file.close();
 
   return 0;

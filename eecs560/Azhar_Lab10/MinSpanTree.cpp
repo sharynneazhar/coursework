@@ -156,14 +156,14 @@ void MinSpanTree::runPrim() {
   edgesQueue = nullptr;
 }
 
-void MinSpanTree::sort(EdgeNode **edgesQueue, int size) {
+void MinSpanTree::sort(EdgeNode **queue, int size) {
   EdgeNode *swap = nullptr;
   for (int i = 0; i < size - 1; i++) {
     for (int j = 0; j < size - i - 1; j++) {
-      if (edgesQueue[j + 1] == nullptr || edgesQueue[j]->getWeight() > edgesQueue[j + 1]->getWeight()) {
-        swap = edgesQueue[j];
-        edgesQueue[j] = edgesQueue[j + 1];
-        edgesQueue[j + 1] = swap;
+      if (queue[j + 1] == nullptr || queue[j]->getWeight() > queue[j + 1]->getWeight()) {
+        swap = queue[j];
+        queue[j] = queue[j + 1];
+        queue[j + 1] = swap;
       }
     }
   }
