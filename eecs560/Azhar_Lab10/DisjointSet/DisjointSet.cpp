@@ -6,26 +6,23 @@
  ============================================================================
 */
 
-template<typename T>
-DisjointSet<T>::DisjointSet() {}
+DisjointSet::DisjointSet() {}
 
-template<typename T>
-DisjointSet<T>::DisjointSet(T *set, int size) {
+DisjointSet::DisjointSet(int *set, int size) {
   numElements = size;
-  auxillaryArr = new SetNode<T>*[size];
+  auxillaryArr = new SetNode*[size];
   for (int i = 0; i < size; i++) {
-    auxillaryArr[i] = new SetNode<T>(set[i]);
+    auxillaryArr[i] = new SetNode(set[i]);
   }
 }
 
-template<typename T> DisjointSet<T>::~DisjointSet() {
+ DisjointSet::~DisjointSet() {
   delete [] auxillaryArr;
 }
 
-template<typename T>
-void DisjointSet<T>::setUnion(const T setI, const T setJ) {
-  SetNode<T> *setITree = nullptr;
-  SetNode<T> *setJTree = nullptr;
+void DisjointSet::setUnion(const int setI, const int setJ) {
+  SetNode* setITree = nullptr;
+  SetNode* setJTree = nullptr;
 
   // find matching node for set Si in auxillary array
   for (int i = 0; i < numElements; i++) {
@@ -60,17 +57,15 @@ void DisjointSet<T>::setUnion(const T setI, const T setJ) {
   }
 }
 
-template<typename T>
-SetNode<T> *DisjointSet<T>::findRoot(SetNode<T> *setPtr) {
+SetNode* DisjointSet::findRoot(SetNode *setPtr) {
   if (setPtr->getParentPtr() == nullptr) {
     return setPtr;
   }
   return findRoot(setPtr->getParentPtr());
 }
 
-template<typename T>
-T DisjointSet<T>::find(T value) {
-  SetNode<T> *elemPtr = nullptr;
+int DisjointSet::find(int value) {
+  SetNode *elemPtr = nullptr;
 
   // find matching node in auxillary array
   for (int i = 0; i < numElements; i++) {

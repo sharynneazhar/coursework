@@ -13,24 +13,22 @@
 
 #include "SetNode.h"
 
-template<typename T>
 class DisjointSet {
   private:
     int numElements;
-    SetNode<T>** auxillaryArr;
-
-    SetNode<T>* findRoot(SetNode<T>* setPtr);
+    SetNode** auxillaryArr;
+    SetNode* findRoot(SetNode* setPtr);
 
   public:
     DisjointSet();
 
-    DisjointSet(T* set, int size);
+    DisjointSet(int* set, int size);
 
     virtual ~DisjointSet();
 
-    void setUnion(const T setI, const T setJ);
+    void setUnion(const int setI, const int setJ);
 
-    T find(T value);
+    int find(int value);
 };
 
 #include "DisjointSet.cpp"

@@ -9,29 +9,28 @@
 #ifndef SET_NODE_H
 #define SET_NODE_H
 
-template<typename T>
 class SetNode {
   private:
-    T key;
+    int key;
     int rank;
-    SetNode<T> *parentPtr;
+    SetNode* parentPtr;
 
   public:
     SetNode() : rank(0), parentPtr(nullptr) {}
 
-    SetNode(const T &k) : key(k), rank(0), parentPtr(nullptr) {}
+    SetNode(const int &k) : key(k), rank(0), parentPtr(nullptr) {}
 
-    T getKey() const { return key; }
+    int getKey() const { return key; }
 
-    void setKey(const T &k) { key = k; }
+    void setKey(const int &k) { key = k; }
 
     int getRank() const { return rank; }
 
     void setRank(const int r) { rank = r; }
 
-    SetNode<T> *getParentPtr() const { return parentPtr; }
+    SetNode* getParentPtr() const { return parentPtr; }
 
-    void setParentPtr(SetNode<T> *ptr) { parentPtr = ptr; }
+    void setParentPtr(SetNode* ptr) { parentPtr = ptr; }
 };
 
 #endif

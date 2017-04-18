@@ -16,7 +16,7 @@
 
 class MinSpanTree {
   private:
-    DisjointSet<int> *C;      // candidate set, C
+    DisjointSet *C;      // candidate set, C
     EdgeNode **edgesQueue;    // edges priority queue
     int **adjMatrix;          // adjacency matrix
     int dim;                  // dimensions of the adjacency matrix

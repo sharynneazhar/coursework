@@ -28,7 +28,7 @@ void MinSpanTree::runKruskal() {
     arr[i] = i;
   }
 
-  C = new DisjointSet<int>(arr, dim);
+  C = new DisjointSet(arr, dim);
   delete [] arr;
   arr = nullptr;
 
