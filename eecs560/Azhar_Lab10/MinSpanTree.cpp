@@ -23,14 +23,8 @@ MinSpanTree::~MinSpanTree() {
 void MinSpanTree::runKruskal() {
   std::cout << "\nKruskal: ";
 
-  int *arr = new int[dim];
-  for (int i = 0; i < dim; i++) {
-    arr[i] = i;
-  }
-
-  C = new DisjointSet(arr, dim);
-  delete [] arr;
-  arr = nullptr;
+  // initialize the candidate set
+  C = new DisjointSet(dim);
 
   // get the number of edges
   int numEdges = 0;
@@ -64,11 +58,10 @@ void MinSpanTree::runKruskal() {
     E[i] = nullptr;
   }
 
-  EdgeNode *x;
   int cardinality = 0;
   int iter = 0;
   while (!(emptyQueue(edgesQueue, numEdges)) && cardinality != dim - 1) {
-    x = edgesQueue[iter];
+    EdgeNode *x = edgesQueue[iter];
     edgesQueue[iter] = nullptr;
     if (C->find(x->getV1()) != C->find(x->getV2())) {
       E[cardinality] = x;
@@ -86,7 +79,7 @@ void MinSpanTree::runKruskal() {
   }
 
   for (int i = 0; i < dim - 1; i++) {
-    std::cout << "(" << E[i]->getV1() << ", " << E[i]->getV2() << ") ";
+    std::cout << "(" << E[i]->getV1() << "," << E[i]->getV2() << ") ";
   }
 
   // free memory
@@ -107,11 +100,10 @@ void MinSpanTree::runPrim() {
   }
 
   int *V = new int[dim];
-  for (int i = 0; i < dim; i++) {
+  V[0] = 0;
+  for (int i = 1; i < dim; i++) {
     V[i] = -1;
   }
-
-  V[0] = 0;
 
   int squareDim = dim * dim;
   edgesQueue = new EdgeNode*[squareDim];
@@ -126,10 +118,9 @@ void MinSpanTree::runPrim() {
 
   sort(edgesQueue, squareDim);
 
-  EdgeNode *x;
   int cardinality = 0;
   while (!(emptyQueue(edgesQueue, squareDim)) && cardinality != dim) {
-    x = dequeue(edgesQueue, squareDim);
+    EdgeNode *x = dequeue(edgesQueue, squareDim);
     E[cardinality] = x;
     V[cardinality + 1] = x->getV2();
     cardinality++;
@@ -144,7 +135,7 @@ void MinSpanTree::runPrim() {
   }
 
   for (int i = 0; i < dim - 1; i++) {
-    std::cout << "(" << E[i]->getV1() << ", " << E[i]->getV2() << ") ";
+    std::cout << "(" << E[i]->getV1() << "," << E[i]->getV2() << ") ";
   }
 
   // free memory

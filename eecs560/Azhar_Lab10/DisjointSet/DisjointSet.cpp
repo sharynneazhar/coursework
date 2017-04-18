@@ -8,11 +8,11 @@
 
 DisjointSet::DisjointSet() {}
 
-DisjointSet::DisjointSet(int *set, int size) {
+DisjointSet::DisjointSet(int size) {
   numElements = size;
   auxillaryArr = new SetNode*[size];
   for (int i = 0; i < size; i++) {
-    auxillaryArr[i] = new SetNode(set[i]);
+    auxillaryArr[i] = new SetNode(i);
   }
 }
 

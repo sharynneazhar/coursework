@@ -22,7 +22,7 @@ class DisjointSet {
   public:
     DisjointSet();
 
-    DisjointSet(int* set, int size);
+    DisjointSet(int size);
 
     virtual ~DisjointSet();
 
