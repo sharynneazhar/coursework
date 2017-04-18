@@ -157,7 +157,7 @@ void MinSpanTree::runPrim() {
 }
 
 void MinSpanTree::sort(EdgeNode **edgesQueue, int size) {
-  EdgeNode *swap;
+  EdgeNode *swap = nullptr;
   for (int i = 0; i < size - 1; i++) {
     for (int j = 0; j < size - i - 1; j++) {
       if (edgesQueue[j + 1] == nullptr || edgesQueue[j]->getWeight() > edgesQueue[j + 1]->getWeight()) {
@@ -178,35 +178,35 @@ bool MinSpanTree::element(int elem, int *V) {
   return false;
 }
 
-EdgeNode *MinSpanTree::dequeue(EdgeNode **edgesQueue, int size) {
+EdgeNode *MinSpanTree::dequeue(EdgeNode **queue, int size) {
   for (int i = 0; i < size; i++) {
-    if (edgesQueue[i] != nullptr) {
-      return edgesQueue[i];
+    if (queue[i] != nullptr) {
+      return queue[i];
     }
   }
   return nullptr;
 }
 
-void MinSpanTree::updateQueue(EdgeNode **edgesQueue, int *V) {
+void MinSpanTree::updateQueue(EdgeNode **queue, int *V) {
   for (int i = 0; i < dim * dim; i++) {
-    edgesQueue[i] = nullptr;
+    queue[i] = nullptr;
   }
 
   int k = 0;
   for (int i = 0; i < dim; i++) {
     for (int j = 0; j < dim; j++) {
       if (adjMatrix[i][j] != 0 && element(i, V) && !(element(j, V))) {
-        edgesQueue[k] = new EdgeNode(adjMatrix[i][j], i, j);
+        queue[k] = new EdgeNode(adjMatrix[i][j], i, j);
         k++;
       }
     }
   }
-  sort(edgesQueue, dim * dim);
+  sort(queue, dim * dim);
 }
 
-bool MinSpanTree::emptyQueue(EdgeNode **edgesQueue, int size) {
+bool MinSpanTree::emptyQueue(EdgeNode **queue, int size) {
   for (int i = 0; i < size; i++) {
-    if (edgesQueue[i] != nullptr) {
+    if (queue[i] != nullptr) {
       return false;
     }
   }

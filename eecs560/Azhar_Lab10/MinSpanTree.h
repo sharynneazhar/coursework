@@ -24,9 +24,9 @@ class MinSpanTree {
     bool element(int elem, int *V);
     void sort(EdgeNode **edgesQueue, int size);
 
-    EdgeNode *dequeue(EdgeNode **edgesQueue, int size);
-    void updateQueue(EdgeNode **edgesQueue, int *V);
-    bool emptyQueue(EdgeNode **edgesQueue, int size);
+    EdgeNode *dequeue(EdgeNode **queue, int size);
+    void updateQueue(EdgeNode **queue, int *V);
+    bool emptyQueue(EdgeNode **queue, int size);
 
   public:
     MinSpanTree();
