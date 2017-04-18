@@ -11,20 +11,25 @@
 
 #include <iostream>
 
-#include "SetNode/SetNode.h"
+#include "SetNode.h"
 
 template<typename T>
 class DisjointSet {
   private:
     int numElements;
     SetNode<T>** auxillaryArr;
-    SetNode<T>* findHelper(SetNode<T>* setPtr);
+
+    SetNode<T>* findRoot(SetNode<T>* setPtr);
 
   public:
     DisjointSet();
+
     DisjointSet(T* set, int size);
+
     virtual ~DisjointSet();
+
     void setUnion(const T setI, const T setJ);
+
     T find(T value);
 };
 

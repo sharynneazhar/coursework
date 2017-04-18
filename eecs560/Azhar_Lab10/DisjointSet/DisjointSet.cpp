@@ -24,49 +24,55 @@ template<typename T> DisjointSet<T>::~DisjointSet() {
 
 template<typename T>
 void DisjointSet<T>::setUnion(const T setI, const T setJ) {
-  SetNode<T> *setIPtr = nullptr;
-  SetNode<T> *setJPtr = nullptr;
+  SetNode<T> *setITree = nullptr;
+  SetNode<T> *setJTree = nullptr;
 
+  // find matching node for set Si in auxillary array
   for (int i = 0; i < numElements; i++) {
     if (auxillaryArr[i]->getKey() == setI) {
-      setIPtr = auxillaryArr[i];
+      setITree = auxillaryArr[i];
       break;
     }
   }
 
+  // find matching node for set Sj in auxillary array
   for (int i = 0; i < numElements; i++) {
     if (auxillaryArr[i]->getKey() == setJ) {
-      setJPtr = auxillaryArr[i];
+      setJTree = auxillaryArr[i];
       break;
     }
   }
 
-  setIPtr = findHelper(setIPtr);
-  setJPtr = findHelper(setJPtr);
+  // find the root of each tree
+  setITree = findRoot(setITree);
+  setJTree = findRoot(setJTree);
 
-  if (setIPtr != nullptr && setJPtr != nullptr) {
-    if (setIPtr->getRank() > setJPtr->getRank()) {
-      setJPtr->setParentPtr(setIPtr);
+  // union the sets
+  if (setITree != nullptr && setJTree != nullptr) {
+    if (setITree->getRank() > setJTree->getRank()) {
+      setJTree->setParentPtr(setITree);
     } else {
-      setIPtr->setParentPtr(setJPtr);
-      if (setIPtr->getRank() == setJPtr->getRank()) {
-        setJPtr->setRank(setJPtr->getRank() + 1);
+      setITree->setParentPtr(setJTree);
+      if (setITree->getRank() == setJTree->getRank()) {
+        setJTree->setRank(setJTree->getRank() + 1);
       }
     }
   }
 }
 
 template<typename T>
-SetNode<T> *DisjointSet<T>::findHelper(SetNode<T> *setPtr) {
+SetNode<T> *DisjointSet<T>::findRoot(SetNode<T> *setPtr) {
   if (setPtr->getParentPtr() == nullptr) {
     return setPtr;
   }
-  return findHelper(setPtr->getParentPtr());
+  return findRoot(setPtr->getParentPtr());
 }
 
 template<typename T>
 T DisjointSet<T>::find(T value) {
   SetNode<T> *elemPtr = nullptr;
+
+  // find matching node in auxillary array
   for (int i = 0; i < numElements; i++) {
     if (auxillaryArr[i]->getKey() == value) {
       elemPtr = auxillaryArr[i];
@@ -74,9 +80,11 @@ T DisjointSet<T>::find(T value) {
     }
   }
 
+  // value not found in tree
   if (elemPtr == nullptr) {
     return -1;
   }
 
-  return findHelper(elemPtr)->getKey();
+  // return the root of the tree containing the value
+  return findRoot(elemPtr)->getKey();
 }

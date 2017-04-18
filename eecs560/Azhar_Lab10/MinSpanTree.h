@@ -16,10 +16,10 @@
 
 class MinSpanTree {
   private:
-    DisjointSet<int> *dSet;
-    EdgeNode **edgesQueue;
-    int **adjMatrix;
-    int dim;
+    DisjointSet<int> *C;      // candidate set, C
+    EdgeNode **edgesQueue;    // edges priority queue
+    int **adjMatrix;          // adjacency matrix
+    int dim;                  // dimensions of the adjacency matrix
 
     bool element(int elem, int *V);
     void sort(EdgeNode **queue, int size);

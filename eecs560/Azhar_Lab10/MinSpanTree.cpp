@@ -28,7 +28,7 @@ void MinSpanTree::runKruskal() {
     arr[i] = i;
   }
 
-  dSet = new DisjointSet<int>(arr, dim);
+  C = new DisjointSet<int>(arr, dim);
   delete [] arr;
   arr = nullptr;
 
@@ -70,9 +70,9 @@ void MinSpanTree::runKruskal() {
   while (!(emptyQueue(edgesQueue, numEdges)) && cardinality != dim - 1) {
     x = edgesQueue[iter];
     edgesQueue[iter] = nullptr;
-    if (dSet->find(x->getV1()) != dSet->find(x->getV2())) {
+    if (C->find(x->getV1()) != C->find(x->getV2())) {
       E[cardinality] = x;
-      dSet->setUnion(x->getV1(), x->getV2());
+      C->setUnion(x->getV1(), x->getV2());
       cardinality++;
     }
     iter++;
@@ -92,10 +92,10 @@ void MinSpanTree::runKruskal() {
   // free memory
   delete [] E;
   delete [] edgesQueue;
-  delete dSet;
+  delete C;
   E = nullptr;
   edgesQueue = nullptr;
-  dSet = nullptr;
+  C = nullptr;
 }
 
 void MinSpanTree::runPrim() {
@@ -124,7 +124,7 @@ void MinSpanTree::runPrim() {
     }
   }
 
-  sort(edgesQueue, dim * dim);
+  sort(edgesQueue, squareDim);
 
   EdgeNode *x;
   int cardinality = 0;

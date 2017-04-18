@@ -17,19 +17,21 @@ class SetNode {
     SetNode<T> *parentPtr;
 
   public:
-    SetNode();
-    SetNode(const T &k);
+    SetNode() : rank(0), parentPtr(nullptr) {}
 
-    T getKey() const;
-    void setKey(const T &k);
+    SetNode(const T &k) : key(k), rank(0), parentPtr(nullptr) {}
 
-    int getRank() const;
-    void setRank(const int r);
+    T getKey() const { return key; }
 
-    SetNode<T> *getParentPtr() const;
-    void setParentPtr(SetNode<T> *nodePtr);
+    void setKey(const T &k) { key = k; }
+
+    int getRank() const { return rank; }
+
+    void setRank(const int r) { rank = r; }
+
+    SetNode<T> *getParentPtr() const { return parentPtr; }
+
+    void setParentPtr(SetNode<T> *ptr) { parentPtr = ptr; }
 };
-
-#include "SetNode.cpp"
 
 #endif
