@@ -24,16 +24,18 @@
 #define MIN_ORDER 12
 #define MAX_ORDER 20
 
-#define PAGE_SIZE (1<<MIN_ORDER)
+#define PAGE_SIZE (1 << MIN_ORDER)
+
 /* page index to address */
 #define PAGE_TO_ADDR(page_idx) (void *)((page_idx*PAGE_SIZE) + g_memory)
 
 /* address to page index */
-#define ADDR_TO_PAGE(addr) ((unsigned long)((void *)addr - (void *)g_memory) / PAGE_SIZE)
+#define ADDR_TO_PAGE(addr) ((unsigned long)((void *)addr - \
+				(void *)g_memory) / PAGE_SIZE)
 
 /* find buddy address */
-#define BUDDY_ADDR(addr, o) (void *)((((unsigned long)addr - (unsigned long)g_memory) ^ (1<<o)) \
-									 + (unsigned long)g_memory)
+#define BUDDY_ADDR(addr, o) (void *)((((unsigned long)addr - \
+				(unsigned long)g_memory) ^ (1 << o)) + (unsigned long)g_memory)
 
 #if USE_DEBUG == 1
 #  define PDEBUG(fmt, ...) \
@@ -49,21 +51,23 @@
  * Public Types
  **************************************************************************/
 typedef struct {
-	struct list_head list;
-	/* TODO: DECLARE NECESSARY MEMBER VARIABLES */
+				struct list_head list;   // a double linked list data structure
+				int order;               // order size of the current block
+				int index;							 // the index of the page
+				char *block_addr;        // the address of the page
 } page_t;
 
 /**************************************************************************
  * Global Variables
  **************************************************************************/
-/* free lists*/
+/* free lists */
 struct list_head free_area[MAX_ORDER+1];
 
 /* memory area */
-char g_memory[1<<MAX_ORDER];
+char g_memory[1 << MAX_ORDER];
 
 /* page structures */
-page_t g_pages[(1<<MAX_ORDER)/PAGE_SIZE];
+page_t g_pages[(1 << MAX_ORDER)/PAGE_SIZE];
 
 /**************************************************************************
  * Public Function Prototypes
@@ -78,19 +82,26 @@ page_t g_pages[(1<<MAX_ORDER)/PAGE_SIZE];
  */
 void buddy_init()
 {
-	int i;
-	int n_pages = (1<<MAX_ORDER) / PAGE_SIZE;
-	for (i = 0; i < n_pages; i++) {
-		/* TODO: INITIALIZE PAGE STRUCTURES */
-	}
+				// Convert number of pages
+				int n_pages = (1 << MAX_ORDER) / PAGE_SIZE;
 
-	/* initialize freelist */
-	for (i = MIN_ORDER; i <= MAX_ORDER; i++) {
-		INIT_LIST_HEAD(&free_area[i]);
-	}
+				// Initialize the page variables
+				for (int i = 0; i < n_pages; i++) {
+								g_pages[i].order = -1;
+								g_pages[i].index = i;
+								g_pages[i].block_addr = PAGE_TO_ADDR(i);
+				}
 
-	/* add the entire memory as a freeblock */
-	list_add(&g_pages[0].list, &free_area[MAX_ORDER]);
+				// Everything starts off in one block, so just set to max order
+				g_pages[0].order = MAX_ORDER;
+
+				/* initialize freelist */
+				for (int i = MIN_ORDER; i <= MAX_ORDER; i++) {
+								INIT_LIST_HEAD(&free_area[i]);
+				}
+
+				/* add the entire memory as a freeblock */
+				list_add(&g_pages[0].list, &free_area[MAX_ORDER]);
 }
 
 /**
@@ -109,8 +120,66 @@ void buddy_init()
  */
 void *buddy_alloc(int size)
 {
-	/* TODO: IMPLEMENT THIS FUNCTION */
-	return NULL;
+				int order;								 // order needed to allocate memory
+				page_t *left;              // holds the left side of the page
+				page_t *right;             // holds the right sid of the page
+				void *requested_mem_addr;  // block address to return
+
+				// First check if out of bounds
+				if ((size > (1 << MAX_ORDER)) || (size <= 0)) {
+								return NULL;
+				}
+
+				// Determine the order needed to allocate the memory
+				order = MIN_ORDER;
+				while ((order <= MAX_ORDER) && ((1 << order) < size)) {
+								order++;
+				}
+
+				// Iterate to find the next free block with the correct order.
+				// Otherwise, continue breaking the block down
+				for (int i = order; i <= MAX_ORDER; i++) {
+								// If found an available block, partition
+								if (!list_empty(&free_area[i])) {
+												// Continue partitioning until we have small
+												// enough chunks. If we have a big enough block, return
+												// the address. Otherwise, break the block down and
+												// add half of it back to free_area
+
+												// If we're at the order, just return the address.
+												// Otherise, do the break down
+												if (i == order) {
+																// Get the left side of the page list
+																left = list_entry(free_area[i].next,
+																	                page_t,
+																									list);
+
+																// dDlete the entry from list
+																list_del(&(left->list));
+												} else {
+																// Get the left side of the page list
+																left = &g_pages[ADDR_TO_PAGE(buddy_alloc((1 << (order + 1))))];
+
+																// Determine the block index of the right side
+																// and get the right side
+																int right_page_index = left->index + (1 << order) / PAGE_SIZE;
+																right = &g_pages[right_page_index];
+
+																// Add the right side back to free_area
+																list_add(&(right->list), &free_area[order]);
+												}
+
+												// Update the left block properties
+												left->order = order;
+
+												// Calculate the requested memory address and return
+												requested_mem_addr = PAGE_TO_ADDR(left->index);
+												return requested_mem_addr;
+								}
+				}
+
+				// Unable to find a block big enough for the request
+				return NULL;
 }
 
 /**
@@ -124,7 +193,48 @@ void *buddy_alloc(int size)
  */
 void buddy_free(void *addr)
 {
-	/* TODO: IMPLEMENT THIS FUNCTION */
+				// Get the page index and order of the block to be freed
+				int index = ADDR_TO_PAGE(addr);
+				int order = g_pages[index].order;
+
+				page_t *buddy;                 // buddy temp variable
+				struct list_head *traverser;   // list traverser temp variable
+
+				// Loop through all block size orders
+				for ( ; order <= MAX_ORDER; order++) {
+								// Loop through the free_area array for buddy
+								list_for_each(traverser, &free_area[order]) {
+												// Get the entry from this page
+												buddy = list_entry(traverser, page_t, list);
+
+												// No buddy, break out
+												if (buddy == NULL) {
+																break;
+												}
+
+												// Found a buddy, break out
+												if (buddy->block_addr == BUDDY_ADDR(addr, order))
+																break;
+								}
+
+								// If buddy is null or address not equal, return to free_area
+								if ((buddy == NULL) || (buddy->block_addr != BUDDY_ADDR(addr, order))) {
+												g_pages[index].order = -1;
+												list_add(&g_pages[index].list, &free_area[order]);
+												return;
+								}
+
+								// Buddy found, so combine.
+								// If the current block address is larger than buddy's address,
+								// update it to smaller value
+								if ((char*)addr > buddy->block_addr) {
+											addr = buddy->block_addr;
+											index = ADDR_TO_PAGE(addr);
+								}
+
+								// Remove block from free_area
+								list_del(&(buddy->list));
+				}
 }
 
 /**
@@ -134,14 +244,14 @@ void buddy_free(void *addr)
  */
 void buddy_dump()
 {
-	int o;
-	for (o = MIN_ORDER; o <= MAX_ORDER; o++) {
-		struct list_head *pos;
-		int cnt = 0;
-		list_for_each(pos, &free_area[o]) {
-			cnt++;
-		}
-		printf("%d:%dK ", cnt, (1<<o)/1024);
-	}
-	printf("\n");
+				int o;
+				for (o = MIN_ORDER; o <= MAX_ORDER; o++) {
+								struct list_head *pos;
+								int cnt = 0;
+								list_for_each(pos, &free_area[o]) {
+												cnt++;
+								}
+								printf("%d:%dK ", cnt, (1 << o)/1024);
+				}
+				printf("\n");
 }
