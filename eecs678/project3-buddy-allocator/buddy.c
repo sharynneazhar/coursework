@@ -120,10 +120,10 @@ void buddy_init()
  */
 void *buddy_alloc(int size)
 {
-				int order;								 // order needed to allocate memory
-				page_t *left;              // holds the left side of the page
-				page_t *right;             // holds the right sid of the page
-				void *requested_mem_addr;  // block address to return
+				int order = 0;				  	        // order needed to allocate memory
+				page_t *left = NULL;              // holds the left side of the page
+				page_t *right = NULL;             // holds the right sid of the page
+				void *requested_mem_addr = NULL;  // block address to return
 
 				// First check if out of bounds
 				if ((size > (1 << MAX_ORDER)) || (size <= 0)) {
@@ -197,8 +197,8 @@ void buddy_free(void *addr)
 				int index = ADDR_TO_PAGE(addr);
 				int order = g_pages[index].order;
 
-				page_t *buddy;                 // buddy temp variable
-				struct list_head *traverser;   // list traverser temp variable
+				page_t *buddy = NULL;                  // buddy temp variable
+				struct list_head *traverser = NULL;   // list traverser temp variable
 
 				// Loop through all block size orders
 				for ( ; order <= MAX_ORDER; order++) {
