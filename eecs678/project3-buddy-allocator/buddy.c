@@ -218,7 +218,8 @@ void buddy_free(void *addr)
 								}
 
 								// If buddy is null or address not equal, return to free_area
-								if ((buddy == NULL) || (buddy->block_addr != BUDDY_ADDR(addr, order))) {
+								void* buddy_addr = BUDDY_ADDR(addr, order);
+								if ((buddy == NULL) || (buddy->block_addr != buddy_addr)) {
 												g_pages[index].order = -1;
 												list_add(&g_pages[index].list, &free_area[order]);
 												return;
