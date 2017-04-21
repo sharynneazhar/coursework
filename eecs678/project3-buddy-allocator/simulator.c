@@ -245,8 +245,8 @@ static status_t parse_command(char* cmd, int cmd_len)
  */
 static status_t parse_file()
 {
-	char* line = NULL;
-	size_t len = 0;
+	char* line = calloc(4096, sizeof(char*));
+	size_t len = 4096;
 	ssize_t read;
 
 	status_t status = SUCCESS;
@@ -255,6 +255,8 @@ static status_t parse_file()
 		++linenum;
 		status = parse_command(line, len);
 	}
+
+	free(line);
 
 	return status;
 }
