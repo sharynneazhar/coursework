@@ -54,7 +54,7 @@ typedef struct {
 				struct list_head list;   // a double linked list data structure
 				int order;               // order size of the current block
 				int index;							 // the index of the page
-				char *block_addr;        // the address of the page
+				char *address;           // the address of the page
 } page_t;
 
 /**************************************************************************
@@ -89,7 +89,7 @@ void buddy_init()
 				for (int i = 0; i < n_pages; i++) {
 								g_pages[i].order = -1;
 								g_pages[i].index = i;
-								g_pages[i].block_addr = PAGE_TO_ADDR(i);
+								g_pages[i].address = PAGE_TO_ADDR(i);
 				}
 
 				// Everything starts off in one block, so just set to max order
@@ -120,61 +120,56 @@ void buddy_init()
  */
 void *buddy_alloc(int size)
 {
-				int order = 0;				  	        // order needed to allocate memory
+				int order = MIN_ORDER;				  	// order needed to allocate memory
 				page_t *left = NULL;              // holds the left side of the page
 				page_t *right = NULL;             // holds the right sid of the page
-				void *requested_mem_addr = NULL;  // block address to return
 
 				// First check if out of bounds
 				if ((size > (1 << MAX_ORDER)) || (size <= 0)) {
 								return NULL;
 				}
 
-				// Determine the order needed to allocate the memory
-				order = MIN_ORDER;
+				// Find the order based on the block size given
 				while ((order <= MAX_ORDER) && ((1 << order) < size)) {
 								order++;
 				}
 
-				// Iterate to find the next free block with the correct order.
-				// Otherwise, continue breaking the block down
+				// Iterate through free_area to find the next free block of the same
+				// order. Otherwise, continue breaking the block down into chunks
 				for (int i = order; i <= MAX_ORDER; i++) {
-								// If found an available block, partition
 								if (!list_empty(&free_area[i])) {
-												// Continue partitioning until we have small
-												// enough chunks. If we have a big enough block, return
-												// the address. Otherwise, break the block down and
-												// add half of it back to free_area
-
-												// If we're at the order, just return the address.
-												// Otherise, do the break down
+												// If we found a matching size, return the address.
+												// Otherwise, do the break down into smaller chunks
 												if (i == order) {
-																// Get the left side of the page list
+																// Get the left block
 																left = list_entry(free_area[i].next,
-																	                page_t,
+																									page_t,
 																									list);
 
-																// dDlete the entry from list
+																// Delete the entry from list
 																list_del(&(left->list));
-												} else {
-																// Get the left side of the page list
-																left = &g_pages[ADDR_TO_PAGE(buddy_alloc((1 << (order + 1))))];
 
-																// Determine the block index of the right side
-																// and get the right side
-																int right_page_index = left->index + (1 << order) / PAGE_SIZE;
-																right = &g_pages[right_page_index];
+																// Update the left block order
+																left->order = order;
 
-																// Add the right side back to free_area
-																list_add(&(right->list), &free_area[order]);
+																// Return the address
+																return PAGE_TO_ADDR(left->index);
 												}
+
+												// Recursively move to the next biggest block size
+												// and get the left block
+												int new_size = 1 << (order + 1);
+												left = &g_pages[ADDR_TO_PAGE(buddy_alloc(new_size))];
+
+												// Get the right block and add it back to the free-list
+												right = &g_pages[left->index + (1<<order) / PAGE_SIZE];
+												list_add(&(right->list), &free_area[order]);
 
 												// Update the left block properties
 												left->order = order;
 
-												// Calculate the requested memory address and return
-												requested_mem_addr = PAGE_TO_ADDR(left->index);
-												return requested_mem_addr;
+												// Return the address
+												return PAGE_TO_ADDR(left->index);
 								}
 				}
 
@@ -193,33 +188,34 @@ void *buddy_alloc(int size)
  */
 void buddy_free(void *addr)
 {
-				// Get the page index and order of the block to be freed
+				// Get the page index
 				int index = ADDR_TO_PAGE(addr);
-				int order = g_pages[index].order;
 
-				page_t *buddy = NULL;                  // buddy temp variable
-				struct list_head *traverser = NULL;   // list traverser temp variable
+				// Loop through all the blocks
+				for (int order = g_pages[index].order; order <= MAX_ORDER; order++) {
+								page_t *entry = NULL;                 // list entry
+								struct list_head *traverser = NULL;   // list traverser
 
-				// Loop through all block size orders
-				for ( ; order <= MAX_ORDER; order++) {
-								// Loop through the free_area array for buddy
+								// Get the buddy's address
+								char *buddy = (char*) BUDDY_ADDR(addr, order);
+
+								// Loop through the free_area list for buddy
 								list_for_each(traverser, &free_area[order]) {
-												// Get the entry from this page
-												buddy = list_entry(traverser, page_t, list);
+												// Get the page entry to check if it is a buddy
+												entry = list_entry(traverser, page_t, list);
 
 												// No buddy, break out
-												if (buddy == NULL) {
+												if (entry == NULL) {
 																break;
 												}
 
-												// Found a buddy, break out
-												if (buddy->block_addr == BUDDY_ADDR(addr, order))
+												// Found a matching buddy, break out
+												if ((char*) entry->address == buddy)
 																break;
 								}
 
 								// If buddy is null or address not equal, return to free_area
-								void* buddy_addr = BUDDY_ADDR(addr, order);
-								if ((buddy == NULL) || (buddy->block_addr != buddy_addr)) {
+								if ((entry == NULL) || ((char*) entry->address != buddy)) {
 												g_pages[index].order = -1;
 												list_add(&g_pages[index].list, &free_area[order]);
 												return;
@@ -228,13 +224,13 @@ void buddy_free(void *addr)
 								// Buddy found, so combine.
 								// If the current block address is larger than buddy's address,
 								// update it to smaller value
-								if ((char*)addr > buddy->block_addr) {
-											addr = buddy->block_addr;
-											index = ADDR_TO_PAGE(addr);
+								if ((char*) addr > entry->address) {
+												addr = entry->address;
+												index = ADDR_TO_PAGE(addr);
 								}
 
 								// Remove block from free_area
-								list_del(&(buddy->list));
+								list_del(&(entry->list));
 				}
 }
 
