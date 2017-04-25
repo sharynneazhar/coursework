@@ -5,9 +5,9 @@ C_FLAGS = -fPIC -g -c -DGL_GLEXT_PROTOTYPES $(INC)
 LINK = g++ -fPIC -g
 LOCAL_UTIL_LIBRARIES = ../lib/libcryph.so ../lib/libglsl.so ../lib/libmvc.so ../contourlines_GL/contourlines_GL.so
 GL_LIB_LOC = -L/usr/lib64/nvidia
-OGL_LIBRARIES = $(GL_LIB_LOC) -lglfw -lGLU -lGL
+OGL_LIBRARIES = $(GL_LIB_LOC) -lglfw -lGLU -lGL -lOpenCL
 
-OBJS = main.o ContourGenerator.o
+OBJS = main.o ContourGenerator.o readSource.o
 
 main: $(OBJS) $(LOCAL_UTIL_LIBRARIES)
 	$(LINK) -o main $(OBJS) $(LOCAL_UTIL_LIBRARIES) $(OGL_LIBRARIES)
@@ -29,3 +29,6 @@ main.o: ContourGenerator.h ../contourlines_GL/GL_LINES_Renderer.h main.c++
 
 ContourGenerator.o: ContourGenerator.h ContourGenerator.c++
 	$(CPP) $(C_FLAGS) ContourGenerator.c++
+
+readSource.o: readSource.c++
+	$(CPP) $(C_FLAGS) readSource.c++
