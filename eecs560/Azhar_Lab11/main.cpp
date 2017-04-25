@@ -1,66 +1,86 @@
 /*
 ============================================================================
 Author        : Sharynne Azhar
-Date          : 17 April 2017
-Description   : Driver for Minimum Spanning Tree finder
+Date          : 24 April 2017
+Description   : Driver for Minimum Spanning Tree finder - performance testing
 ============================================================================
 */
 
-// 1:5 for n = 1000
-// 6:10 for n = 2000
-// 11:15 for n = 4000
-// 16:20 for n = 8000
-
 #include <fstream>
+#include <iomanip>
 #include <iostream>
 #include <stdlib.h>
 #include <string>
 
+#include "EdgeNode/EdgeNode.h"
+#include "Timer/Timer.h"
 #include "MinSpanTree.h"
 
 int main(int argc, char **argv) {
-  std::ifstream file;
-  file.open((argc == 2) ? argv[1] : "data.txt");
+  /* Initialize and instance of a timer */
+  Timer timer;
+  int seed = 1;
+  double kruskalResult = 0.0;
+  double primResult = 0.0;
 
-  if (file.fail()) {
-    std::cout << "\n>> ERROR: Unable to open file.\n";
-    exit(EXIT_FAILURE);
-  }
+  // write results to csv file
+  std::ofstream file;
+  file.open("results.csv", std::ios_base::out | std::ios_base::trunc);
+  file << "n,kruskal's,prim's\n\n";
 
-  int numGraphs;   // number of graphs in the test file
-  int dim;         // dimensions of the adjacency matrix
+  // For each values of n
+  for (int n = 1000; n <= 8000; n *= 2) {
+    std::cout << "\n---------------------------------";
+    std::cout << "\n> N = " << n;
+    std::cout << "\n---------------------------------";
+    printf("\n%-5s | %-11s | %-10s", "Seed", "Kruskal's", "Prim's");
+    std::cout << "\n---------------------------------";
 
-  // get number of test cases (i.e. graphs)
-  file >> numGraphs;
+    // For each of the five seeds
+    int endSeed = seed + 5;
+    for ( ; seed < endSeed; seed++) {
+      // Make sure random number is the same for each seed
+      srand(seed);
 
-  // read the file
-  for (int n = 0; n < numGraphs; n++) {
-    // read the dimensions of the matrix
-    file >> dim;
-
-    // create a matrix
-    int **matrix = new int*[dim];
-
-    // build the matrix
-    for (int r = 0; r < dim; r++) {
-      matrix[r] = new int[dim];
-      for (int c = 0; c < dim; c++) {
-        file >> matrix[r][c];
+      // Randomly generate a graph with a total of n vertices
+      int **graph = new int*[n];
+      for (int i = 0; i < n; i++) {
+        graph[i] = new int[n];
       }
+
+      for (int r = 0; r < n; r++) {
+        for (int c = r; c < n; c++) {
+          if ((r != c )&& (rand() % 10 < 4)) {
+              graph[r][c] = rand() % (4 * n) + 1;
+              graph[c][r] = graph[r][c];
+          } else {
+            graph[r][c] = 0;
+            graph[c][r] = 0;
+          }
+        }
+      }
+
+      // Initialize MinSpanTree
+      MinSpanTree mst(graph, n);
+
+      // Start timer and run Kruskal's
+      timer.start();
+      mst.runKruskal();
+      kruskalResult = timer.stop();
+
+      // Start timer and run Prims's
+      timer.start();
+      mst.runPrim();
+      primResult = timer.stop();
+
+      printf("\n %-4d | %-11f | %-10f", seed, kruskalResult, primResult);
+      file << n << "," << kruskalResult << "," << primResult << std::endl;
     }
-
-    // initialize the tree
-    MinSpanTree mst(matrix, dim);
-
-    // run the algorithms
-    std::cout << "\n\nGraph " << n + 1 << ":";
-    mst.runKruskal();
-    mst.runPrim();
+    std::cout << "\n---------------------------------";
+    file << std::endl;
   }
 
   std::cout << std::endl;
-
-  file.close();
 
   return 0;
 }

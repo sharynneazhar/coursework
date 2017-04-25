@@ -4,7 +4,7 @@
 #######################################################################
 
 # Specify the lab number
-LAB_NUM=10
+LAB_NUM=11
 
 # Specify the folder name pattern
 FOLDER_NAME := Azhar_Lab$(LAB_NUM)
@@ -14,11 +14,11 @@ PROG_NAME	:= lab$(LAB_NUM)
 
 # Compilation settings
 CC := g++ -std=c++11
-CFLAGS := -g -Wall
+CFLAGS := -g
 
 # Specify the files needed for compilation
-SRC = ../
-INCLUDES = EdgeNode/EdgeNode.h DisjointSet/DisjointSet.h
+SRC = ./
+INCLUDES = EdgeNode/EdgeNode.h DisjointSet/DisjointSet.h Timer/Timer.h MinSpanTree.h
 
 all: clean $(PROG_NAME)
 	./$(PROG_NAME)

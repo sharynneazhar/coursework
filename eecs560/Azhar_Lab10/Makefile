@@ -17,7 +17,7 @@ CC := g++ -std=c++11
 CFLAGS := -g -Wall
 
 # Specify the files needed for compilation
-SRC = ../
+SRC = ./
 INCLUDES = EdgeNode/EdgeNode.h DisjointSet/DisjointSet.h
 
 all: clean $(PROG_NAME)
