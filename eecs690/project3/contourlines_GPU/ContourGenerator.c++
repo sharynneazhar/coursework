@@ -48,14 +48,23 @@ int ContourGenerator::computeContourEdgesFor(float level, vec2*& lines)
 	lines = new vec2[numActualPoints];
 	// Use CUDA or OpenCL code to retrieve the points, placing them into "lines".
 	// As a placeholder for now, we will just make an "X" over the area:
-	lines[0][0] = 0.0; lines[0][1] = 0.0;
-	lines[1][0] = nColsOfVertices - 1.0; lines[1][1] = nRowsOfVertices - 1.0;
-	lines[2][0] = 0.0; lines[2][1] = nRowsOfVertices - 1.0;
-	lines[3][0] = nColsOfVertices - 1.0; lines[3][1] = 0.0;
+	lines[0][0] = 0.0;
+	lines[0][1] = 0.0;
+
+	lines[1][0] = nColsOfVertices - 1.0;
+	lines[1][1] = nRowsOfVertices - 1.0;
+
+	lines[2][0] = 0.0;
+	lines[2][1] = nRowsOfVertices - 1.0;
+
+	lines[3][0] = nColsOfVertices - 1.0;
+	lines[3][1] = 0.0;
 
 	// After the line end points have been returned from the device, delete the
 	// device buffer to prevent a memory leak.
 	// ... do it here ...
+
+	
 
 	// return number of coordinate pairs in "lines":
 	return numActualPoints;
