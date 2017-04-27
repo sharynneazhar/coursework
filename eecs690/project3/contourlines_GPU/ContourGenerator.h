@@ -9,8 +9,9 @@
  **************************************************************************/
 #include <iostream>
 #include <fstream>
-#include <stdio.h>
-#include <cstdlib>
+#include <math.h>
+#include <string>
+#include <string.h>
 
 /**************************************************************************
  * OpenCL Includes
@@ -20,6 +21,8 @@
 #else
 	#include <CL/opencl.h>
 #endif
+
+#include "OpenCLManager.h"
 
 /**************************************************************************
  * Public Types and Global Definitions

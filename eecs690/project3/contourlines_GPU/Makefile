@@ -7,7 +7,7 @@ LOCAL_UTIL_LIBRARIES = ../lib/libcryph.so ../lib/libglsl.so ../lib/libmvc.so ../
 GL_LIB_LOC = -L/usr/lib64/nvidia
 OGL_LIBRARIES = $(GL_LIB_LOC) -lglfw -lGLU -lGL -lOpenCL
 
-OBJS = main.o ContourGenerator.o readSource.o
+OBJS = main.o ContourGenerator.o OpenCLManager.o readSource.o
 
 main: $(OBJS) $(LOCAL_UTIL_LIBRARIES)
 	$(LINK) -o main $(OBJS) $(LOCAL_UTIL_LIBRARIES) $(OGL_LIBRARIES)
@@ -29,6 +29,9 @@ main.o: ContourGenerator.h ../contourlines_GL/GL_LINES_Renderer.h main.c++
 
 ContourGenerator.o: ContourGenerator.h ContourGenerator.c++
 	$(CPP) $(C_FLAGS) ContourGenerator.c++
+
+OpenCLManager.o: OpenCLManager.h OpenCLManager.c++
+	g++ $(C_FLAGS) OpenCLManager.c++
 
 readSource.o: readSource.c++
 	$(CPP) $(C_FLAGS) readSource.c++
