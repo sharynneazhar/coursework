@@ -6,14 +6,14 @@ void hello(void) {
 }
 
 __kernel
-void computeNumExpectedEdges() {
-	int globalID = get_global_id(0);
-	int localID = get_local_id(0);
-	int gridSize = get_global_size(0);
-	int localSize = get_local_size(0);
+void computeNumExpectedEdges(float level, float* vertices, int* numExpectedEdges, int nRows, int nCols) {
+	int col = get_global_id(0);
+	int row = get_global_id(1);
 
-	// printf("global: (%d), local: (%d), gridSize: (%d), localSize: (%d)\n",
-	// 	globalID, localID, gridSize, localSize);
+	if ((row < nRows) && (col < nCols)) {
+		int count = 2;
+		atomic_add(numExpectedEdges, count);
+	}
 }
 
 __kernel

@@ -34,16 +34,6 @@ ContourGenerator::~ContourGenerator()
 
 int ContourGenerator::computeContourEdgesFor(float level, vec2*& lines)
 {
-	// Fire a kernel to determine expected number of edges at the given "level'
-	int numExpectedEdges = 2;
-
-	// Create space for the line end points on the device
-	int numExpectedPoints = 2 * numExpectedEdges; // each edge is: (x,y), (x,y)
-
-	// Fire a kernel to compute the edge end points (determimes "numActualEdges")
-	int numActualEdges = 2;
-	int numActualPoints = 2 * numActualEdges; // each edge is: (x,y), (x,y)
-
 	//-----------------------------------------------------
 	// Initialize and build OpenCL
 	//-----------------------------------------------------
@@ -56,40 +46,62 @@ int ContourGenerator::computeContourEdgesFor(float level, vec2*& lines)
 	//----------------------------------------------------------
 	// Create device buffers associated with the context
 	//----------------------------------------------------------
+	int numExpectedEdges;
+
 	int numVertices = nRowsOfVertices * nColsOfVertices;
 	size_t datasize = numVertices * sizeof(float);
 
+	status = clSetKernelArg(kernels[0], 0, sizeof(float), &level);
+	checkStatus("clSetKernelArg-A", status, true);
 
-	std::cout << "\n\nnRowsOfVertices: " << nRowsOfVertices
-	 					<< "\nnColsOfVertices: " << nColsOfVertices
-						<< "\n\n";
+	status = clSetKernelArg(kernels[0], 1, sizeof(float), &vertexValues);
+	checkStatus("clSetKernelArg-B", status, true);
 
-	for (int i = 0; i < nRowsOfVertices; i++) {
-		for (int j = 0; j < nColsOfVertices; j++) {
-			std::cout << vertexValues[(i * nColsOfVertices) + j] << " ";
-		}
-		std::cout << std::endl;
-	}
+	status = clSetKernelArg(kernels[0], 2, sizeof(int), &numExpectedEdges);
+	checkStatus("clSetKernelArg-C", status, true);
 
-	std::cout << "\n\n";
+	status = clSetKernelArg(kernels[0], 3, sizeof(int), &nRowsOfVertices);
+	checkStatus("clSetKernelArg-D", status, true);
+
+	status = clSetKernelArg(kernels[0], 4, sizeof(int), &nColsOfVertices);
+	checkStatus("clSetKernelArg-E", status, true);
+
 
 	//-----------------------------------------------------
 	// Configure the work-item structure
 	//-----------------------------------------------------
 
-	size_t globalWorkSize[] = { 32 };
-	size_t localWorkSize[] = { 8 };
+	size_t localWorkSize[] = { 16, 16 };
+	size_t globalWorkSize[2];
+
+	// Global work size needs to be at least nRowsOfVertices * nColsOfVertices,
+	//  but it must also be a multiple of local size in each dimension:
+	for (int i = 0; i < 2; i++) {
+		globalWorkSize[i] = nRowsOfVertices;
+		if (globalWorkSize[i] % localWorkSize[i] != 0) {
+			globalWorkSize[i] = ((nRowsOfVertices / localWorkSize[i]) + 1) * localWorkSize[i];
+		}
+	}
 
 	//-----------------------------------------------------
 	// Enqueue the kernel for execution
 	//-----------------------------------------------------
 
-	status = clEnqueueNDRangeKernel(cmdQueue, kernels[0], 1, nullptr,
+	status = clEnqueueNDRangeKernel(cmdQueue, kernels[0], 2, nullptr,
 		globalWorkSize, localWorkSize, 0, nullptr, nullptr);
 	checkStatus("clEnqueueNDRangeKernel", status, true);
 
 	// block until all commands have finished execution
 	clFinish(cmdQueue);
+
+	std::cout << numExpectedEdges;
+
+	// Create space for the line end points on the device
+	int numExpectedPoints = 2 * numExpectedEdges; // each edge is: (x,y), (x,y)
+
+	// Fire a kernel to compute the edge end points (determimes "numActualEdges")
+	int numActualEdges = 2;
+	int numActualPoints = 2 * numActualEdges; // each edge is: (x,y), (x,y)
 
 	// Get the point coords back, storing them into "lines"
 	lines = new vec2[numActualPoints];
