@@ -6,28 +6,47 @@ void hello(void) {
 }
 
 __kernel
-void computeNumExpectedEdges(float level, float* vertices, int* numExpectedEdges, int nRows, int nCols) {
-	int col = get_global_id(0);
-	int row = get_global_id(1);
+void computeNumExpectedEdges(__global float* vertexBuf, __global int* numEdges, int nRows, int nCols, float level) {
+	int numVertices = nRows * nCols;
+	int block = get_global_id(0);
+	size_t gridSize = get_global_size(0);
 
-	if ((row < nRows) && (col < nCols)) {
-		int count = 2;
-		atomic_add(numExpectedEdges, count);
-	}
+	int numAbove = 0;
+	int numBelow = 0;
+
+	for(int i = block*2; i < (numVertices*2); i += gridSize){
+    if(vertexBuf[i] > level){
+      numAbove++;
+    }
+    else numBelow++;
+    if(vertexBuf[i+1] > level){
+      numAbove++;
+    }
+    else numBelow++;
+    if(vertexBuf[i+(nCols*2)] > level){
+      numAbove++;
+    }
+    else numBelow++;
+    if(vertexBuf[i+(nCols*2)+1] > level){
+      numAbove++;
+    }
+    else numBelow++;
+
+    if(   (numAbove == 1 && numBelow == 3) ||
+          (numAbove == 3 && numBelow == 1)  ){
+
+      atomic_inc(numEdges);
+    }
+
+    if(   (numAbove == 2 && numBelow == 2) ){
+      atomic_inc(numEdges);
+      atomic_inc(numEdges);
+    }
+
+  }
 }
 
 __kernel
-void contour(void) {
-	int globalID[3], localID[3];
-	int gridLoc[3]; // "grid" as in CUDA's grid loc
-	for (int i=0 ; i<3 ; i++) {
-		globalID[i] = get_global_id(i);
-		localID[i] = get_local_id(i);
-		gridLoc[i] = globalID[i] / get_local_size(i);
-	}
-
-	printf("global: (%d, %d, %d), gridLoc: (%d, %d, %d), local: (%d, %d, %d)\n",
-		globalID[0], globalID[1], globalID[2],
-		gridLoc[0], gridLoc[1], gridLoc[2],
-		localID[0], localID[1], localID[2]);
+void computeEdges(__global float* linesBuf) {
+	linesBuf[0] = 33;
 }

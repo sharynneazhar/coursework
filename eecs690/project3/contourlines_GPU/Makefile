@@ -35,3 +35,6 @@ OpenCLManager.o: OpenCLManager.h OpenCLManager.c++
 
 readSource.o: readSource.c++
 	$(CPP) $(C_FLAGS) readSource.c++
+
+clean:
+	rm -rf *.o main

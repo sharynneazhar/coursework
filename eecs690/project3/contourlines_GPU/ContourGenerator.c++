@@ -38,7 +38,7 @@ int ContourGenerator::computeContourEdgesFor(float level, vec2*& lines)
 	// Initialize and build OpenCL
 	//-----------------------------------------------------
 	cl_int status;
-	const char* kNames[] = { "computeNumExpectedEdges", "contour" };
+	const char* kNames[] = { "computeNumExpectedEdges", "computeEdges" };
 
 	initializeOpenCL();
 	buildProgram("Contour.cl", kNames, 2);
@@ -46,26 +46,49 @@ int ContourGenerator::computeContourEdgesFor(float level, vec2*& lines)
 	//----------------------------------------------------------
 	// Create device buffers associated with the context
 	//----------------------------------------------------------
-	int numExpectedEdges;
+
+	int numExpectedEdges = 0;
 
 	int numVertices = nRowsOfVertices * nColsOfVertices;
 	size_t datasize = numVertices * sizeof(float);
 
-	status = clSetKernelArg(kernels[0], 0, sizeof(float), &level);
+	printf("\n>> DATA SIZE = %d", datasize);
+
+	cl_mem vertexBuf = clCreateBuffer(context, CL_MEM_READ_ONLY,
+		datasize, nullptr, &status);
+	checkStatus("clCreateBuffer-A", status, true);
+
+	cl_mem intBuf = clCreateBuffer(context, CL_MEM_WRITE_ONLY,
+		sizeof(int), nullptr, &status);
+	checkStatus("clCreateBuffer-B", status, true);
+
+	status = clEnqueueWriteBuffer(cmdQueue, vertexBuf, CL_FALSE, 0, datasize,
+		vertexValues, 0, nullptr, nullptr);
+	checkStatus("clEnqueueWriteBuffer-A", status, true);
+
+	status = clEnqueueWriteBuffer(cmdQueue, intBuf, CL_FALSE, 0, sizeof(int),
+		&numExpectedEdges, 0, nullptr, nullptr);
+	checkStatus("clEnqueueWriteBuffer-B", status, true);
+
+
+	//-----------------------------------------------------
+	// Set kernel arguments
+	//-----------------------------------------------------
+
+	status = clSetKernelArg(kernels[0], 0, sizeof(cl_mem), &vertexBuf);
 	checkStatus("clSetKernelArg-A", status, true);
 
-	status = clSetKernelArg(kernels[0], 1, sizeof(float), &vertexValues);
+	status = clSetKernelArg(kernels[0], 1, sizeof(cl_mem), &intBuf);
 	checkStatus("clSetKernelArg-B", status, true);
 
-	status = clSetKernelArg(kernels[0], 2, sizeof(int), &numExpectedEdges);
+	status = clSetKernelArg(kernels[0], 2, sizeof(int), &nRowsOfVertices);
 	checkStatus("clSetKernelArg-C", status, true);
 
-	status = clSetKernelArg(kernels[0], 3, sizeof(int), &nRowsOfVertices);
+	status = clSetKernelArg(kernels[0], 3, sizeof(int), &nColsOfVertices);
 	checkStatus("clSetKernelArg-D", status, true);
 
-	status = clSetKernelArg(kernels[0], 4, sizeof(int), &nColsOfVertices);
+  status = clSetKernelArg(kernels[0], 4, sizeof(float), &level);
 	checkStatus("clSetKernelArg-E", status, true);
-
 
 	//-----------------------------------------------------
 	// Configure the work-item structure
@@ -73,28 +96,31 @@ int ContourGenerator::computeContourEdgesFor(float level, vec2*& lines)
 
 	size_t localWorkSize[] = { 16, 16 };
 	size_t globalWorkSize[2];
-
-	// Global work size needs to be at least nRowsOfVertices * nColsOfVertices,
-	//  but it must also be a multiple of local size in each dimension:
-	for (int i = 0; i < 2; i++) {
-		globalWorkSize[i] = nRowsOfVertices;
-		if (globalWorkSize[i] % localWorkSize[i] != 0) {
-			globalWorkSize[i] = ((nRowsOfVertices / localWorkSize[i]) + 1) * localWorkSize[i];
+	for (int d = 0 ; d < 2 ; d++) {
+		globalWorkSize[d] = numVertices;
+		if (globalWorkSize[d] % localWorkSize[d] != 0) {
+			globalWorkSize[d] = ((numVertices / localWorkSize[d]) + 1) * localWorkSize[d];
 		}
 	}
 
 	//-----------------------------------------------------
-	// Enqueue the kernel for execution
+	// Enqueue the kernel for execution and read to host
 	//-----------------------------------------------------
 
-	status = clEnqueueNDRangeKernel(cmdQueue, kernels[0], 2, nullptr,
+	status = clEnqueueNDRangeKernel(cmdQueue, kernels[0], 1, nullptr,
 		globalWorkSize, localWorkSize, 0, nullptr, nullptr);
-	checkStatus("clEnqueueNDRangeKernel", status, true);
+	checkStatus("clEnqueueNDRangeKernel-A", status, true);
 
-	// block until all commands have finished execution
+	clEnqueueReadBuffer(cmdQueue, intBuf, CL_TRUE, 0, sizeof(int),
+		&numExpectedEdges, 0, nullptr, nullptr);
+
+	//-----------------------------------------------------
+	// Block until all commands have finished execution
+	//-----------------------------------------------------
+
 	clFinish(cmdQueue);
 
-	std::cout << numExpectedEdges;
+	printf("\n>> NUM EXPECTED EDGES = %d\n\n", numExpectedEdges);
 
 	// Create space for the line end points on the device
 	int numExpectedPoints = 2 * numExpectedEdges; // each edge is: (x,y), (x,y)
@@ -122,6 +148,8 @@ int ContourGenerator::computeContourEdgesFor(float level, vec2*& lines)
 	// After the line end points have been returned from the device, delete the
 	// device buffer to prevent a memory leak.
 	releaseOpenCLResources();
+	clReleaseMemObject(vertexBuf);
+	clReleaseMemObject(intBuf);
 
 	// return number of coordinate pairs in "lines":
 	return numActualPoints;
