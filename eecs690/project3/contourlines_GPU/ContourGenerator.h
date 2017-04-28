@@ -38,6 +38,8 @@ public:
 	ContourGenerator(std::istream& inp);
 	virtual ~ContourGenerator();
 
+	int fireNumExpectedEdgesKernel(int numVertices, size_t datasize, float level);
+
   // Fires a GPU kernel to compute edges for the given level and return them
   int computeContourEdgesFor(float level, vec2*& lines);
 
