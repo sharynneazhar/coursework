@@ -32,8 +32,10 @@ ContourGenerator::~ContourGenerator()
 	// Delete any GPU structures (buffers) associated with this model as well!
 }
 
-int ContourGenerator::fireNumExpectedEdgesKernel(int numVertices, size_t datasize, float level) {
+int ContourGenerator::fireNumExpectedEdgesKernel(int nRows, int nCols, float level) {
 	int count = 0;
+	size_t datasize = nRows * nCols * sizeof(float);
+
 	cl_int status;
 
 	// Create device buffers associated with the context
@@ -57,16 +59,12 @@ int ContourGenerator::fireNumExpectedEdgesKernel(int numVertices, size_t datasiz
 	// Set kernel arguments
 	status = clSetKernelArg(kernels[0], 0, sizeof(cl_mem), &vertexBuf);
 	checkStatus("clSetKernelArg-A", status, true);
-
 	status = clSetKernelArg(kernels[0], 1, sizeof(cl_mem), &intBuf);
 	checkStatus("clSetKernelArg-B", status, true);
-
 	status = clSetKernelArg(kernels[0], 2, sizeof(int), &nRowsOfVertices);
 	checkStatus("clSetKernelArg-C", status, true);
-
 	status = clSetKernelArg(kernels[0], 3, sizeof(int), &nColsOfVertices);
 	checkStatus("clSetKernelArg-D", status, true);
-
 	status = clSetKernelArg(kernels[0], 4, sizeof(float), &level);
 	checkStatus("clSetKernelArg-E", status, true);
 
@@ -74,10 +72,10 @@ int ContourGenerator::fireNumExpectedEdgesKernel(int numVertices, size_t datasiz
 	size_t localWorkSize[] = { 16, 16 };
 	size_t globalWorkSize[2];
 
-	for (int d = 0 ; d < 2 ; d++) {
-		globalWorkSize[d] = numVertices;
+	for (int d = 0; d < 2; d++) {
+		globalWorkSize[d] = nRows * nCols;
 		if (globalWorkSize[d] % localWorkSize[d] != 0) {
-			globalWorkSize[d] = ((numVertices / localWorkSize[d]) + 1) * localWorkSize[d];
+			globalWorkSize[d] = (((nRows * nCols) / localWorkSize[d]) + 1) * localWorkSize[d];
 		}
 	}
 
@@ -108,41 +106,113 @@ int ContourGenerator::computeContourEdgesFor(float level, vec2*& lines) {
 	initializeOpenCL();
 	buildProgram("Contour.cl", kNames, 2);
 
-	int numVertices = nRowsOfVertices * nColsOfVertices;
-	size_t datasize = numVertices * sizeof(float);
+	// Fire a kernel to compute the number of expected edges
+	int numExpectedEdges = fireNumExpectedEdgesKernel(nRowsOfVertices,
+		nColsOfVertices, level);
 
-	printf("\n>> DATA SIZE = %d", datasize);
-
-	int numExpectedEdges = fireNumExpectedEdgesKernel(numVertices, datasize, level);
-
-	printf("\n>> NUM EXPECTED EDGES = %d\n\n", numExpectedEdges);
+	printf("\n>> NUM EXPECTED EDGES = %d", numExpectedEdges);
 
 	// Create space for the line end points on the device
 	int numExpectedPoints = 2 * numExpectedEdges; // each edge is: (x,y), (x,y)
 
 	// Fire a kernel to compute the edge end points (determimes "numActualEdges")
-	int numActualEdges = 2;
+	int numActualEdges = 0;
+	int count = 0;
+	int loc = 0;
+
+	size_t datasize = nRowsOfVertices * nColsOfVertices * sizeof(float);
+	size_t lineBufSize = numExpectedPoints * 2 * sizeof(float);
+
+	// Create device buffers associated with the context
+	cl_mem vertexBuf = clCreateBuffer(context, CL_MEM_READ_ONLY,
+		datasize, nullptr, &status);
+	checkStatus("clCreateBuffer-A", status, true);
+
+	cl_mem lineBuf = clCreateBuffer(context, CL_MEM_WRITE_ONLY,
+		lineBufSize, nullptr, &status);
+  checkStatus("clCreateBuffer-B", status, true);
+
+  cl_mem endPointCount = clCreateBuffer(context, CL_MEM_READ_WRITE,
+		sizeof(int), nullptr, &status);
+  checkStatus("clCreateBuffer-C", status, true);
+
+  cl_mem loc_index = clCreateBuffer(context, CL_MEM_READ_WRITE,
+		sizeof(int), nullptr, &status);
+  checkStatus("clCreateBuffer-D", status, true);
+
+	// Enqueue buffers ready to write
+	status = clEnqueueWriteBuffer(cmdQueue, endPointCount, CL_FALSE, 0,
+		sizeof(int), &numActualEdges, 0, nullptr, nullptr);
+	checkStatus("clEnqueueWriteBuffer-E", status, true);
+
+	status = clEnqueueWriteBuffer(cmdQueue, loc_index, CL_FALSE, 0,
+		sizeof(int), &loc, 0, nullptr, nullptr);
+	checkStatus("clEnqueueWriteBuffer-F", status, true);
+
+	// Set kernel arguments
+	status = clSetKernelArg(kernels[1], 0, sizeof(cl_mem), &vertexBuf);
+	checkStatus("clSetKernelArg-A", status, true);
+	status = clSetKernelArg(kernels[1], 1, sizeof(cl_mem), &lineBuf);
+	checkStatus("clSetKernelArg-B", status, true);
+  status = clSetKernelArg(kernels[1], 2, sizeof(cl_mem), &endPointCount);
+	checkStatus("clSetKernelArg-C", status, true);
+  status = clSetKernelArg(kernels[1], 3, sizeof(cl_mem), &loc_index);
+	checkStatus("clSetKernelArg-D", status, true);
+	status = clSetKernelArg(kernels[1], 4, sizeof(int), &nRowsOfVertices);
+	checkStatus("clSetKernelArg-E", status, true);
+	status = clSetKernelArg(kernels[1], 5, sizeof(int), &nColsOfVertices);
+	checkStatus("clSetKernelArg-F", status, true);
+  status = clSetKernelArg(kernels[1], 6, sizeof(float), &level);
+	checkStatus("clSetKernelArg-G", status, true);
+
+	// Set work-item structure
+	size_t localWorkSize[] = { 16, 16 };
+	size_t globalWorkSize[2];
+
+	for (int d = 0; d < 2; d++) {
+		globalWorkSize[d] = nRowsOfVertices * nColsOfVertices;
+		if (globalWorkSize[d] % localWorkSize[d] != 0) {
+			globalWorkSize[d] = (((nRowsOfVertices * nColsOfVertices) /
+				localWorkSize[d]) + 1) * localWorkSize[d];
+		}
+	}
+
+	// Enqueue kernel for execution
+	status = clEnqueueNDRangeKernel(cmdQueue, kernels[1], 1, nullptr,
+		globalWorkSize, localWorkSize, 0, nullptr, nullptr);
+	checkStatus("clEnqueueNDRangeKernel", status, true);
+
+	// Read back to host
+	clEnqueueReadBuffer(cmdQueue, endPointCount, CL_TRUE, 0, sizeof(int),
+		&numActualEdges, 0, nullptr, nullptr);
+
+	// Block until all commands are finished
+	clFinish(cmdQueue);
+
+	printf("\n>> NUM ACTUAL EDGES = %d\n\n", numActualEdges);
+
 	int numActualPoints = 2 * numActualEdges; // each edge is: (x,y), (x,y)
-
-	// Get the point coords back, storing them into "lines"
+	float* tmpLines = new float[numActualPoints * 2];
 	lines = new vec2[numActualPoints];
-	// Use CUDA or OpenCL code to retrieve the points, placing them into "lines".
-	// As a placeholder for now, we will just make an "X" over the area:
-	lines[0][0] = 0.0;
-	lines[0][1] = 0.0;
 
-	lines[1][0] = nColsOfVertices - 1.0;
-	lines[1][1] = nRowsOfVertices - 1.0;
+	clEnqueueReadBuffer(cmdQueue, lineBuf, CL_TRUE, 0,
+		(numActualPoints * 2 * sizeof(float)), tmpLines, 0, nullptr, nullptr);
 
-	lines[2][0] = 0.0;
-	lines[2][1] = nRowsOfVertices - 1.0;
+	for (int i = 0; i < numActualPoints; i++){
+    lines[i][0] = tmpLines[2 * i];
+    lines[i][1] = tmpLines[2 * i + 1];
+  }
 
-	lines[3][0] = nColsOfVertices - 1.0;
-	lines[3][1] = 0.0;
+  delete [] tmpLines;
 
 	// After the line end points have been returned from the device, delete the
 	// device buffer to prevent a memory leak.
 	releaseOpenCLResources();
+
+	// Free buffers
+	clReleaseMemObject(vertexBuf);
+	clReleaseMemObject(lineBuf);
+	clReleaseMemObject(endPointCount);
 
 	// return number of coordinate pairs in "lines":
 	return numActualPoints;
