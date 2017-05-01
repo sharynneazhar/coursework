@@ -7,5 +7,6 @@ A library of lab and homework assignments completed
 * EECS 368: Programming Languages & Paradigms
 * EECS 448: Software Engineering I
 * EECS 560: Data Structures
+* EECS 645: Intro to Computer Architecture
 * EECS 678: Intro to Operating Systems
 * EECS 690: Multicore and GPGPU Programming
