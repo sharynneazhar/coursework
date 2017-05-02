@@ -12,9 +12,11 @@
 //
 
 extern void ALUSimulator( RegisterFile theRegisterFile,
-				uint32_t OpCode,
-				uint32_t Rs, uint32_t Rt, uint32_t Rd,
-				uint32_t ShiftAmt,
-				uint32_t FunctionCode,
-				uint32_t ImmediateValue,
-				uint32_t* Status );
+													uint32_t OpCode,
+													uint32_t Rs,
+													uint32_t Rt,
+													uint32_t Rd,
+													uint32_t ShiftAmt,
+													uint32_t FunctionCode,
+													uint32_t ImmediateValue,
+													uint32_t* Status );

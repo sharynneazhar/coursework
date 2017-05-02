@@ -36,7 +36,7 @@ INCDIRS = $(patsubst %,-I%,$(INCLIST))
 OBJINNERDIRS = $(patsubst $(SRCDIR)%,$(OBJDIR)%,$(shell find $(SRCDIR) -type d))
 
 # Build the executable
-all: $(OBJINNERDIRS) $(PROGNAME)
+all: clean $(OBJINNERDIRS) $(PROGNAME)
 
 # Build the object directories
 $(OBJINNERDIRS):
