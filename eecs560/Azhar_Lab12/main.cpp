@@ -16,8 +16,8 @@ const int INFINITY = 999999;
 
 /* Outputs the minimum cost from vertex 0 to other vertices in the graph */
 void runDijkstra(int** matrix, int dim) {
-  int distances[dim];        // Holds the shortest path from a vertex to u
-  bool chosenVertices[dim];  // True if a vertex u is in the shortest path tree
+  int distances[dim];        // Holds the SP from a vertex to u
+  bool chosenVertices[dim];  // True if a vertex u is in the SP set
 
   // Initialize distances[] and chosenVertices[]
   for (int i = 0; i < dim; i++) {
@@ -25,10 +25,12 @@ void runDijkstra(int** matrix, int dim) {
     chosenVertices[i] = false;
   }
 
-  // Vertex 0 to itself is always going to be 0, so we can set distances[0] as 0
+  // Vertex 0 to itself is always going to be 0,
+  // so we can set distances[0] as 0
   distances[0] = 0;
 
-  // Find the min cost from vertex 0 to the other vertices in the graph.
+  // Start Dijkstra's algorithm. Find the min cost from vertex 0 to
+  // the other vertices in the graph.
   for (int i = 0; i < dim - 1; i++) {
     // Vertex w
     int w = -1;
@@ -40,15 +42,13 @@ void runDijkstra(int** matrix, int dim) {
       }
     }
 
-    // Add new vertex with known SP
+    // Add new vertex with known SP to the set
     chosenVertices[w] = true;
 
     // Update vertices in V-S
     for (int u = 0; u < dim; u++) {
-      if (matrix[w][u]) {
-        if (distances[u] > distances[w] + matrix[w][u]) {
-          distances[u] = distances[w] + matrix[w][u];
-        }
+      if (matrix[w][u] && distances[u] > distances[w] + matrix[w][u]) {
+        distances[u] = distances[w] + matrix[w][u];
       }
     }
   }
