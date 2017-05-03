@@ -36,7 +36,7 @@ INCDIRS = $(patsubst %,-I%,$(INCLIST))
 OBJINNERDIRS = $(patsubst $(SRCDIR)%,$(OBJDIR)%,$(shell find $(SRCDIR) -type d))
 
 # Build the executable
-all: clean $(OBJINNERDIRS) $(PROGNAME)
+all: $(OBJINNERDIRS) $(PROGNAME)
 
 # Build the object directories
 $(OBJINNERDIRS):
@@ -54,10 +54,10 @@ $(OBJDIR)%.o: $(SRCDIR)%.c $(HFILES)
 test: all
 	./$(PROGNAME) > stdout.txt
 	diff -wB stdout.txt stdexp.txt
-	@rm stdout.txt
+	make clean
 
 # Remove all generated files and directories
 clean:
-	-rm -rf $(PROGNAME) obj stdout.txt
+	@rm -rf $(PROGNAME) obj stdout.txt
 
 .PHONY: clean

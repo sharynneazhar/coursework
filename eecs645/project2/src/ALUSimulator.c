@@ -28,77 +28,69 @@ extern void ALUSimulator( RegisterFile theRegisterFile,
 													uint32_t ImmediateValue,
 													uint32_t* Status) {
 
-  uint32_t RsVal;
-	uint32_t RtVal;
 	uint32_t RdVal = 0;
 
 	RegisterFile_Read(theRegisterFile,
 										Rs, &theRegisterFile[Rs],
 										Rt, &theRegisterFile[Rt]);
 
-	switch (OpCode) {
-		case 0:
-			switch (FunctionCode) {
-				case 0: // SLL, NOOP
-					RdVal = (unsigned) theRegisterFile[Rt] << (unsigned) ShiftAmt;
-					break;
-				case 2: // SRL
-					RdVal = (unsigned) theRegisterFile[Rt] >> (unsigned) ShiftAmt;
-					break;
-				case 3: // SRA
-					RdVal = (signed) theRegisterFile[Rt] >> (unsigned) ShiftAmt;
-					break;
-				case 4: // SLLV
-					RdVal = (unsigned) theRegisterFile[Rt] << (unsigned) theRegisterFile[Rs];
-					break;
-				case 6: // SRLV
-					RdVal = (unsigned) theRegisterFile[Rt] >> (unsigned) theRegisterFile[Rs];
-					break;
-				case 32: // ADD
-					RdVal = (signed) ((signed) theRegisterFile[Rs]) +  (signed) theRegisterFile[Rt];
-					break;
-				case 33: // ADDU
-					RdVal = (unsigned) ((unsigned) theRegisterFile[Rs]) + (unsigned) theRegisterFile[Rt];
-					break;
-				case 34: //SUB
-					RdVal = (signed) ((signed) theRegisterFile[Rs]) - (signed) theRegisterFile[Rt];
-					break;
-				case 35: //SUBU
-					RdVal = (unsigned) ((unsigned) theRegisterFile[Rs]) - (unsigned) theRegisterFile[Rt];
-					break;
-				case 36: //AND
-					RdVal = theRegisterFile[Rs] & theRegisterFile[Rt];
-					break;
-				case 37: //OR
-					RdVal = theRegisterFile[Rs] | theRegisterFile[Rt];
-					break;
-				case 38: //XOR
-					RdVal = theRegisterFile[Rs] ^ theRegisterFile[Rt];
-					break;
-				case 42: //SLT
-					RdVal = ((signed) theRegisterFile[Rs] < (signed) theRegisterFile[Rt]);
-					break;
-				case 43: //SLTU
-					RdVal = ((unsigned) theRegisterFile[Rs] < (unsigned) theRegisterFile[Rt]);
-					break;
-				default:
-					printf(">> ERROR: Unknown FunctionCode.");
-			}
-			break;
-		case 8: // ADDI
-			RdVal = (signed) ((signed) theRegisterFile[Rs]) + (signed) (int32_t) (int16_t) ImmediateValue;
-			break;
-		case 9: // ADDIU
-			RdVal = (unsigned) ((unsigned) theRegisterFile[Rs]) + (unsigned) (int32_t) (int16_t) ImmediateValue;
-			break;
-		case 10: // SLTI
-			RdVal = ((signed) theRegisterFile[Rs] < (signed) (int32_t) (int16_t) ImmediateValue);
-			break;
-		case 11: // SLTIU
-			RdVal = ((unsigned) theRegisterFile[Rs] < (unsigned) (int32_t) (int16_t) ImmediateValue);
-			break;
-		default:
-			printf(">> ERROR: Unknown OpCode.");
+	if (OpCode == 0) {
+		switch (FunctionCode) {
+			case 0: // SLL, NOOP
+				RdVal = (unsigned) theRegisterFile[Rt] << (unsigned) ShiftAmt;
+				break;
+			case 2: // SRL
+				RdVal = (unsigned) theRegisterFile[Rt] >> (unsigned) ShiftAmt;
+				break;
+			case 3: // SRA
+				RdVal = (signed) theRegisterFile[Rt] >> (unsigned) ShiftAmt;
+				break;
+			case 4: // SLLV
+				RdVal = (unsigned) theRegisterFile[Rt] << (unsigned) theRegisterFile[Rs];
+				break;
+			case 6: // SRLV
+				RdVal = (unsigned) theRegisterFile[Rt] >> (unsigned) theRegisterFile[Rs];
+				break;
+			case 32: // ADD
+				RdVal = (signed) ((signed) theRegisterFile[Rs]) +  (signed) theRegisterFile[Rt];
+				break;
+			case 33: // ADDU
+				RdVal = (unsigned) ((unsigned) theRegisterFile[Rs]) + (unsigned) theRegisterFile[Rt];
+				break;
+			case 34: //SUB
+				RdVal = (signed) ((signed) theRegisterFile[Rs]) - (signed) theRegisterFile[Rt];
+				break;
+			case 35: //SUBU
+				RdVal = (unsigned) ((unsigned) theRegisterFile[Rs]) - (unsigned) theRegisterFile[Rt];
+				break;
+			case 36: //AND
+				RdVal = theRegisterFile[Rs] & theRegisterFile[Rt];
+				break;
+			case 37: //OR
+				RdVal = theRegisterFile[Rs] | theRegisterFile[Rt];
+				break;
+			case 38: //XOR
+				RdVal = theRegisterFile[Rs] ^ theRegisterFile[Rt];
+				break;
+			case 42: //SLT
+				RdVal = ((signed) theRegisterFile[Rs] < (signed) theRegisterFile[Rt]);
+				break;
+			case 43: //SLTU
+				RdVal = ((unsigned) theRegisterFile[Rs] < (unsigned) theRegisterFile[Rt]);
+				break;
+			default:
+				printf(">> ERROR: Unknown FunctionCode.");
+		}
+	} else if (OpCode == 8) {
+		RdVal = (signed) ((signed) theRegisterFile[Rs]) + (signed) (int32_t) (int16_t) ImmediateValue;
+	} else if (OpCode == 9) {
+		RdVal = (unsigned) ((unsigned) theRegisterFile[Rs]) + (unsigned) (int32_t) (int16_t) ImmediateValue;
+	} else if (OpCode == 10) {
+		RdVal = ((signed) theRegisterFile[Rs] < (signed) (int32_t) (int16_t) ImmediateValue);
+	} else if (OpCode == 11) {
+		RdVal = ((unsigned) theRegisterFile[Rs] < (unsigned) (int32_t) (int16_t) ImmediateValue);
+	} else {
+		printf(">> ERROR: Unknown OpCode.");
 	}
 
 	if (OpCode == 0) {
