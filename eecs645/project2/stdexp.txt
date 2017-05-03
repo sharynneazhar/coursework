@@ -1,0 +1,58 @@
+RegisterFile_Write:  WrtEnb: 1; WrtAddr: 01; WrtValue: 00000005
+RegisterFile_Write:  WrtEnb: 1; WrtAddr: 02; WrtValue: 00000010
+RegisterFile_Write:  WrtEnb: 1; WrtAddr: 03; WrtValue: 00000017
+RegisterFile_Write:  WrtEnb: 1; WrtAddr: 04; WrtValue: 00000390
+RegisterFile_Write:  WrtEnb: 1; WrtAddr: 05; WrtValue: 00001010
+Initial RegisterFile: ========================================
+00000000:  00000000  00000005  00000010  00000017
+00000004:  00000390  00001010  00000000  00000000
+00000008:  00000000  00000000  00000000  00000000
+0000000C:  00000000  00000000  00000000  00000000
+00000010:  00000000  00000000  00000000  00000000
+00000014:  00000000  00000000  00000000  00000000
+00000018:  00000000  00000000  00000000  00000000
+0000001C:  00000000  00000000  00000000  00000000
+Instruction: 20490064
+>>Opcode: 08; Rs: 02; Rt: 09; Rd: 00;
+>>>>ShiftAmt: 01; FunctionCode: 24; ImmediateValue: 0064;
+RegisterFile_Read: RdAddr_S: 02; RdAddr_T: 09;
+RegisterFile_Write:  WrtEnb: 1; WrtAddr: 09; WrtValue: 00000074
+Instruction: 20AAFF80
+>>Opcode: 08; Rs: 05; Rt: 0A; Rd: 1F;
+>>>>ShiftAmt: 1E; FunctionCode: 00; ImmediateValue: FF80;
+RegisterFile_Read: RdAddr_S: 05; RdAddr_T: 10;
+RegisterFile_Write:  WrtEnb: 1; WrtAddr: 10; WrtValue: 00000F90
+Instruction: 00245820
+>>Opcode: 00; Rs: 01; Rt: 04; Rd: 0B;
+>>>>ShiftAmt: 00; FunctionCode: 20; ImmediateValue: 5820;
+RegisterFile_Read: RdAddr_S: 01; RdAddr_T: 04;
+RegisterFile_Write:  WrtEnb: 1; WrtAddr: 11; WrtValue: 00000395
+Instruction: 00056100
+>>Opcode: 00; Rs: 00; Rt: 05; Rd: 0C;
+>>>>ShiftAmt: 04; FunctionCode: 00; ImmediateValue: 6100;
+RegisterFile_Read: RdAddr_S: 00; RdAddr_T: 05;
+RegisterFile_Write:  WrtEnb: 1; WrtAddr: 12; WrtValue: 00010100
+Instruction: 00856825
+>>Opcode: 00; Rs: 04; Rt: 05; Rd: 0D;
+>>>>ShiftAmt: 00; FunctionCode: 25; ImmediateValue: 6825;
+RegisterFile_Read: RdAddr_S: 04; RdAddr_T: 05;
+RegisterFile_Write:  WrtEnb: 1; WrtAddr: 13; WrtValue: 00001390
+Instruction: 00437026
+>>Opcode: 00; Rs: 02; Rt: 03; Rd: 0E;
+>>>>ShiftAmt: 00; FunctionCode: 26; ImmediateValue: 7026;
+RegisterFile_Read: RdAddr_S: 02; RdAddr_T: 03;
+RegisterFile_Write:  WrtEnb: 1; WrtAddr: 14; WrtValue: 00000007
+Instruction: 00627822
+>>Opcode: 00; Rs: 03; Rt: 02; Rd: 0F;
+>>>>ShiftAmt: 00; FunctionCode: 22; ImmediateValue: 7822;
+RegisterFile_Read: RdAddr_S: 03; RdAddr_T: 02;
+RegisterFile_Write:  WrtEnb: 1; WrtAddr: 15; WrtValue: 00000007
+Final RegisterFile: ========================================
+00000000:  00000000  00000005  00000010  00000017
+00000004:  00000390  00001010  00000000  00000000
+00000008:  00000000  00000074  00000F90  00000395
+0000000C:  00010100  00001390  00000007  00000007
+00000010:  00000000  00000000  00000000  00000000
+00000014:  00000000  00000000  00000000  00000000
+00000018:  00000000  00000000  00000000  00000000
+0000001C:  00000000  00000000  00000000  00000000

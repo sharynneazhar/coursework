@@ -10,14 +10,12 @@
 //*****************************************************************************
 //
 
-#include <stddef.h>
-#include <stdbool.h>
-#include <stdint.h>
 #include <stdarg.h>
-
+#include <stdbool.h>
+#include <stddef.h>
+#include <stdint.h>
 #include <stdio.h>
 
-#include "RegisterFile_01.h"
 #include "ALUSimulator.h"
 
 extern void ALUSimulator( RegisterFile theRegisterFile,
@@ -30,73 +28,82 @@ extern void ALUSimulator( RegisterFile theRegisterFile,
 													uint32_t ImmediateValue,
 													uint32_t* Status) {
 
+  uint32_t RsVal;
+	uint32_t RtVal;
+	uint32_t RdVal = 0;
+
+	RegisterFile_Read(theRegisterFile, Rs, &RsVal, Rt, &RtVal);
+
 	switch (OpCode) {
 		case 0:
 			switch (FunctionCode) {
 				case 0: // SLL, NOOP
-					Rd = Rt << ShiftAmt;
+					RdVal = Rt << ShiftAmt;
 					break;
 				case 2: // SRL
-					Rd = Rt >> ShiftAmt;
+					RdVal = Rt >> ShiftAmt;
 					break;
 				case 3: // SRA
-					Rd = Rt >> ShiftAmt;
+					RdVal = (signed) Rt >> ShiftAmt;
 					break;
 				case 4: // SLLV
-					Rd = Rt << Rs;
+					RdVal = Rt << Rs;
 					break;
 				case 6: // SRLV
-					Rd = Rt >> Rs;
+					RdVal = Rt >> Rs;
 					break;
 				case 32: // ADD
-					Rd = Rs + Rt;
+					RdVal = Rs + Rt;
 					break;
 				case 33: // ADDU
-					Rd = Rs + Rt;
+					RdVal = Rs + Rt;
 					break;
 				case 34: //SUB
-					Rd = Rs - Rt;
+					RdVal = Rs - Rt;
 					break;
 				case 35: //SUBU
-					Rd = Rs - Rt;
+					RdVal = Rs - Rt;
 					break;
 				case 36: //AND
+					RdVal = Rs & Rt;
 					break;
 				case 37: //OR
+					RdVal = Rs | Rt;
 					break;
 				case 38: //XOR
+					RdVal = Rs ^ Rt;
 					break;
 				case 42: //SLT
-					Rd = (Rs < Rt);
+					RdVal = (Rs < Rt);
 					break;
 				case 43: //SLTU
+					RdVal = ((unsigned) Rs < (unsigned) Rt);
 					break;
 				default:
 					printf(">> ERROR: Unknown FunctionCode.");
 			}
 			break;
 		case 8: // ADDI
-			Rd = Rs + ImmediateValue;
-			if ((Rs > 0 && (Rd < Rs || Rd < ImmediateValue)) ||
-					((signed) Rs < 0 && (Rd > Rs || Rd > ImmediateValue))) {
-				unsigned int status = 12;
-				Status = &status;
-			}
+			RdVal = Rs + ImmediateValue;
 			break;
 		case 9: // ADDIU
-			Rd = Rs + ImmediateValue;
+			RdVal = Rs + ImmediateValue;
 			break;
 		case 10: // SLTI
-			Rd = (Rs < ImmediateValue);
+			RdVal = (Rs < ImmediateValue);
 			break;
 		case 11: // SLTIU
-			Rd = ((unsigned) Rs < (unsigned) ImmediateValue);
+			RdVal = ((unsigned) Rs < (unsigned) ImmediateValue);
 			break;
 		default:
 			printf(">> ERROR: Unknown OpCode.");
 	}
 
-	RegisterFile_Write(theRegisterFile, true, Rt, Rd);
+	if (OpCode == 0) {
+		RegisterFile_Write(theRegisterFile, true, Rd, RdVal);
+	} else {
+		RegisterFile_Write(theRegisterFile, true, Rt, RdVal);
+	}
 
 	// printf(">>ALU: Opcode: %02X; Rs: %02X; Rt: %02X; Rd: %02X;\n",
 	// 			OpCode,

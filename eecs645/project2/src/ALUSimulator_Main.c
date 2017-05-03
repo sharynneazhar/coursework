@@ -157,7 +157,7 @@ int32_t main() {
 
 	uint32_t	Files_Nbr = 3;
 	uint32_t	Files_Idx;
-	char*		  Filenames[] = { "instructions/MIPS_Instructions_01.txt" };
+	char*		  Filenames[] = { "data/MIPS_Instructions_01.txt" };
 	FILE*		  MIPS_Iinstruction_File;
 	uint32_t	FReadStatus;
 

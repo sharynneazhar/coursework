@@ -11,6 +11,16 @@
 //*****************************************************************************
 //
 
+#ifndef ALU_SIMULATOR_H
+#define ALU_SIMULATOR_H
+
+#include <stdarg.h>
+#include <stdbool.h>
+#include <stddef.h>
+#include <stdint.h>
+
+#include "RegisterFile_01.h"
+
 extern void ALUSimulator( RegisterFile theRegisterFile,
 													uint32_t OpCode,
 													uint32_t Rs,
@@ -20,3 +30,5 @@ extern void ALUSimulator( RegisterFile theRegisterFile,
 													uint32_t FunctionCode,
 													uint32_t ImmediateValue,
 													uint32_t* Status );
+
+#endif
