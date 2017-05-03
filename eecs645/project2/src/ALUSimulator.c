@@ -32,68 +32,70 @@ extern void ALUSimulator( RegisterFile theRegisterFile,
 	uint32_t RtVal;
 	uint32_t RdVal = 0;
 
-	RegisterFile_Read(theRegisterFile, Rs, &RsVal, Rt, &RtVal);
+	RegisterFile_Read(theRegisterFile,
+										Rs, &theRegisterFile[Rs],
+										Rt, &theRegisterFile[Rt]);
 
 	switch (OpCode) {
 		case 0:
 			switch (FunctionCode) {
 				case 0: // SLL, NOOP
-					RdVal = Rt << ShiftAmt;
+					RdVal = (unsigned) theRegisterFile[Rt] << (unsigned) ShiftAmt;
 					break;
 				case 2: // SRL
-					RdVal = Rt >> ShiftAmt;
+					RdVal = (unsigned) theRegisterFile[Rt] >> (unsigned) ShiftAmt;
 					break;
 				case 3: // SRA
-					RdVal = (signed) Rt >> ShiftAmt;
+					RdVal = (signed) theRegisterFile[Rt] >> (unsigned) ShiftAmt;
 					break;
 				case 4: // SLLV
-					RdVal = Rt << Rs;
+					RdVal = (unsigned) theRegisterFile[Rt] << (unsigned) theRegisterFile[Rs];
 					break;
 				case 6: // SRLV
-					RdVal = Rt >> Rs;
+					RdVal = (unsigned) theRegisterFile[Rt] >> (unsigned) theRegisterFile[Rs];
 					break;
 				case 32: // ADD
-					RdVal = Rs + Rt;
+					RdVal = (signed) ((signed) theRegisterFile[Rs]) +  (signed) theRegisterFile[Rt];
 					break;
 				case 33: // ADDU
-					RdVal = Rs + Rt;
+					RdVal = (unsigned) ((unsigned) theRegisterFile[Rs]) + (unsigned) theRegisterFile[Rt];
 					break;
 				case 34: //SUB
-					RdVal = Rs - Rt;
+					RdVal = (signed) ((signed) theRegisterFile[Rs]) - (signed) theRegisterFile[Rt];
 					break;
 				case 35: //SUBU
-					RdVal = Rs - Rt;
+					RdVal = (unsigned) ((unsigned) theRegisterFile[Rs]) - (unsigned) theRegisterFile[Rt];
 					break;
 				case 36: //AND
-					RdVal = Rs & Rt;
+					RdVal = theRegisterFile[Rs] & theRegisterFile[Rt];
 					break;
 				case 37: //OR
-					RdVal = Rs | Rt;
+					RdVal = theRegisterFile[Rs] | theRegisterFile[Rt];
 					break;
 				case 38: //XOR
-					RdVal = Rs ^ Rt;
+					RdVal = theRegisterFile[Rs] ^ theRegisterFile[Rt];
 					break;
 				case 42: //SLT
-					RdVal = (Rs < Rt);
+					RdVal = ((signed) theRegisterFile[Rs] < (signed) theRegisterFile[Rt]);
 					break;
 				case 43: //SLTU
-					RdVal = ((unsigned) Rs < (unsigned) Rt);
+					RdVal = ((unsigned) theRegisterFile[Rs] < (unsigned) theRegisterFile[Rt]);
 					break;
 				default:
 					printf(">> ERROR: Unknown FunctionCode.");
 			}
 			break;
 		case 8: // ADDI
-			RdVal = Rs + ImmediateValue;
+			RdVal = (signed) ((signed) theRegisterFile[Rs]) + (signed) (int32_t) (int16_t) ImmediateValue;
 			break;
 		case 9: // ADDIU
-			RdVal = Rs + ImmediateValue;
+			RdVal = (unsigned) ((unsigned) theRegisterFile[Rs]) + (unsigned) (int32_t) (int16_t) ImmediateValue;
 			break;
 		case 10: // SLTI
-			RdVal = (Rs < ImmediateValue);
+			RdVal = ((signed) theRegisterFile[Rs] < (signed) (int32_t) (int16_t) ImmediateValue);
 			break;
 		case 11: // SLTIU
-			RdVal = ((unsigned) Rs < (unsigned) ImmediateValue);
+			RdVal = ((unsigned) theRegisterFile[Rs] < (unsigned) (int32_t) (int16_t) ImmediateValue);
 			break;
 		default:
 			printf(">> ERROR: Unknown OpCode.");

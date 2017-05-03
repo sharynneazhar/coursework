@@ -75,15 +75,14 @@ extern void RegisterFile_Read( RegisterFile theRegisterFile,
 extern void RegisterFile_Write( RegisterFile theRegisterFile,
 								bool WrtEnb, uint32_t WrtAddr, uint32_t WrtValue ) {
 
+	printf( "RegisterFile_Write:  WrtEnb: %01d; WrtAddr: %02d; WrtValue: %08X\n",
+					WrtEnb, WrtAddr, WrtValue );
 	//
 	//	If enabled, write data to the register file.
 	//
 	if ( WrtEnb == true ) {
 		theRegisterFile[WrtAddr] = WrtValue;
 	}
-
-	printf( "RegisterFile_Write:  WrtEnb: %01d; WrtAddr: %02d; WrtValue: %08X\n",
-				WrtEnb, WrtAddr, WrtValue );
 
 }
 
