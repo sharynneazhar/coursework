@@ -16,37 +16,38 @@ const int INFINITY = 999999;
 
 /* Outputs the minimum cost from vertex 0 to other vertices in the graph */
 void runDijkstra(int** matrix, int dim) {
-  int dist[dim];      // dist[i] holds the shortest path from a vertex to u
-  bool visited[dim];  // visited[i] is true if vertex u is in the shortest path tree
+  int distances[dim];        // Holds the shortest path from a vertex to u
+  bool chosenVertices[dim];  // True if a vertex u is in the shortest path tree
 
-  // Initialize dist[] and visited[]
+  // Initialize distances[] and chosenVertices[]
   for (int i = 0; i < dim; i++) {
-    dist[i] = INFINITY;
-    visited[i] = false;
+    distances[i] = INFINITY;
+    chosenVertices[i] = false;
   }
 
-  // Vertex 0 to itself is always going to be 0, so we can set dist[0] as 0
-  dist[0] = 0;
+  // Vertex 0 to itself is always going to be 0, so we can set distances[0] as 0
+  distances[0] = 0;
 
   // Find the min cost from vertex 0 to the other vertices in the graph.
   for (int i = 0; i < dim - 1; i++) {
-
-    // Find vertex w such that dist[u] is minimized
+    // Vertex w
     int w = -1;
+
+    // Find vertex w such that distances[u] is minimized
     for (int v = 0; v < dim; v++) {
-      if (!visited[v] && (w == -1 || dist[v] <= dist[w])) {
+      if (!chosenVertices[v] && (w == -1 || distances[v] <= distances[w])) {
         w = v;
       }
     }
 
-    // Add new vertex with known SP to S
-    visited[w] = true;
+    // Add new vertex with known SP
+    chosenVertices[w] = true;
 
     // Update vertices in V-S
     for (int u = 0; u < dim; u++) {
       if (matrix[w][u]) {
-        if (dist[u] > dist[w] + matrix[w][u]) {
-          dist[u] = dist[w] + matrix[w][u];
+        if (distances[u] > distances[w] + matrix[w][u]) {
+          distances[u] = distances[w] + matrix[w][u];
         }
       }
     }
@@ -54,7 +55,7 @@ void runDijkstra(int** matrix, int dim) {
 
   // Print results
   for (int i = 0; i < dim; i++) {
-    std::cout << dist[i] << " ";
+    std::cout << distances[i] << " ";
   }
 
   std::cout << "\n\n";
