@@ -2,6 +2,7 @@
 //--ALUSimulator.c
 //
 //		Author: 		    Gary J. Minden
+// 		Modified By: 		Sharynne Azhar (2513206)
 //		Organization:	  KU/EECS/EECS 645
 //		Date:			      2017-04-22 (B70422)
 //		Version:		    1.0
