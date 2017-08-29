@@ -30,7 +30,7 @@ typedef int RegisterFile[Registers_Nbr];
 // Prototypes for the APIs.
 //
 //*****************************************************************************
-                           
+
 extern void RegisterFile_Cycle( RegisterFile theRegisterFile,
 								uint32_t RdAddr_S, uint32_t* RdValue_S,
 								uint32_t RdAddr_T, uint32_t* RdValue_T,
@@ -39,10 +39,10 @@ extern void RegisterFile_Cycle( RegisterFile theRegisterFile,
 extern void RegisterFile_Read( RegisterFile theRegisterFile,
 								uint32_t RdAddr_S, uint32_t* RdValue_S,
 								uint32_t RdAddr_T, uint32_t* RdValue_T );
-								
+
 extern void RegisterFile_Write( RegisterFile theRegisterFile,
 								bool WrtEnb, uint32_t WrtAddr, uint32_t WrtValue );
-								
+
 extern void RegisterFile_Dump( RegisterFile theRegisterFile );
 
 #endif		// __RegisterFile_H_

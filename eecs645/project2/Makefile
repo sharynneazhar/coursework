@@ -7,7 +7,7 @@ PROGNAME = ALUSimulator
 
 # Compilation settings
 CC = gcc --std=gnu11
-CFLAGS = -g -Wall
+CFLAGS = -g
 
 # Add files to appropriate line to get this makefile to build them.
 CFILELIST = RegisterFile_01.c ALUSimulator.c ALUSimulator_Main.c
@@ -52,10 +52,12 @@ $(OBJDIR)%.o: $(SRCDIR)%.c $(HFILES)
 
 # Build and run the program
 test: all
-	./$(PROGNAME)
+	./$(PROGNAME) > stdout.txt
+	diff -wB stdout.txt stdexp.txt
+	make clean
 
 # Remove all generated files and directories
 clean:
-	-rm -rf $(PROGNAME) obj
+	@rm -rf $(PROGNAME) obj stdout.txt
 
 .PHONY: clean
