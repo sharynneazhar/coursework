@@ -64,7 +64,8 @@ int list_type;
      * Matched an HTML unordered list so print it out as a LateX itemize.
      * The beginning and ending tags need to be stripped off.
      *************************************************************************/
-     BEGIN UL;
+     printf( "\\begin{itemize}" );
+     BEGIN LI;
 }
 
 "<ol>" {
@@ -72,7 +73,8 @@ int list_type;
      * Matched an HTML ordered list so print it out as a LateX enumerate.
      * The beginning and ending tags need to be stripped off. 
      *************************************************************************/
-     BEGIN OL;
+     printf( "\\begin{enumerate}" );
+     BEGIN LI;
 }
 
 "<!--" {
@@ -101,48 +103,66 @@ int list_type;
     exit( 1 );
 }
 
+<LI>"<li>" {
+    printf( "\\item ");
+}
+
+<LI>"</li>" {
+    printf( "\n\n" );
+}
+
+<LI>"</ul>" {
+    printf( "\\end{itemize}\n" );
+    BEGIN 0;
+}
+
+<LI>"</ol>" {
+    printf( "\\end{enumerate}\n" );
+    BEGIN 0;
+}
+
 <PARA>"</p>" {
     printf( "\n\n" );
     BEGIN 0;
 }
 
-<PARA>"<small>"[^<]*"</small>" {
+<PARA,LI>"<small>"[^<]*"</small>" {
     yytext[yyleng-8] = 0;
     printf( "{\\scriptsize %s}", yytext+7 );
 }
 
-<PARA>"<big>"[^<]*"</big>" {
+<PARA,LI>"<big>"[^<]*"</big>" {
     yytext[yyleng-6] = 0;
     printf( "{\\Large %s}", yytext+5 );
 }
 
-<PARA>"<b>"[^<]*"</b>" {
+<PARA,LI>"<b>"[^<]*"</b>" {
     yytext[yyleng-4] = 0;
     printf( "\\textbf{%s}", yytext+3 );    
 }
 
-<PARA>"<i>"[^<]*"</i>" {
+<PARA,LI>"<i>"[^<]*"</i>" {
     yytext[yyleng-4] = 0;
     printf( "\\textit{%s}", yytext+3 );
 }
 
 
-<PARA>"<strong>"[^<]*"</strong>" {
+<PARA,LI>"<strong>"[^<]*"</strong>" {
     yytext[yyleng-9] = 0;
     printf( "\\textmd{%s}", yytext+8 );
 }
 
-<PARA>"<em>"[^<]*"</em>" {
+<PARA,LI>"<em>"[^<]*"</em>" {
     yytext[yyleng-5] = 0;
     printf( "\\emph{%s}", yytext+4 );
 }
 
-<PARA>"<sup>"[^<]*"</sup>" {
+<PARA,LI>"<sup>"[^<]*"</sup>" {
     yytext[yyleng-6] = 0;
     printf( "\\textsuperscript{%s}", yytext+5 );
 }
 
-<PARA>"<sub>"[^<]*"</sub>" {
+<PARA,LI>"<sub>"[^<]*"</sub>" {
     yytext[yyleng-6] = 0;
     printf( "\\textsubscript{%s}", yytext+5 );
 }
@@ -173,10 +193,10 @@ int list_type;
     printf( "%s", yytext );
 }
 
-<COMMENT,PARA>. {
+<COMMENT,PARA,LI>. {
     /**************************************************************************
-     * Matched any other text while parsing an HTML comment and paragraph.
-     * Print out the text as is.
+     * Matched any other text while parsing an HTML comment, paragraph, or
+     * list item. Print out the text as is.
      *************************************************************************/
     printf( "%s", yytext );
 }
