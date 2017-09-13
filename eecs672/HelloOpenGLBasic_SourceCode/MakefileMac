@@ -1,0 +1,15 @@
+CPP = g++ -std=c++11
+C_FLAGS = -I/usr/local/include -fPIC -g -c -DGLFW_INCLUDE_GLEXT -DGLFW_INCLUDE_GLCOREARB
+
+LINK = g++ -fPIC -g
+GL_LIBRARIES = -L/usr/local/lib -lglfw -framework OpenGL
+
+OBJS = hello.o ShaderIF.o
+
+hello: $(OBJS)
+	$(LINK) -o hello $(OBJS) $(GL_LIBRARIES)
+
+hello.o: hello.c++
+	$(CPP) $(C_FLAGS) hello.c++
+ShaderIF.o: ShaderIF.h ShaderIF.c++
+	$(CPP) $(C_FLAGS) ShaderIF.c++

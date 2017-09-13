@@ -8,6 +8,7 @@ eecs678/lab3-ipc/bash-4.2
 *-master/*
 
 *.o
+*.so
 *.exe
 *.pdf
 *.bin
