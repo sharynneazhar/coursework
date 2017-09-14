@@ -1,9 +1,12 @@
 #version 410 core
 
-// replace the placeholder implementation here
+in vec2 mcPosition;
+
+uniform vec4 scaleTrans;
 
 void main()
 {
-	gl_Position = vec4(0, 0, 0, 1);
+	float ldsX = scaleTrans[0]*mcPosition.x + scaleTrans[1];
+	float ldsY = scaleTrans[2]*mcPosition.y + scaleTrans[3];
+	gl_Position = vec4(ldsX, ldsY, 0, 1);
 }
-

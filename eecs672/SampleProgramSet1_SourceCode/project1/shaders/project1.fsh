@@ -1,11 +1,10 @@
 #version 410 core
 
-// Replace the placeholder implementation here...
+uniform vec3 lineColor;
 
 out vec4 fragmentColor;
 
 void main()
 {
-	fragmentColor = vec4(1.0, 0.0, 0.0, 1.0);
+	fragmentColor = vec4(lineColor, 1.0);
 }
-

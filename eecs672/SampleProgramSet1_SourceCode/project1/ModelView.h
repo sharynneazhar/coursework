@@ -20,7 +20,7 @@ class ModelView
 {
 public:
 	// NOTE: You will likely want to modify the ModelView constructor to take additional parameters.
-	ModelView(ShaderIF* sIF);
+	ModelView(ShaderIF* sIF, vec2* coords, int nVertices);
 	virtual ~ModelView();
 
 	// xyzLimits: {mcXmin, mcXmax, mcYmin, mcYmax, mcZmin, mcZmax}
@@ -34,11 +34,14 @@ public:
 	static void setMCRegionOfInterest(double xyz[6]);
 
 private:
-	// TODO: VAO(s), VBO(s), and other relevant INSTANCE variables
-
 	ShaderIF* shaderIF;
+	GLuint vao[1];
+	GLuint vbo[1];
+	vec3 lineColor;
 
-	// TODO: add uniform and attribute variable location CLASS variables
+	int numVertices;
+	int serialNumber;
+	double xmin, xmax, ymin, ymax;
 
 	// Routines for computing parameters necessary to map from arbitrary
 	// model coordinate ranges into OpenGL's -1..+1 Logical Device Space.
@@ -61,6 +64,9 @@ private:
 
 	static double mcRegionOfInterest[6];
 	static bool aspectRatioPreservationEnabled;
+	static int numInstances;
+
+	void initModelGeometry(vec2* coords);
 };
 
 #endif

@@ -1,6 +1,6 @@
 CPP = g++ -std=c++11
 INC = -I../glslutil -I../mvcutil -I. -I/usr/local/include
-C_FLAGS = -fPIC -g -c -DGLFW_INCLUDE_GLEXT -DGLFW_INCLUDE_GLCOREARB $(INC)
+C_FLAGS = -fPIC -g -c $(INC) -DGLFW_INCLUDE_GLEXT -DGLFW_INCLUDE_GLCOREARB
 
 LINK = g++ -fPIC -g
 LOCAL_UTIL_LIBRARIES = ../lib/libglsl.so

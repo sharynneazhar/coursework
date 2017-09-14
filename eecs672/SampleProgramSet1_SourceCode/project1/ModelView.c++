@@ -12,16 +12,54 @@ double ModelView::mcRegionOfInterest[6] = { -1.0, 1.0, -1.0, 1.0, -1.0, 1.0 };
 // Responsive aspect ratio
 bool ModelView::aspectRatioPreservationEnabled = true;
 
-// NOTE: You will likely want to modify the ModelView constructor to
-//       take additional parameters.
-ModelView::ModelView(ShaderIF* sIF) : shaderIF(sIF)
+int ModelView::numInstances = 0;
+
+ModelView::ModelView(ShaderIF* sIF, vec2* coords, int nVertices) : shaderIF(sIF), numVertices(nVertices), serialNumber(++numInstances)
 {
-	// TODO: define and call method(s) to initialize your model and send data to GPU
+	initModelGeometry(coords);
 }
 
 ModelView::~ModelView()
 {
-	// TODO: delete the vertex array objects and buffers here
+	if (vao[0] > 0) {
+		glDeleteBuffers(1, vbo);
+		glDeleteVertexArrays(1, vao);
+		vao[0] = vbo[0] = 0;
+	}
+}
+
+void ModelView::initModelGeometry(vec2* coords)
+{
+	if ((serialNumber % 2) == 1) {
+		lineColor[0] = 0.0; lineColor[1] = 0.5; lineColor[2] = 0.0;
+	} else {
+		lineColor[0] = 0.5; lineColor[1] = 0.0; lineColor[2] = 0.0;
+	}
+
+	glGenVertexArrays(1, vao);
+	glBindVertexArray(vao[0]);
+
+	glGenBuffers(1, vbo);
+	glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
+
+	int numBytesCoordinateData = numVertices * sizeof(vec2);
+	glBufferData(GL_ARRAY_BUFFER, numBytesCoordinateData, coords, GL_STATIC_DRAW);
+	glVertexAttribPointer(shaderIF->pvaLoc("mcPosition"), 2, GL_FLOAT, GL_FALSE, 0, 0);
+	glEnableVertexAttribArray(shaderIF->pvaLoc("mcPosition"));
+
+	xmin = xmax = coords[0][0];
+	ymin = ymax = coords[0][1];
+
+	for (int i = 1; i < numVertices; i++) {
+		if (coords[i][0] < xmin)
+			xmin = coords[i][0];
+		else if (coords[i][0] > xmax)
+			xmax = coords[i][0];
+		if (coords[i][1] < ymin)
+			ymin = coords[i][1];
+		else if (coords[i][1] > ymax)
+			ymax = coords[i][1];
+	}
 }
 
 void ModelView::compute2DScaleTrans(float* scaleTransF) // CLASS METHOD
@@ -55,9 +93,9 @@ void ModelView::compute2DScaleTrans(float* scaleTransF) // CLASS METHOD
 // xyzLimits: {mcXmin, mcXmax, mcYmin, mcYmax, mcZmin, mcZmax}
 void ModelView::getMCBoundingBox(double* xyzLimits) const
 {
-	// TODO:
-	// Put this ModelView instance's min and max x, y, and z extents
-	// into xyzLimits[0..5]. (-1 .. +1 is OK for z direction for 2D models)
+	xyzLimits[0] = xmin; xyzLimits[1] = xmax;
+	xyzLimits[2] = ymin; xyzLimits[3] = ymax;
+	xyzLimits[4] = -1.0; xyzLimits[5] = 1.0;
 }
 
 bool ModelView::handleCommand(unsigned char anASCIIChar, double ldsX, double ldsY)
@@ -97,8 +135,8 @@ void ModelView::matchAspectRatio(double& xmin, double& xmax,
 		// make window taller
 		wHeight = wWidth * vAR;
 		double ymid = 0.5 * (ymin + ymax);
-		ymin = ymid - 0.5*wHeight;
-		ymax = ymid + 0.5*wHeight;
+		ymin = ymid - 0.5 * wHeight;
+		ymax = ymid + 0.5 * wHeight;
 	}
 }
 
@@ -111,9 +149,14 @@ void ModelView::render() const
 	// draw the triangles using our vertex and fragment shaders
 	glUseProgram(shaderIF->getShaderPgmID());
 
-	// TODO: set scaleTrans (and all other needed) uniform(s)
+	float scaleTrans[4];
+	compute2DScaleTrans(scaleTrans);
 
-	// TODO: make require primitive call(s)
+	glUniform4fv(shaderIF->ppuLoc("scaleTrans"), 1, scaleTrans);
+	glUniform3fv(shaderIF->ppuLoc("lineColor"), 1, lineColor);
+
+	glBindVertexArray(vao[0]);
+	glDrawArrays(GL_TRIANGLE_STRIP, 0, numVertices);
 
 	// restore the previous program
 	glUseProgram(pgm);
