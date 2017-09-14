@@ -19,6 +19,6 @@ main.o: main.c++
 ModelView.o: ModelView.h ModelView.c++
 	$(CPP) $(C_FLAGS) ModelView.c++
 Controller.o: ../mvcutil/Controller.h ../mvcutil/Controller.c++
-	$(CPP) $(C_FLAGS) -W#warnings -DGLFW_INCLUDE_GLU ../mvcutil/Controller.c++
+	$(CPP) $(C_FLAGS) --no-warnings -DGLFW_INCLUDE_GLU ../mvcutil/Controller.c++
 GLFWController.o: ../mvcutil/Controller.h ../mvcutil/GLFWController.h ../mvcutil/GLFWController.c++
 	$(CPP) $(C_FLAGS) ../mvcutil/GLFWController.c++
