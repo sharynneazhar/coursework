@@ -12,7 +12,10 @@ double ModelView::mcRegionOfInterest[6] = { -1.0, 1.0, -1.0, 1.0, -1.0, 1.0 };
 // Responsive aspect ratio
 bool ModelView::aspectRatioPreservationEnabled = true;
 
+// Number of ModelView instances
 int ModelView::numInstances = 0;
+
+// Color Table
 vec3 ModelView::colorTable[6] = { { 1.0, 0.0, 0.0 }, { 0.0, 1.0, 0.0 }, { 0.0, 0.0, 1.0 }, { 0.0, 1.0, 1.0 }, { 1.0, 0.0, 1.0 } };
 
 ModelView::ModelView(ShaderIF* sIF, vec2* coords, int nVertices) : shaderIF(sIF), numVertices(nVertices), serialNumber(numInstances)
@@ -32,21 +35,26 @@ ModelView::~ModelView()
 
 void ModelView::initModelGeometry(vec2* coords)
 {
+	// Retrieve a color from the color table
 	lineColor[0] = colorTable[serialNumber % 6][0];
 	lineColor[1] = colorTable[serialNumber % 6][1];
 	lineColor[2] = colorTable[serialNumber % 6][2];
 
+	// Create and bind the VAO
 	glGenVertexArrays(1, vao);
 	glBindVertexArray(vao[0]);
 
+	// Create and bind the VBO
 	glGenBuffers(1, vbo);
 	glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
 
+	// Allocate space for and send data to the GPU
 	int numBytesInBuffer = numVertices * sizeof(vec2);
 	glBufferData(GL_ARRAY_BUFFER, numBytesInBuffer, coords, GL_STATIC_DRAW);
 	glVertexAttribPointer(shaderIF->pvaLoc("mcPosition"), 2, GL_FLOAT, GL_FALSE, 0, 0);
 	glEnableVertexAttribArray(shaderIF->pvaLoc("mcPosition"));
 
+  // Determine and remember the min/max coordinates
 	xmin = xmax = coords[0][0];
 	ymin = ymax = coords[0][1];
 
@@ -66,7 +74,6 @@ void ModelView::compute2DScaleTrans(float* scaleTransF) // CLASS METHOD
 {
 	// TODO: This code can be used as is, BUT be absolutely certain you
 	//       understand everything about how it works.
-
 	double xmin = mcRegionOfInterest[0];
 	double xmax = mcRegionOfInterest[1];
 	double ymin = mcRegionOfInterest[2];
@@ -118,7 +125,6 @@ void ModelView::matchAspectRatio(double& xmin, double& xmax,
 {
 	// TODO: This code can be used as is, BUT be absolutely certain you
 	//       understand everything about how it works.
-
 	double wHeight = ymax - ymin;
 	double wWidth = xmax - xmin;
 	double wAR = wHeight / wWidth;
@@ -149,13 +155,20 @@ void ModelView::render() const
 	// draw the triangles using our vertex and fragment shaders
 	glUseProgram(shaderIF->getShaderPgmID());
 
+	// define the mapping from MC to -1...+1 LDS
 	float scaleTrans[4];
 	compute2DScaleTrans(scaleTrans);
-
 	glUniform4fv(shaderIF->ppuLoc("scaleTrans"), 1, scaleTrans);
+
+	// Establish the line curve color
 	glUniform3fv(shaderIF->ppuLoc("lineColor"), 1, lineColor);
 
+	// Binding a VAO automatically binds all buffers associated with it. It also
+	// effectively reestablishes all associated glVertexAttribPointer settings
+	// as well as the associated gl[En|Dis]ableVertexAttribArray flags.
 	glBindVertexArray(vao[0]);
+
+	// Draw the line
 	glDrawArrays(GL_LINE_STRIP, 0, numVertices);
 
 	// restore the previous program

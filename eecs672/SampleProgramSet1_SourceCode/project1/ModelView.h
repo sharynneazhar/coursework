@@ -19,7 +19,11 @@ typedef float vec3[3]; // colors
 class ModelView
 {
 public:
-	// NOTE: You will likely want to modify the ModelView constructor to take additional parameters.
+	/**
+	 * @param sIF       The GLSL Shader Interface object
+	 * @param coords    The array of coordinates provided from the data file
+	 * @param nVertices The number of vertices in the curve
+	 */
 	ModelView(ShaderIF* sIF, vec2* coords, int nVertices);
 	virtual ~ModelView();
 
@@ -35,12 +39,12 @@ public:
 
 private:
 	ShaderIF* shaderIF;
-	GLuint vao[1];
-	GLuint vbo[1];
-	vec3 lineColor;
+	GLuint vao[1];  // VAO for the curve
+	GLuint vbo[1];  // VBO for the curve coordinates
+	vec3 lineColor; // color of the curve - passed as a uniform
 
-	int numVertices;
-	int serialNumber;
+	int numVertices;  // number of vertices in the curve
+	int serialNumber; // a unique(?) number representing each MV instance
 	double xmin, xmax, ymin, ymax;
 
 	// Routines for computing parameters necessary to map from arbitrary
@@ -64,9 +68,17 @@ private:
 
 	static double mcRegionOfInterest[6];
 	static bool aspectRatioPreservationEnabled;
+
+	// count the number of instances create (for serialNumber)
 	static int numInstances;
+
+	// table of 6 different colors a line could possess
 	static vec3 colorTable[6];
 
+	/**
+	 * Initializes the ModelView geometry (i.e. creates the VAO/VBO(s) and make them active) 
+	 * @param coords The array coordinates representing the curve
+	 */
 	void initModelGeometry(vec2* coords);
 };
 
