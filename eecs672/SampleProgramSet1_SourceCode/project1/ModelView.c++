@@ -16,11 +16,18 @@ bool ModelView::aspectRatioPreservationEnabled = true;
 int ModelView::numInstances = 0;
 
 // Color Table
-vec3 ModelView::colorTable[6] = { { 1.0, 0.0, 0.0 }, { 0.0, 1.0, 0.0 }, { 0.0, 0.0, 1.0 }, { 0.0, 1.0, 1.0 }, { 1.0, 0.0, 1.0 } };
+vec3 ModelView::colorTable[6] = {
+	{ 1.0, 0.0, 0.0 },
+	{ 0.0, 1.0, 0.0 },
+	{ 0.0, 0.0, 1.0 },
+	{ 0.0, 1.0, 1.0 },
+	{ 1.0, 0.0, 1.0 },
+	{ 1.0, 1.0, 0.0 }
+};
 
-ModelView::ModelView(ShaderIF* sIF, vec2* coords, int nVertices) : shaderIF(sIF), numVertices(nVertices), serialNumber(numInstances)
+ModelView::ModelView(ShaderIF* sIF, vec2* coords, int nVertices) : shaderIF(sIF),
+				numVertices(nVertices), serialNumber(++numInstances)
 {
-	numInstances++;
 	initModelGeometry(coords);
 }
 
@@ -92,7 +99,7 @@ void ModelView::compute2DScaleTrans(float* scaleTransF) // CLASS METHOD
     // Map the overall limits to the -1..+1 range expected by the OpenGL engine:
 	double scaleTrans[4];
 	linearMap(xmin, xmax, -1.0, 1.0, scaleTrans[0], scaleTrans[1]);
-	linearMap(ymin, ymax, -1.0, 1.0, scaleTrans[2], scaleTrans[3]);
+	linearMap(ymin, ymax, -1.0, 1.0, scaleTrans[2], scaleTrans[3]);0
 	for (int i=0 ; i<4 ; i++)
 		scaleTransF[i] = static_cast<float>(scaleTrans[i]);
 }

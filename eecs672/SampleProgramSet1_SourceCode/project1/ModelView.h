@@ -76,7 +76,7 @@ private:
 	static vec3 colorTable[6];
 
 	/**
-	 * Initializes the ModelView geometry (i.e. creates the VAO/VBO(s) and make them active) 
+	 * Initializes the ModelView geometry (i.e. creates the VAO/VBO(s) and make them active)
 	 * @param coords The array coordinates representing the curve
 	 */
 	void initModelGeometry(vec2* coords);
