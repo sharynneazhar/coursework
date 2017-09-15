@@ -38,11 +38,11 @@ int main(int argc, char* argv[])
 
 		// (x(t), y(t)) = (a0 + a1t + a2t^2 + a3t^3, b0 + b1t + b2t^2 + b3t^3)
 		vec2 curves[nPoints];
-		float t = tmin; // t varies across parametric range: tmin ≤ t ≤ tmax
+		float t = tmin;
 		float dt = (tmax - tmin) / (nPoints - 1);
 
 		// Each curve is evaluated at the specified number of points
-		// for that curve: tmin, tmin+dt, tmin+2*dt, …, tmax,
+		// for that curve: tmin, tmin+dt, tmin+2*dt, ... , tmax,
 		// where dt=(tmax-tmin)/(nPoints-1).
 		for (int i = 0; i < nPoints; i++) {
 			curves[i][0] = a0 + (a1 * t) + (a2 * t * t) + (a3 * t * t * t);

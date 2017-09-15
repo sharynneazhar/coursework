@@ -13,6 +13,7 @@ double ModelView::mcRegionOfInterest[6] = { -1.0, 1.0, -1.0, 1.0, -1.0, 1.0 };
 bool ModelView::aspectRatioPreservationEnabled = true;
 
 int ModelView::numInstances = 0;
+vec3 ModelView::colorTable[6] = { { 1.0, 0.0, 0.0 }, { 0.0, 1.0, 0.0 }, { 0.0, 0.0, 1.0 }, { 0.0, 1.0, 1.0 }, { 1.0, 0.0, 1.0 } };
 
 ModelView::ModelView(ShaderIF* sIF, vec2* coords, int nVertices) : shaderIF(sIF), numVertices(nVertices), serialNumber(numInstances)
 {
@@ -31,11 +32,9 @@ ModelView::~ModelView()
 
 void ModelView::initModelGeometry(vec2* coords)
 {
-	if ((serialNumber % 2) == 1) {
-		lineColor[0] = 0.0; lineColor[1] = 0.5; lineColor[2] = 0.0;
-	} else {
-		lineColor[0] = 0.5; lineColor[1] = 0.0; lineColor[2] = 0.0;
-	}
+	lineColor[0] = colorTable[serialNumber % 6][0];
+	lineColor[1] = colorTable[serialNumber % 6][1];
+	lineColor[2] = colorTable[serialNumber % 6][2];
 
 	glGenVertexArrays(1, vao);
 	glBindVertexArray(vao[0]);
