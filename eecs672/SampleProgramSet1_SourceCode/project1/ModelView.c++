@@ -14,8 +14,9 @@ bool ModelView::aspectRatioPreservationEnabled = true;
 
 int ModelView::numInstances = 0;
 
-ModelView::ModelView(ShaderIF* sIF, vec2* coords, int nVertices) : shaderIF(sIF), numVertices(nVertices), serialNumber(++numInstances)
+ModelView::ModelView(ShaderIF* sIF, vec2* coords, int nVertices) : shaderIF(sIF), numVertices(nVertices), serialNumber(numInstances)
 {
+	numInstances++;
 	initModelGeometry(coords);
 }
 
@@ -42,8 +43,8 @@ void ModelView::initModelGeometry(vec2* coords)
 	glGenBuffers(1, vbo);
 	glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
 
-	int numBytesCoordinateData = numVertices * sizeof(vec2);
-	glBufferData(GL_ARRAY_BUFFER, numBytesCoordinateData, coords, GL_STATIC_DRAW);
+	int numBytesInBuffer = numVertices * sizeof(vec2);
+	glBufferData(GL_ARRAY_BUFFER, numBytesInBuffer, coords, GL_STATIC_DRAW);
 	glVertexAttribPointer(shaderIF->pvaLoc("mcPosition"), 2, GL_FLOAT, GL_FALSE, 0, 0);
 	glEnableVertexAttribArray(shaderIF->pvaLoc("mcPosition"));
 
@@ -156,7 +157,7 @@ void ModelView::render() const
 	glUniform3fv(shaderIF->ppuLoc("lineColor"), 1, lineColor);
 
 	glBindVertexArray(vao[0]);
-	glDrawArrays(GL_TRIANGLE_STRIP, 0, numVertices);
+	glDrawArrays(GL_LINE_STRIP, 0, numVertices);
 
 	// restore the previous program
 	glUseProgram(pgm);
