@@ -14,7 +14,7 @@ html2latex: html2latex.lex.o
 	$(CC) $(CFLAGS) -c -o $@ $<
 
 %.lex.c: %.l
-	$(LEX) $(LFLAGS) -o $@ $<
+	$(LEX) $(LFLAGS) -o$@ $<
 
 %.tex: %.html html2latex
 	./html2latex < $< > $@
