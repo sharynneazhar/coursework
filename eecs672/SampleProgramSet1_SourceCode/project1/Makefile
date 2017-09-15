@@ -25,4 +25,4 @@ GLFWController.o: ../mvcutil/GLFWController.h ../mvcutil/GLFWController.c++
 	$(CPP) $(C_FLAGS) ../mvcutil/GLFWController.c++
 
 clean:
-	rm *.o project1
+	rm ../**/*.o ../**/*.so project1
