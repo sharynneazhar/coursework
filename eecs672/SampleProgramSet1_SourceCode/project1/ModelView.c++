@@ -18,9 +18,9 @@ int ModelView::numInstances = 0;
 // Color Table
 vec3 ModelView::colorTable[6] = {
 	{ 1.0, 0.0, 0.0 },
-	{ 0.0, 1.0, 0.0 },
+	{ 0.2, 1.0, 0.2 },
 	{ 0.0, 0.0, 1.0 },
-	{ 0.0, 1.0, 1.0 },
+	{ 0.5, 0.5, 0.3 },
 	{ 1.0, 0.0, 1.0 },
 	{ 1.0, 1.0, 0.0 }
 };
@@ -42,7 +42,7 @@ ModelView::~ModelView()
 
 void ModelView::initModelGeometry(vec2* coords)
 {
-	// Retrieve a color from the color table
+	// Retrieve a color from the color table and set the line color
 	lineColor[0] = colorTable[serialNumber % 6][0];
 	lineColor[1] = colorTable[serialNumber % 6][1];
 	lineColor[2] = colorTable[serialNumber % 6][2];
@@ -64,7 +64,6 @@ void ModelView::initModelGeometry(vec2* coords)
   // Determine and remember the min/max coordinates
 	xmin = xmax = coords[0][0];
 	ymin = ymax = coords[0][1];
-
 	for (int i = 1; i < numVertices; i++) {
 		if (coords[i][0] < xmin)
 			xmin = coords[i][0];
