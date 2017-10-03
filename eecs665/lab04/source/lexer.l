@@ -85,9 +85,24 @@ FLTVAL [0-9]*"."[0-9]*"f"
 DBLVAL [0-9]*"."[0-9]*
 STRVAL "\""[^\"]*"\""
 CHARVAL "\'"(.|"\\".)"\'"
-WHITESPACE [ \t\n]
 
 %%
+[ \t\n\r]+ {
+  /**************************************
+   * Reduce any whitespace that is found.
+   **************************************/
+}
+
+{PREPROC} {
+  /**************************************
+  * If a preprocessor "#" is matched,
+  * then print PREPROC and return a
+  * token PREPROC
+  **************************************/
+  printf("PREPROC\n");
+  return PREPROC;
+}
+
 "//" {
   /******************************************
   * Matching with single line comments in our
@@ -120,7 +135,7 @@ WHITESPACE [ \t\n]
   BEGIN 0;
 }
 
-<SINGLECOMMENT,MULTICOMMENT>[ \t] {
+<SINGLECOMMENT,MULTICOMMENT>[ \t\n\r] {
   /****************************************
   * Lexer ignores the comments section
   * by Ignoring anything inside a comment
@@ -128,15 +143,6 @@ WHITESPACE [ \t\n]
 }
 
 <SINGLECOMMENT,MULTICOMMENT>. {
-}
-
-{PREPROC} {
-  /**************************************
-  * If a preprocessor "#" is matched,
-  * then print PREPROC and return a
-  * token PREPROC
-  **************************************/
-  printf("PREPROC\n"); return PREPROC;
 }
 
 "(" { printf("(\n"); return '('; }
@@ -212,18 +218,13 @@ WHITESPACE [ \t\n]
 "register" { printf("REGISTER\n"); return REGISTER; }
 "sizeof" { printf("SIZEOF\n"); return SIZEOF; }
 
-{ID} { printf("ID\n"); return ID; }
 {INTVAL} { printf("INTVAL\n"); return INTVAL; }
 {FLTVAL} { printf("FLTVAL\n"); return FLTVAL; }
 {DBLVAL} { printf("DBLVAL\n"); return DBLVAL; }
 {STRVAL} { printf("STRVAL\n"); return STRVAL; }
 {CHARVAL} { printf("CHARVAL\n"); return CHARVAL; }
 
-[ \t\n\r] {
-  /**************************************
-   * Reduce any whitespace that is found.
-   **************************************/
-}
+{ID} { printf("ID\n"); return ID; }
 
 %%
 
