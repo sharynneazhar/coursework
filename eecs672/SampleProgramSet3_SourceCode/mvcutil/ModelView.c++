@@ -40,11 +40,10 @@ ModelView::~ModelView()
 /* The following two methods will need to be implemented in the
  * "ModelView_Additions.c++" you will see in various sibling directories
  * (e.g., MandM, project2, etc.)
-
-void ModelView::addToGlobalPan(double dxInLDS, double dyInLDS, double dzInLDS)
-void ModelView::addToGlobalRotationDegrees(double rx, double ry, double rz)
-
+ * NOTE: comment these out for project 2
 */
+void ModelView::addToGlobalPan(double dxInLDS, double dyInLDS, double dzInLDS) {}
+void ModelView::addToGlobalRotationDegrees(double rx, double ry, double rz)  {}
 
 // compute2DScaleTrans determines the current model coordinate region of
 // interest and then uses linearMap to determine how to map coordinates
@@ -77,10 +76,9 @@ void ModelView::compute2DScaleTrans(float* scaleTransF) // CLASS METHOD
 /* The following method will need to be implemented in the
  * "ModelView_Additions.c++" you will see in various sibling directories
  * (e.g., MandM, project2, etc.)
-
-void ModelView::getMatrices(cryph::Matrix4x4& mc_ec, cryph::Matrix4x4& ec_lds)
-
+ * NOTE: comment these out for project 2
 */
+void ModelView::getMatrices(cryph::Matrix4x4& mc_ec, cryph::Matrix4x4& ec_lds) {}
 
 // linearMap determines the scale and translate parameters needed in
 // order to map a value, f (fromMin <= f <= fromMax) to its corresponding
@@ -119,10 +117,9 @@ void ModelView::matchAspectRatio(double& xmin, double& xmax,
 /* The following method will need to be implemented in the
  * "ModelView_Additions.c++" you will see in various sibling directories
  * (e.g., MandM, project2, etc.)
-
-void ModelView::scaleGlobalZoom(double multiplier)
-
+ * NOTE: comment these out for project 2
 */
+void ModelView::scaleGlobalZoom(double multiplier) {}
 
 void ModelView::setECZminZmax(double zMinIn, double zMaxIn)
 {

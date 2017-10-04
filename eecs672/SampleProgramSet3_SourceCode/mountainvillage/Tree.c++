@@ -25,10 +25,26 @@ Tree::~Tree()
 
 void Tree::defineModel()
 {
-	// TODO: Delete these comments
-	// vao[0] = 0; // delete this line and the following "cout" when completing the exercise
-	// std::cout << "Tree::defineModel: Implementation left as an exercise.\n";
+	vec2 points[numTrunkPoints];
+	double trunkTheta = asin(height / rTrunk);
 
+	for (int i = 0; i < numTrunkPoints; i += 2) {
+		// draw the left side of the trunk based on the center (xb, yb) given
+		points[i][0] = xb - rTrunk * (1.0 - cos(trunkTheta));
+		points[i][1] = yb + height * (1.0 - sin(trunkTheta));
+		points[i + 1][0] = 2.0 * xb - points[i][0];
+		points[i + 1][1] = points[i][1];
+	}
+
+	// send the data to GPU
+	glGenVertexArrays(1, vao);
+	glBindVertexArray(vao[0]);
+
+	glGenBuffers(1, vbo);
+	glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
+	glBufferData(GL_ARRAY_BUFFER, numTrunkPoints*sizeof(vec2), points, GL_STATIC_DRAW);
+	glVertexAttribPointer(shaderIF->pvaLoc("mcPosition"), 2, GL_FLOAT, GL_FALSE, 0, 0);
+	glEnableVertexAttribArray(shaderIF->pvaLoc("mcPosition"));
 }
 
 // xyzLimits: {mcXmin, mcXmax, mcYmin, mcYmax, mcZmin, mcZmax}
