@@ -36,3 +36,6 @@ Tetrahedron.o: Tetrahedron.h Tetrahedron.c++
 	$(CPP) $(C_FLAGS) Tetrahedron.c++
 ModelView_Additions.o: ModelView_Additions.c++
 	$(CPP) $(C_FLAGS) ModelView_Additions.c++
+
+clean:
+	rm ../**/*.o ../**/*.so

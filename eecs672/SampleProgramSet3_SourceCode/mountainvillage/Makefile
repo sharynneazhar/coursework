@@ -32,3 +32,6 @@ House.o: House.h House.c++
 	$(CPP) $(C_FLAGS) House.c++
 Mountain.o: Mountain.h Mountain.c++
 	$(CPP) $(C_FLAGS) Mountain.c++
+
+clean:
+	rm mountainvillage ../**/*.o ../**/*.so

@@ -30,3 +30,6 @@ ModelView_Additions.o: ModelView_Additions.c++
 	$(CPP) $(C_FLAGS) ModelView_Additions.c++
 TEMPLATE_Subclass.o: TEMPLATE_Subclass.h TEMPLATE_Subclass.c++
 	$(CPP) $(C_FLAGS) TEMPLATE_Subclass.c++
+
+clean:
+	rm ../**/*.o ../**/*.so

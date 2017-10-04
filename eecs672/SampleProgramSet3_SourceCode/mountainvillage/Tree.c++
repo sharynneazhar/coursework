@@ -25,8 +25,10 @@ Tree::~Tree()
 
 void Tree::defineModel()
 {
-	vao[0] = 0; // delete this line and the following "cout" when completing the exercise
-	std::cout << "Tree::defineModel: Implementation left as an exercise.\n";
+	// TODO: Delete these comments
+	// vao[0] = 0; // delete this line and the following "cout" when completing the exercise
+	// std::cout << "Tree::defineModel: Implementation left as an exercise.\n";
+
 }
 
 // xyzLimits: {mcXmin, mcXmax, mcYmin, mcYmax, mcZmin, mcZmax}
