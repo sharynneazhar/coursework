@@ -25,15 +25,37 @@ Tree::~Tree()
 
 void Tree::defineModel()
 {
-	vec2 points[numTrunkPoints];
-	double trunkTheta = asin(height / rTrunk);
+	int numTrunkTriStripPoints = 2 * numTrunkPoints;
+	int totalTreePoints = numTrunkTriStripPoints + numTreeTopPoints;
+	vec2 points[totalTreePoints];
 
-	for (int i = 0; i < numTrunkPoints; i += 2) {
+	double theta = asin(height / rTrunk);
+	double dTheta = theta / (numTrunkPoints - 1);
+	theta = -theta;
+
+	for (int i = 0; i < numTrunkTriStripPoints; i += 2) {
 		// draw the left side of the trunk based on the center (xb, yb) given
-		points[i][0] = xb - rTrunk * (1.0 - cos(trunkTheta));
-		points[i][1] = yb + height * (1.0 - sin(trunkTheta));
-		points[i + 1][0] = 2.0 * xb - points[i][0];
-		points[i + 1][1] = points[i][1];
+		points[i][0] = xb - rTrunk * (1.0 - cos(theta));
+		points[i][1] = yb + height + rTrunk * sin(theta);
+
+		// draw the right side of the trunk based on the center (xb, yb) given
+		points[i + 1][0] = xb + rTrunk * (1.0 - cos(theta));
+		points[i + 1][1] = yb + height + rTrunk * sin(theta);
+		theta += dTheta;
+	}
+
+	theta = 0.0;
+
+	// draw center of treetop circle
+	points[numTrunkTriStripPoints][0] = xb;
+	points[numTrunkTriStripPoints][1] = yb + height;
+
+	// draw the treetop circle 
+	dTheta = 2 * M_PI / (numTreeTopPoints - 2);
+	for (int i = 1 ; i < numTreeTopPoints ; i++) {
+		points[numTrunkTriStripPoints + i][0] = xb + rTreeTop * cos(theta);
+		points[numTrunkTriStripPoints + i][1] = yb + height + rTreeTop * sin(theta);
+		theta += dTheta;
 	}
 
 	// send the data to GPU
@@ -42,7 +64,7 @@ void Tree::defineModel()
 
 	glGenBuffers(1, vbo);
 	glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
-	glBufferData(GL_ARRAY_BUFFER, numTrunkPoints*sizeof(vec2), points, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, totalTreePoints * sizeof(vec2), points, GL_STATIC_DRAW);
 	glVertexAttribPointer(shaderIF->pvaLoc("mcPosition"), 2, GL_FLOAT, GL_FALSE, 0, 0);
 	glEnableVertexAttribArray(shaderIF->pvaLoc("mcPosition"));
 }
