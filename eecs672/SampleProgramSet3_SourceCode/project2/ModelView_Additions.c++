@@ -56,25 +56,38 @@ void ModelView::getMatrices(cryph::Matrix4x4& mc_ec, cryph::Matrix4x4& ec_lds)
 	//    2.a. Determine the maximum of delta_mcX, delta_mcY, and delta_mcZ. (For
 	//         example, delta_mcX = mcRegionOfInterest[1] - mcRegionOfInterest[0].)
 	//         Suppose you store the maximum of these delta_mc* values in "maxDelta".
-	double maxDelta = 0.0; // TODO: compute this as just described.
+
+	double deltaMCValues[3];
+	deltaMCValues[0] = ModelView::mcRegionOfInterest[1] - ModelView::mcRegionOfInterest[0];
+	deltaMCValues[1] = ModelView::mcRegionOfInterest[3] - ModelView::mcRegionOfInterest[2];
+	deltaMCValues[2] = ModelView::mcRegionOfInterest[5] - ModelView::mcRegionOfInterest[4];
+
+	double maxDelta = deltaMCValues[0];
+
+	if (deltaMCValues[1] > maxDelta)
+		maxDelta = deltaMCValues[1];
+	else if (deltaMCValues[2] > maxDelta)
+		maxDelta = deltaMCValues[2];
+
 	double halfWidth = 0.5 * maxDelta;
+
 	//    2.b. In project 3 & 4: Scale "halfWidth" by "dynamic_zoomScale"
 	//    2.c. initialize the XY direction of the view volume as:
 	last_ecXmin = -halfWidth; last_ecXmax = halfWidth; // instance variables; see...
 	last_ecYmin = -halfWidth; last_ecYmax = halfWidth; // ... ModelView.h
-	// TODO:
+
 	//    2.d. Use ModelView::matchAspectRatio to alter one of these pairs.
+	double viewAspectRatio = Controller::getCurrentController()->getViewportAspectRatio();
+	ModelView::matchAspectRatio(last_ecXmin, last_ecXmax, last_ecYmin, last_ecYmax, viewAspectRatio);
 
 	if (ModelView::projType == ORTHOGONAL)
-		ec_lds = cryph::Matrix4x4::orthogonal(last_ecXmin, last_ecXmax, last_ecYmin, last_ecYmax,
-				ModelView::ecZmin, ModelView::ecZmax);
+		ec_lds = cryph::Matrix4x4::orthogonal(last_ecXmin, last_ecXmax, last_ecYmin, last_ecYmax,ModelView::ecZmin, ModelView::ecZmax);
 	else if (ModelView::projType == PERSPECTIVE)
 		ec_lds = cryph::Matrix4x4::perspective(ModelView::ecZpp,
 				last_ecXmin, last_ecXmax, last_ecYmin, last_ecYmax, ModelView::ecZmin, ModelView::ecZmax);
 	else // Must be OBLIQUE
 		ec_lds = cryph::Matrix4x4::oblique(ModelView::ecZpp,
-				last_ecXmin, last_ecXmax, last_ecYmin, last_ecYmax, ModelView::ecZmin, ModelView::ecZmax,
-				ModelView::obliqueProjectionDir);
+				last_ecXmin, last_ecXmax, last_ecYmin, last_ecYmax, ModelView::ecZmin, ModelView::ecZmax,ModelView::obliqueProjectionDir);
 
 	// THEN IN THE CALLER OF THIS METHOD:
 	//
