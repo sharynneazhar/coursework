@@ -25,8 +25,34 @@ Mountain::~Mountain()
 
 void Mountain::defineModel()
 {
-	vao[0] = 0; // delete this line and the following "cout" when completing the exercise
-	std::cout << "Mountain::defineModel: Implementation left as exercise.\n";
+	int numStripPoints = 4 * numSamplePoints;
+	vec2 points[numStripPoints];
+
+	double theta = -M_PI;
+	double x = xMin;
+	double dx = (xMax - xMin) / (numSamplePoints - 1);
+	double dTheta = (2 * M_PI) / (numSamplePoints - 1);
+
+	for (int i = 0; i < numSamplePoints; i += 2) {
+		points[i][0] = x;
+		points[i][1] = cos((frequency * theta) + phaseShift);
+
+		points[i + 1][0] = x + dx;
+		points[i + 1][1] = cos((frequency * (theta + dTheta)) + phaseShift);
+
+		x += dx;
+		theta += dTheta;
+	}
+
+	// send the data to GPU
+	glGenVertexArrays(1, vao);
+	glBindVertexArray(vao[0]);
+
+	glGenBuffers(1, vbo);
+	glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
+	glBufferData(GL_ARRAY_BUFFER, numStripPoints * sizeof(vec2), points, GL_STATIC_DRAW);
+	glVertexAttribPointer(shaderIF->pvaLoc("mcPosition"), 2, GL_FLOAT, GL_FALSE, 0, 0);
+	glEnableVertexAttribArray(shaderIF->pvaLoc("mcPosition"));
 }
 
 // xyzLimits: {mcXmin, mcXmax, mcYmin, mcYmax, mcZmin, mcZmax}
