@@ -3,10 +3,18 @@
 #include "Crate.h"
 
 Crate::Crate(ShaderIF* sIF, float xMin, float yMin, float zMin,
-	float lenX, float lenY, float lenZ) : shaderIF(sIF)
+	float lenX, float lenY, float lenZ, bool inAirIn) : shaderIF(sIF), inAir(inAirIn)
 {
 	vec3 crateBaseColor = { 0.739, 0.0, 0.0 };
 	vec3 crateTopColor = { 0.0, 0.3, 0.739 };
+
+	if (inAir) {
+		cryph::AffPoint parachuteBottom = cryph::AffPoint(xMin, yMin + 2, zMin);
+		cryph::AffPoint parachuteObj(parachuteBottom.x, parachuteBottom.y, parachuteBottom.z);
+
+		// TODO: figure out why values less than 1 do not work
+		parachute = new Parachute(sIF, parachuteObj, 1, 1);
+	}
 
 	crateBase = new Block(sIF, xMin, yMin, zMin,
 											  lenX, lenY, lenZ,
@@ -34,6 +42,7 @@ Crate::~Crate()
 {
 	delete crateTop;
 	delete crateBase;
+	delete parachute;
 }
 
 // xyzLimits: {mcXmin, mcXmax, mcYmin, mcYmax, mcZmin, mcZmax}
@@ -71,6 +80,7 @@ void Crate::render()
 	//    glDrawArrays and/or glDrawElements
 	crateBase->Block::render();
 	crateTop->Block::render();
+	if (inAir) parachute->Parachute::render();
 
 	// 5. Reestablish previous shader program
 	glUseProgram(pgm);

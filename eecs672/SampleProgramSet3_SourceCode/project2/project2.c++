@@ -1,8 +1,6 @@
 // project2.c++: Starter for EECS 672 Project 2
 
 #include "GLFWController.h"
-#include "Block.h"
-#include "Cylinder.h"
 #include "Ground.h"
 #include "Crate.h"
 
@@ -88,8 +86,8 @@ int main(int argc, char* argv[])
 	}
 
 	// Draw the crates
-	c.addModel(new Crate(sIF, 3.0, 0.5, 2.2, 2.0, 2.0, 2.0));
-	c.addModel(new Crate(sIF, 7.0, 5.0, 1.2, 0.5, 0.5, 0.5));
+	c.addModel(new Crate(sIF, 3.0, 0.5, 2.2, 2.0, 2.0, 2.0, false));
+	c.addModel(new Crate(sIF, 7.0, 5.0, 1.2, 0.5, 0.5, 0.5, true));
 
 	// Make background white
 	glClearColor(1.0, 1.0, 1.0, 1.0);
