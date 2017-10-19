@@ -4,6 +4,7 @@
 #include "Block.h"
 #include "Cylinder.h"
 #include "Ground.h"
+#include "Crate.h"
 
 void set3DViewingInformation(double xyz[6])
 {
@@ -33,7 +34,7 @@ void set3DViewingInformation(double xyz[6])
 	//    distance between the eye and the center is (2 * max scene dimension).
 	cryph::AffVector dir(10, 12, 30);
 	dir.normalize();
-	
+
 	double distEyeCenter = 2.0 * maxDelta;
 	cryph::AffPoint eye = center + distEyeCenter * dir;
 
@@ -77,9 +78,6 @@ int main(int argc, char* argv[])
 		{ 0.91, 0.89, 0.82 }
 	};
 
-	vec3 crateBase = { 0.739, 0.0, 0.0 };
-	vec3 crateTop = { 0.0, 0.3, 0.739 };
-
 	ShaderIF* sIF = new ShaderIF("shaders/basic.vsh", "shaders/phong.fsh");
 
 	// Create your scene, adding things to the Controller....
@@ -89,13 +87,9 @@ int main(int argc, char* argv[])
 		c.addModel(new Ground(sIF, -5.0, (i / 10), 0.0, 16.0, 0.5, (i + 2.5), groundColors[i]));
 	}
 
-	// Draw the big Crate
-	c.addModel(new Block(sIF, 3.0, 0.5, 2.2, 2.0, 2.0, 2.0, crateBase));
-	c.addModel(new Block(sIF, 2.95, 2.0, 2.2, 2.105, 0.55, 2.05, crateTop));
-
-	// Draw the smaller Crate
-	c.addModel(new Block(sIF, 7.0, 5.0, 1.2, 0.5, 0.5, 0.5, crateBase));
-	c.addModel(new Block(sIF, 6.99, 5.355, 1.2, 0.5105, 0.205, 0.505, crateTop));
+	// Draw the crates
+	c.addModel(new Crate(sIF, 3.0, 0.5, 2.2, 2.0, 2.0, 2.0));
+	c.addModel(new Crate(sIF, 7.0, 5.0, 1.2, 0.5, 0.5, 0.5));
 
 	// Make background white
 	glClearColor(1.0, 1.0, 1.0, 1.0);
