@@ -9,7 +9,7 @@ Crate::Crate(ShaderIF* sIF, float xMin, float yMin, float zMin,
 	vec3 crateTopColor = { 0.0, 0.3, 0.739 };
 
 	if (inAir) {
-		cryph::AffPoint parachuteBottom = cryph::AffPoint(xMin, yMin + 2, zMin);
+		cryph::AffPoint parachuteBottom = cryph::AffPoint(xMin, yMin + 2.5 * lenY, zMin);
 		cryph::AffPoint parachuteObj(parachuteBottom.x, parachuteBottom.y, parachuteBottom.z);
 
 		// TODO: figure out why values less than 1 do not work

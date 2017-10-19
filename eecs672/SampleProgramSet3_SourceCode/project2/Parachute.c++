@@ -42,8 +42,8 @@ void Parachute::defineParachute() {
 	double theta = 0.0;
 	double dTheta = 2.0 * M_PI / N_POINTS_AROUND_SLICE;
 
-	cryph::AffVector U(1, 0, 0); //x-axis
-	cryph::AffVector V(0, 1, 0); //y-axis
+	cryph::AffVector U(1, 0, 0); // x-axis
+	cryph::AffVector V(0, 1, 0); // y-axis
 
 	cryph::AffPoint first = bottom + radius * (cos(theta) * U + sin(theta) * V);
 	cryph::AffVector first2 = first - bottom;
@@ -122,13 +122,15 @@ void Parachute::render()
 	glUniformMatrix4fv(shaderIF->ppuLoc("mc_ec"), 1, false, mc_ec.extractColMajor(mat));
 	glUniformMatrix4fv(shaderIF->ppuLoc("ec_lds"), 1, false, ec_lds.extractColMajor(mat));
 
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
 	// 3. Set GLSL's "kd" variable using this object's "kd" instance variable
 	glUniform3fv(shaderIF->ppuLoc("kd"), 1, kd);
 
 	// 4. Establish any other attributes and make one or more calls to
 	//    glDrawArrays and/or glDrawElements
 	glBindVertexArray(vao[0]);
-	glDrawArrays(GL_TRIANGLE_FAN, 0, N_POINTS_AROUND_SLICE + 2);
+	glDrawArrays(GL_TRIANGLE_FAN, 0, N_POINTS_AROUND_SLICE - 7);
 
 	// 5. Reestablish previous shader program
 	glUseProgram(pgm);
