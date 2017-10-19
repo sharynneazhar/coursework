@@ -31,9 +31,9 @@ void set3DViewingInformation(double xyz[6])
 
 	// 2) Move the eye away along some direction - here (0,0,1) - so that the
 	//    distance between the eye and the center is (2 * max scene dimension).
-	cryph::AffVector dir(0.25, 0.25, 0.85);
+	cryph::AffVector dir(10, 12, 30);
 	dir.normalize();
-
+	
 	double distEyeCenter = 2.0 * maxDelta;
 	cryph::AffPoint eye = center + distEyeCenter * dir;
 
@@ -43,8 +43,7 @@ void set3DViewingInformation(double xyz[6])
 	// Notify the ModelView of our MC->EC viewing requests:
 	ModelView::setEyeCenterUp(eye, center, up);
 
-	// Set values for ecZpp, ecZmin, ecZmax that make sense in the context of
-	// the EC system established above, then:
+	// COMMON HEURISTIC FOR ESTABLISHING THE PROJECTION TRANSFORMATION:
 	// Place the projection plane (ECz = ecZpp) roughly at the front of scene
 	// and set eye coordinate ecZmin/ecZmax clipping planes relative to it.
 	// IMPORTANT NOTE: For perspective projections, the following must hold:
@@ -62,7 +61,7 @@ void set3DViewingInformation(double xyz[6])
 
 int main(int argc, char* argv[])
 {
-	GLFWController c("PUBG Air Drops", MVC_USE_DEPTH_BIT);
+	GLFWController c("Air Drop Crates", MVC_USE_DEPTH_BIT);
 	c.reportVersions(std::cout);
 
 	vec3 groundColors[10] = {
@@ -78,26 +77,27 @@ int main(int argc, char* argv[])
 		{ 0.91, 0.89, 0.82 }
 	};
 
-	vec3 crateBaseColor = { 0.639, 0.0, 0.0 };
-	vec3 crateTopColor = { 0.0, 0.3, 0.639 };
+	vec3 crateBase = { 0.739, 0.0, 0.0 };
+	vec3 crateTop = { 0.0, 0.3, 0.739 };
 
 	ShaderIF* sIF = new ShaderIF("shaders/basic.vsh", "shaders/phong.fsh");
 
 	// Create your scene, adding things to the Controller....
 
-	double yVal = 0.0;
-	double yLen = 5.0;
+	// Draw the ground
 	for (int i = 0; i < 10; i++) {
-		yVal += 0.1; yLen += 0.5;
-		c.addModel(new Ground(sIF, -3.0, yVal, -3.0, 16.0, 0.0, yLen, groundColors[i]));
+		c.addModel(new Ground(sIF, -5.0, (i / 10), 0.0, 16.0, 0.5, (i + 2.5), groundColors[i]));
 	}
 
-	c.addModel(new Block(sIF, 3.0, yVal, 1.2, 2.0, 2.0, 2.0, crateBaseColor));
-	c.addModel(new Block(sIF, 2.945, yVal + 1.5, 1.2, 2.10, 0.55, 2.032, crateTopColor));
+	// Draw the big Crate
+	c.addModel(new Block(sIF, 3.0, 0.5, 2.2, 2.0, 2.0, 2.0, crateBase));
+	c.addModel(new Block(sIF, 2.95, 2.0, 2.2, 2.105, 0.55, 2.05, crateTop));
 
-	c.addModel(new Block(sIF, 7.0, 4.0, 1.2, 0.2, 0.2, 0.2, crateBaseColor));
-	c.addModel(new Block(sIF, 6.99, 4.15, 1.2, 0.2105, 0.085, 0.205, crateTopColor));
+	// Draw the smaller Crate
+	c.addModel(new Block(sIF, 7.0, 5.0, 1.2, 0.5, 0.5, 0.5, crateBase));
+	c.addModel(new Block(sIF, 6.99, 5.355, 1.2, 0.5105, 0.205, 0.505, crateTop));
 
+	// Make background white
 	glClearColor(1.0, 1.0, 1.0, 1.0);
 
 	double xyz[6];
