@@ -44,7 +44,7 @@ void Block::defineBlock()
 		{xmax, ymin, zmin}, {xmax, ymax, zmin},
 		{xmin, ymin, zmin}, {xmin, ymax, zmin}
 	};
-	
+
 	glGenVertexArrays(1, vao);
 	glBindVertexArray(vao[0]);
 
