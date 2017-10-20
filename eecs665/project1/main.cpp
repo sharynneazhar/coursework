@@ -1,34 +1,42 @@
 /**
- * Project 1 - NFA to DFA
+ * Assignment 1 - NFA to DFA Converter
  * @author  Sharynne Azhar
  * @course  EECS 665 - Compiler Construction (Fall 2017)
  * @date    10-13-2016
  * @file    main.cpp
  * @desc    Converts an input NFA into its equivalent DFA
+ *
+ * NOTE: The program assumes that input follows the following structure:
+ * Initial State: {1}
+ * Final States: {11}
+ * Total States: 11
+ * State a b E
+ * 1 {} {} {2,5}
+ * 2 {3} {} {}
+ * 3 {} {4} {}
+ * ...
  */
 
 #include <iostream>
-#include <fstream>
-#include <string>
-#include <vector>
+#include "Converter.h"
 
-int main(int argc, char const *argv[]) {
+int main(int argc, char** argv){
+  std::cout << "\n===================================";
+  std::cout << "\n=====   NFA to DFA Converter  =====";
+  std::cout << "\n===================================\n";
+
   // Open the file for reading
-  std::ifstream file;
-  std::string filename;
-
-  // If a user does not provide a file, use the example_input.txt file
-  // Otherwise, take filename provided from console
-  filename = (argc < 2) ? "example_input.txt" : argv[1];
-  file.open(filename);
+  std::ifstream file(argv[1]);
+  std::vector<std::string> input;
+  std::string line;
 
   // Read the file line by line into a vector
-  std::string line;
-  std::vector<std::string> vec;
-  while(std::getline(file, line)) {
-    std::cout << line << "\n";
+  while(std::getline(std::cin, line)) {
+    input.push_back(line);
   }
 
-  std::cout << std::endl;
-  return 0;
+  Converter converter(input);
+  converter.setup();
+  converter.convert();
+  converter.printResults();
 }
