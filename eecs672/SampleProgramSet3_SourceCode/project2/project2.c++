@@ -1,8 +1,8 @@
 // project2.c++: Starter for EECS 672 Project 2
 
 #include "GLFWController.h"
-#include "Ground.h"
 #include "Crate.h"
+#include "Tree.h"
 
 void set3DViewingInformation(double xyz[6])
 {
@@ -60,36 +60,32 @@ void set3DViewingInformation(double xyz[6])
 
 int main(int argc, char* argv[])
 {
-	GLFWController c("Air Drop Crates", MVC_USE_DEPTH_BIT);
+	GLFWController c("PUBG Air Drops", MVC_USE_DEPTH_BIT);
 	c.reportVersions(std::cout);
-
-	vec3 groundColors[10] = {
-		{ 0.69, 0.60, 0.35 },
-		{ 0.71, 0.64, 0.40 },
-		{ 0.74, 0.67, 0.45 },
-		{ 0.76, 0.70, 0.50 },
-		{ 0.78, 0.73, 0.55 },
-		{ 0.81, 0.76, 0.61 },
-		{ 0.84, 0.79, 0.66 },
-		{ 0.86, 0.82, 0.71 },
-		{ 0.89, 0.85, 0.76 },
-		{ 0.91, 0.89, 0.82 }
-	};
 
 	ShaderIF* sIF = new ShaderIF("shaders/basic.vsh", "shaders/phong.fsh");
 
 	// Create your scene, adding things to the Controller....
 
 	// Draw the ground
-	for (int i = 0; i < 10; i++) {
-		c.addModel(new Ground(sIF, -5.0, (i / 10), 0.0, 16.0, 0.5, (i + 2.5), groundColors[i]));
-	}
+	vec3 groundColor = { 0.689, 0.80, 0.55 };
+	c.addModel(new Block(sIF, -5.0, 0.0, 0.0, 15.0, 0.5, 12.5, groundColor));
 
 	// Draw the crates
-	c.addModel(new Crate(sIF, 3.0, 0.5, 2.2, 2.0, 2.0, 2.0, false));
-	c.addModel(new Crate(sIF, 7.0, 5.0, 1.2, 0.5, 0.5, 0.5, true));
-	c.addModel(new Crate(sIF, 0.0, 5.0, 1.2, 0.5, 0.5, 0.5, true));
+	c.addModel(new Crate(sIF, 3.0, 0.5, 4.2, 1.5, 1.5, 1.5, false));
+	c.addModel(new Crate(sIF, 7.0, 4.0, 1.2, 0.5, 0.5, 0.5, true));
+	c.addModel(new Crate(sIF, 0.0, 4.0, 1.2, 0.5, 0.5, 0.5, true));
 
+	// Draw the trees
+	c.addModel(new Tree(sIF, -1.35, 0.0, 7.2));
+	c.addModel(new Tree(sIF, -1.5, 0.0, 3.5));
+	c.addModel(new Tree(sIF, -4.0, 0.0, 5.5));
+
+	// Draw bushes
+	vec3 bushColorGreen = { 0.32, 0.49, 0.46 };
+	c.addModel(new Block(sIF, 8.2, 0.5, 8.3, 0.75, 0.75, 0.75, bushColorGreen));
+	c.addModel(new Block(sIF, 8.6, 0.5, 5.3, 0.75, 0.75, 0.75, bushColorGreen));
+	c.addModel(new Block(sIF, 7.6, 0.5, 6.3, 0.75, 0.75, 0.75, bushColorGreen));
 
 	// Make background white
 	glClearColor(1.0, 1.0, 1.0, 1.0);

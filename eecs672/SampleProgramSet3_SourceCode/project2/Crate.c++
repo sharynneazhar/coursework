@@ -21,8 +21,8 @@ Crate::Crate(ShaderIF* sIF, float xMin, float yMin, float zMin,
 												crateBaseColor);
 
 	double xPosOffset = xMin - 0.01;
-	double yPosOffset = yMin + lenY - (lenY / 3) + 0.015;
-	double xLenOffset = lenX + 0.015;
+	double yPosOffset = yMin + lenY - (lenY / 3) + 0.02;
+	double xLenOffset = lenX + 0.02;
 	double yLenOffset = lenY / 3;
 	double zLenOffset = lenZ + 0.05;
 

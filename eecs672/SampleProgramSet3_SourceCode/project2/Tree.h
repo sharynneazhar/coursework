@@ -1,21 +1,21 @@
-// Ground.h
+// Tree.h
 
-#ifndef GROUND_H
-#define GROUND_H
+#ifndef TREE_H
+#define TREE_H
 
 #include "ModelView.h"
 #include "ShaderIF.h"
 #include "Block.h"
+#include "Cylinder.h"
 
 typedef float vec3[3];
 
-class Ground : public ModelView
+class Tree : public ModelView
 {
 public:
 	// As before: you will likely want to add parameters to the constructor
-	Ground(ShaderIF* sIF, float xMin, float yMin, float zMin,
-		     float lenX, float lenY, float lenZ, vec3 color);
-	virtual ~Ground();
+	Tree(ShaderIF* sIF, float xMin, float yMin, float zMin);
+	virtual ~Tree();
 
 	// xyzLimits: {mcXmin, mcXmax, mcYmin, mcYmax, mcZmin, mcZmax}
 	void getMCBoundingBox(double* xyzLimitsF) const;
@@ -23,7 +23,8 @@ public:
 
 private:
 	ShaderIF* shaderIF;
-	Block* groundBlock;
+	Cylinder* trunk;
+	Block* treeTop;
 
 	float xmin, xmax, ymin, ymax, zmin, zmax;
 	float kd[3];

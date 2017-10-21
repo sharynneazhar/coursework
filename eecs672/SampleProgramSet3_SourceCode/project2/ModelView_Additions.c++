@@ -62,7 +62,7 @@ void ModelView::getMatrices(cryph::Matrix4x4& mc_ec, cryph::Matrix4x4& ec_lds)
 	double maxDelta = deltaMCValues[0];
 	if (deltaMCValues[1] > maxDelta)
 		maxDelta = deltaMCValues[1];
-	else if (deltaMCValues[2] > maxDelta)
+	if (deltaMCValues[2] > maxDelta)
 		maxDelta = deltaMCValues[2];
 
 	double halfWidth = 0.5 * maxDelta;
@@ -77,13 +77,13 @@ void ModelView::getMatrices(cryph::Matrix4x4& mc_ec, cryph::Matrix4x4& ec_lds)
 	ModelView::matchAspectRatio(last_ecXmin, last_ecXmax, last_ecYmin, last_ecYmax, viewAspectRatio);
 
 	if (ModelView::projType == ORTHOGONAL)
-		ec_lds = cryph::Matrix4x4::orthogonal(last_ecXmin, last_ecXmax, last_ecYmin, last_ecYmax,ModelView::ecZmin, ModelView::ecZmax);
+		ec_lds = cryph::Matrix4x4::orthogonal(last_ecXmin, last_ecXmax, last_ecYmin, last_ecYmax, ModelView::ecZmin, ModelView::ecZmax);
 	else if (ModelView::projType == PERSPECTIVE)
 		ec_lds = cryph::Matrix4x4::perspective(ModelView::ecZpp,
 				last_ecXmin, last_ecXmax, last_ecYmin, last_ecYmax, ModelView::ecZmin, ModelView::ecZmax);
 	else // Must be OBLIQUE
 		ec_lds = cryph::Matrix4x4::oblique(ModelView::ecZpp,
-				last_ecXmin, last_ecXmax, last_ecYmin, last_ecYmax, ModelView::ecZmin, ModelView::ecZmax,ModelView::obliqueProjectionDir);
+				last_ecXmin, last_ecXmax, last_ecYmin, last_ecYmax, ModelView::ecZmin, ModelView::ecZmax, ModelView::obliqueProjectionDir);
 
 	// THEN IN THE CALLER OF THIS METHOD:
 	//

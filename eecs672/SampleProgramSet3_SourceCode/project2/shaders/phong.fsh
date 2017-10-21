@@ -2,8 +2,7 @@
 
 // phong.fsh - a fragment shader that implements a Phong Lighting model.
 
-in PVA
-{
+in PVA {
 	vec3 ecPosition;
 	vec3 ecUnitNormal;
 } pvaIn;
@@ -14,8 +13,7 @@ out vec4 fragmentColor;
 uniform vec3 kd = // "kd" - diffuse reflectivity; basic object color
 	vec3(0.8, 0.0, 0.0); // default: darkish red
 
-vec4 evaluateLightingModel()
-{
+vec4 evaluateLightingModel() {
 	// THIS IS JUST A PLACEHOLDER FOR A LIGHTING MODEL.
 	// It only currently implements simple Lambert shading.
 
@@ -31,14 +29,20 @@ vec4 evaluateLightingModel()
 	//    lighting model more carefully, you will REMOVE "abs" since it will
 	//    no longer be appropriate.
 
-	vec3 liHat = vec3(0.0, 0.0, 1.0);
+	vec3 liHat = vec3(0, 0, 1);
 	vec3 liStrength = vec3(1.0, 1.0, 1.0);
-	float factor = abs(dot(liHat, pvaIn.ecUnitNormal));
+	vec3 norm = pvaIn.ecUnitNormal;
+	vec3 ka = vec3(kd);
+	vec3 globalAmbient = vec3(0.1, 0.1, 0.1);
 
+ 	if (dot(normalize(liHat), norm) < 0) {
+ 		norm = norm*-1;
+ 	}
+
+	float factor = dot(liHat, norm);
 	return vec4(factor * kd * liStrength, 1.0);
 }
 
-void main ()
-{
+void main () {
 	fragmentColor = evaluateLightingModel();
 }

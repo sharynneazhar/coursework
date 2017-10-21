@@ -1,26 +1,24 @@
-// Ground.c++
+// Tree.c++
 
-#include "Ground.h"
+#include "Tree.h"
 
-Ground::Ground(ShaderIF* sIF, float xMin, float yMin, float zMin,
-	float lenX, float lenY, float lenZ, vec3 color) : shaderIF(sIF)
+Tree::Tree(ShaderIF* sIF, float xMin, float yMin, float zMin) : shaderIF(sIF)
 {
-	groundBlock = new Block(sIF, xMin, yMin, zMin, lenX, lenY, lenZ, color);
-	xmin = xMin;
-	xmax = xMin + lenX;
-	ymin = yMin;
-	ymax = yMin + lenY;
-	zmin = zMin;
-	zmax = zMin + lenZ;
+	vec3 trunkColor = { 0.52, 0.37, 0.26 };
+	vec3 treeTopColor = { 0.13, 0.37, 0.31};
+
+	trunk = new Cylinder(sIF, xMin, yMin, zMin, 0.0, 0.0, 90.0, 0.25, 2.3, 1.0, trunkColor);
+	treeTop = new Block(sIF, xMin - 0.18, yMin + 2.3, zMin, 1.0, 1.0, 1.0, treeTopColor);
 }
 
-Ground::~Ground()
+Tree::~Tree()
 {
-	delete groundBlock;
+	delete trunk;
+	delete treeTop;
 }
 
 // xyzLimits: {mcXmin, mcXmax, mcYmin, mcYmax, mcZmin, mcZmax}
-void Ground::getMCBoundingBox(double* xyzLimits) const
+void Tree::getMCBoundingBox(double* xyzLimits) const
 {
 	xyzLimits[0] = xmin;
 	xyzLimits[1] = xmax;
@@ -30,7 +28,7 @@ void Ground::getMCBoundingBox(double* xyzLimits) const
 	xyzLimits[5] = zmax;
 }
 
-void Ground::render()
+void Tree::render()
 {
 	// 1. Save current and establish new current shader program
 	GLint pgm;
@@ -44,7 +42,6 @@ void Ground::render()
 	float mat[16];
 	glUniformMatrix4fv(shaderIF->ppuLoc("mc_ec"), 1, false, mc_ec.extractColMajor(mat));
 	glUniformMatrix4fv(shaderIF->ppuLoc("ec_lds"), 1, false, ec_lds.extractColMajor(mat));
-
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
 	// 3. Set GLSL's "kd" variable using this object's "kd" instance variable
@@ -52,7 +49,8 @@ void Ground::render()
 
 	// 4. Establish any other attributes and make one or more calls to
 	//    glDrawArrays and/or glDrawElements
-	groundBlock->Block::render();
+	trunk->Cylinder::render();
+	treeTop->Block::render();
 
 	// 5. Reestablish previous shader program
 	glUseProgram(pgm);
