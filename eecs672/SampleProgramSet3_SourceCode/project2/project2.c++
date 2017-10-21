@@ -30,7 +30,7 @@ void set3DViewingInformation(double xyz[6])
 
 	// 2) Move the eye away along some direction - here (0,0,1) - so that the
 	//    distance between the eye and the center is (2 * max scene dimension).
-	cryph::AffVector dir(10, 12, 30);
+	cryph::AffVector dir(10, 12, 25);
 	dir.normalize();
 
 	double distEyeCenter = 2.0 * maxDelta;
@@ -71,6 +71,10 @@ int main(int argc, char* argv[])
 	vec3 groundColor = { 0.689, 0.80, 0.55 };
 	c.addModel(new Block(sIF, -5.0, 0.0, 0.0, 15.0, 0.5, 12.5, groundColor));
 
+	// Draw the sidewalk
+	vec3 roadColor = { 0.658824, 0.658824, 0.658824 };
+	c.addModel(new Block(sIF, -5.0, 0.0, 9.5, 15.0, 0.55, 2.0, roadColor));
+
 	// Draw the crates
 	c.addModel(new Crate(sIF, 3.0, 0.5, 4.2, 1.5, 1.5, 1.5, false));
 	c.addModel(new Crate(sIF, 7.0, 4.0, 1.2, 0.5, 0.5, 0.5, true));
@@ -80,6 +84,8 @@ int main(int argc, char* argv[])
 	c.addModel(new Tree(sIF, -1.35, 0.0, 7.2));
 	c.addModel(new Tree(sIF, -1.5, 0.0, 3.5));
 	c.addModel(new Tree(sIF, -4.0, 0.0, 5.5));
+	c.addModel(new Tree(sIF, 7.5, 0.0, 4.2));
+	c.addModel(new Tree(sIF, 8.6, 0.0, 2.5));
 
 	// Draw bushes
 	vec3 bushColorGreen = { 0.32, 0.49, 0.46 };

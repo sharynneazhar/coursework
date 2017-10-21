@@ -8,7 +8,11 @@ Tree::Tree(ShaderIF* sIF, float xMin, float yMin, float zMin) : shaderIF(sIF)
 	vec3 treeTopColor = { 0.13, 0.37, 0.31};
 
 	trunk = new Cylinder(sIF, xMin, yMin, zMin, 0.0, 0.0, 90.0, 0.25, 2.3, 1.0, trunkColor);
-	treeTop = new Block(sIF, xMin - 0.18, yMin + 2.3, zMin, 1.0, 1.0, 1.0, treeTopColor);
+
+	if (xMin < 0)
+		treeTop = new Block(sIF, xMin - 0.18, yMin + 2.3, zMin, 1.0, 1.0, 1.0, treeTopColor);
+	else
+		treeTop = new Block(sIF, xMin - 0.36, yMin + 2.3, zMin, 1.0, 1.0, 1.0, treeTopColor);
 }
 
 Tree::~Tree()
