@@ -23,7 +23,7 @@ INCLUDES =
 all: clean $(PROG_NAME)
 
 test: clean $(PROG_NAME)
-	./$(PROG_NAME)
+	./$(PROG_NAME) < input.txt
 
 # A generalized rule for compiling the executable object
 $(PROG_NAME): main.o
