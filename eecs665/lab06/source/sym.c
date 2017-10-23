@@ -34,7 +34,10 @@ void dump(int blev, FILE *f)
 {
   if (f != NULL) {
     fprintf(f, "Dumping identifier table\n");
-    for (int i = 0; i < ITABSIZE; i++) {
+    
+    int i;
+    
+    for (i = 0; i < ITABSIZE; i++) {
       if (id_table[i] != NULL) {
         struct id_entry* id_entry = id_table[i];
         while (id_entry != NULL) {
@@ -113,7 +116,10 @@ struct id_entry *install(char *name, int blev)
 void leaveblock()
 {
   dump(level, stdout);
-  for (int i = 0; i < ITABSIZE; i++) {
+  
+  int i;  
+
+  for (i = 0; i < ITABSIZE; i++) {
     if (id_table[i] != NULL) {
       struct id_entry* id_entry = id_table[i];
       while(id_entry != NULL) {
