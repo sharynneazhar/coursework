@@ -14,3 +14,5 @@ You should not make any assumptions regarding the maximum number of states in th
 
 
 ### Running the Program
+
+Use `make test` in your terminal to run the program.
