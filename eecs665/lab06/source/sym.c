@@ -33,21 +33,21 @@ struct id_entry *id_table[ITABSIZE] = {0}; /* identifier hash table */
 void dump(int blev, FILE *f)
 {
   if (f != NULL) {
-    fprintf(f, "Dumping identifier table\n");
-    
     int i;
-    
+
+    fprintf(f, "Dumping identifier table\n");
     for (i = 0; i < ITABSIZE; i++) {
       if (id_table[i] != NULL) {
-        struct id_entry* id_entry = id_table[i];
-        while (id_entry != NULL) {
-          if (id_entry->i_blevel == blev) {
-            fprintf(f, "%s    \t", id_entry->i_name);
-            fprintf(f, "%i    \t", id_entry->i_blevel);
-            fprintf(f, "%i    \t", id_entry->i_type);
-            fprintf(f, "%i    \n", id_entry->i_defined);
+        struct id_entry* entry = id_table[i];
+        for (entry; entry != NULL; entry = entry->i_link) {
+          if (entry->i_blevel >= blev) {
+            fprintf(f, "%s\t", entry->i_name);
+            fprintf(f, "%i\t", entry->i_blevel);
+            fprintf(f, "%i\t", entry->i_type);
+            fprintf(f, "%i\n", entry->i_defined);
+            id_table[i] = entry->i_link;
+            free(entry);
           }
-          id_entry = id_entry->i_link;
         }
       }
     }
@@ -116,22 +116,6 @@ struct id_entry *install(char *name, int blev)
 void leaveblock()
 {
   dump(level, stdout);
-  
-  int i;  
-
-  for (i = 0; i < ITABSIZE; i++) {
-    if (id_table[i] != NULL) {
-      struct id_entry* id_entry = id_table[i];
-      while(id_entry != NULL) {
-        if (id_entry->i_blevel == level) {
-          id_table[i] = id_entry->i_link;
-          free(id_entry);
-        }
-        id_entry = id_entry->i_link;
-      }
-    }
-  }
-
   level--;
   exit_block();
 }
