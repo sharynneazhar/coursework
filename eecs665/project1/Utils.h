@@ -69,7 +69,8 @@ public:
   }
 
   // Splits a comma separated string and returns a set of corresponding integer values
-  static std::set<int> splitStrToInt(std::string str) {
+  // For example, a string "1,2,3" would return a set of integers containing 1, 2, and 3
+  static std::set<int> splitStrToIntSet(std::string str) {
     std::set<int> aSet;
     int temp;
 
@@ -100,7 +101,7 @@ public:
     return result;
   }
 
-  // Calculates the set of states that can be obtained from the input symbol 'input'
+  // Performs the move function for a certain state set
   static std::set<int> move(std::unordered_map<int, std::set<int>> transitions, std::set<int> states, std::string input) {
       std::set<int> result, transition;
 
