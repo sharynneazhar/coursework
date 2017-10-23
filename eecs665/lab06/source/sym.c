@@ -32,7 +32,23 @@ struct id_entry *id_table[ITABSIZE] = {0}; /* identifier hash table */
  */
 void dump(int blev, FILE *f)
 {
-   fprintf( f, "You must write the function 'dump' yourself\n" );
+  if (f != NULL) {
+    fprintf(f, "Dumping identifier table\n");
+    for (int i = 0; i < ITABSIZE; i++) {
+      if (id_table[i] != NULL) {
+        struct id_entry* id_entry = id_table[i];
+        while (id_entry != NULL) {
+          if (id_entry->i_blevel == blev) {
+            fprintf(f, "%s    \t", id_entry->i_name);
+            fprintf(f, "%i    \t", id_entry->i_blevel);
+            fprintf(f, "%i    \t", id_entry->i_type);
+            fprintf(f, "%i    \n", id_entry->i_defined);
+          }
+          id_entry = id_entry->i_link;
+        }
+      }
+    }
+  }
 }
 
 /*
@@ -40,8 +56,8 @@ void dump(int blev, FILE *f)
  */
 void new_block()
 {
-   save_rec((struct sem_rec *) prevtop);
-   prevtop = top - 1;
+  save_rec((struct sem_rec *) prevtop);
+  prevtop = top - 1;
 }
 
 /*
@@ -61,8 +77,8 @@ void exit_block()
  */
 void enterblock()
 {
-   fprintf( stderr, "You must write the function 'enterblock' yourself\n" );
-   exit( 1 );
+  level++;
+  new_block();
 }
 
 /*
@@ -96,8 +112,22 @@ struct id_entry *install(char *name, int blev)
  */
 void leaveblock()
 {
-   fprintf( stderr, "You must write the function 'leaveblock' yourself\n" );
-   exit( 1 );
+  dump(level, stdout);
+  for (int i = 0; i < ITABSIZE; i++) {
+    if (id_table[i] != NULL) {
+      struct id_entry* id_entry = id_table[i];
+      while(id_entry != NULL) {
+        if (id_entry->i_blevel == level) {
+          id_table[i] = id_entry->i_link;
+          free(id_entry);
+        }
+        id_entry = id_entry->i_link;
+      }
+    }
+  }
+
+  level--;
+  exit_block();
 }
 
 /*
