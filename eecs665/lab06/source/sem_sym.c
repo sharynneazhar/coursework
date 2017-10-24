@@ -207,6 +207,7 @@ struct id_entry *fname(int t, char *id)
 void ftail()
 {
   leaveblock();
+  leaveblock();
 }
 
 /*

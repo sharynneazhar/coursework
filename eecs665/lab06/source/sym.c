@@ -33,21 +33,35 @@ struct id_entry *id_table[ITABSIZE] = {0}; /* identifier hash table */
 void dump(int blev, FILE *f)
 {
   if (f != NULL) {
-    int i;
-
+    int i = 0;
     fprintf(f, "Dumping identifier table\n");
+
+    // Iterate over all the identifiers
     for (i = 0; i < ITABSIZE; i++) {
       if (id_table[i] != NULL) {
-        struct id_entry* entry = id_table[i];
-        for (entry; entry != NULL; entry = entry->i_link) {
-          if (entry->i_blevel >= blev) {
-            fprintf(f, "%s\t", entry->i_name);
-            fprintf(f, "%i\t", entry->i_blevel);
-            fprintf(f, "%i\t", entry->i_type);
-            fprintf(f, "%i\n", entry->i_defined);
-            id_table[i] = entry->i_link;
-            free(entry);
+        // Get the identifier from the table
+        struct id_entry* id_entry = id_table[i];
+
+        // Check if the identifier exist and traverse
+        // as long as there is a next entry
+        while (id_entry != NULL) {
+
+          // If an identifier is at (or in some cases greater) than the
+          // current level, dump out the values
+          if (id_entry->i_blevel >= blev) {
+
+            // Dump to standard out
+            fprintf(f, "%s\t", id_entry->i_name);
+            fprintf(f, "%i\t", id_entry->i_blevel);
+            fprintf(f, "%i\t", id_entry->i_type);
+            fprintf(f, "%i\n", id_entry->i_defined);
+
+            // Push the next entry in the chain onto the table
+            id_table[i] = id_entry->i_link;
+            free(id_entry);
           }
+
+          id_entry = id_entry->i_link;
         }
       }
     }
@@ -117,6 +131,7 @@ void leaveblock()
 {
   dump(level, stdout);
   level--;
+
   exit_block();
 }
 
