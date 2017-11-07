@@ -47,8 +47,8 @@ void SceneElement::establishLightingEnvironment()
   // transform them to EC. Then, send the EC geometric description
   // along with the non-geometric data:
 	glUniform1i(shaderIF->ppuLoc("actualNumLights"), MAX_NUM_LIGHTS);
-  glUniform4fv(shaderIF->ppuLoc("lightPosition"), numLights, lightPos);
-  glUniform3fv(shaderIF->ppuLoc("lightStrength"), numLights, lightStrength);
+  glUniform4fv(shaderIF->ppuLoc("lightPosition"), MAX_NUM_LIGHTS, lightPos);
+  glUniform3fv(shaderIF->ppuLoc("lightStrength"), MAX_NUM_LIGHTS, lightStrength);
   glUniform3fv(shaderIF->ppuLoc("globalAmbient"), 1, globalAmbient);
 }
 

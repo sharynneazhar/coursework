@@ -26,11 +26,11 @@ void set3DViewingInformation(double xyz[6])
 
 	// Create the line of sight through the center of the scene:
 	// 1) Make the center of attention be the center of the bounding box.
-	cryph::AffPoint center(xmid, ymid, zmid);
+	cryph::AffPoint center(xmid, ymid + 4, zmid);
 
 	// 2) Move the eye away along some direction - here (0,0,1) - so that the
 	//    distance between the eye and the center is (2 * max scene dimension).
-	cryph::AffVector dir(0, 0.2, 0.8);
+	cryph::AffVector dir(0.05, 0.2, 0.8);
 	dir.normalize();
 
 	double distEyeCenter = 2.0 * maxDelta;
@@ -66,11 +66,7 @@ int main(int argc, char* argv[])
 	ShaderIF* sIF = new ShaderIF("shaders/basic.vsh", "shaders/phong.fsh");
 
 	// Create your scene, adding things to the Controller....
-	PhongMaterial groundPhong(0.2125, 0.1275, 0.054,
-														0.714, 0.4284, 0.18144,
-														0.393548, 0.271906, 0.166721,
-														25.6, 0.5);
-
+	PhongMaterial groundPhong(0.685, 0.80, 0.4);
 	c.addModel(new Block(sIF, groundPhong, -5.0, 0.0, 0.0, 15.0, 0.5, 12.5));
 
 	// Make background white

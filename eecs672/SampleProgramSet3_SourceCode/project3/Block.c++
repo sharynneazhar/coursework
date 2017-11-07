@@ -81,14 +81,10 @@ void Block::render()
 	GLint pgm;
 	glGetIntegerv(GL_CURRENT_PROGRAM, &pgm);
 	glUseProgram(shaderIF->getShaderPgmID());
+
+	// 2. Establish the SceneElement
 	SceneElement::establishLightingEnvironment();
-
-	// 2. Establish "mc_ec" and "ec_lds" matrices
 	SceneElement::establishView();
-
-	// 3. Set GLSL's "kd" variable using this object's "kd" instance variable
-	//    complete the implementation of SceneElement::establishMaterial and then
-	//    call it from here.
 	SceneElement::establishMaterial();
 
 	// 4. Establish any other attributes and make one or more calls to
