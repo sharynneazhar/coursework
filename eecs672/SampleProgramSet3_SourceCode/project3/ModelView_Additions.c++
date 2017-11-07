@@ -4,19 +4,25 @@
 
 void ModelView::addToGlobalPan(double dxInLDS, double dyInLDS, double dzInLDS)
 {
+	// 1. Use last_ecXmin, et al. with dxInLDS, et al. to translate the LDS
+	//          pan vector to an EC pan vector.
 	double dxInEC = (dxInLDS / 2) * (last_ecXmax - last_ecXmin);
 	double dyInEC = (dyInLDS / 2) * (last_ecYmax - last_ecYmin);
-	cryph::AffVector panVec(dxInEC, dyInEC, dzInLDS);
-	cryph::Matrix4x4 matrix = cryph::Matrix4x4::translation(panVec);
-	dynamic_view = matrix * dynamic_view;
+	cryph::Matrix4x4 tMatrix = cryph::Matrix4x4::translation(
+		cryph::AffVector(dxInEC, dyInEC, dzInLDS));
+
+	// 2. UPDATE dynamic_view
+	// 3. The updated dynamic_view will be used in ModelView::getMatrices
+	dynamic_view = tMatrix * dynamic_view;
 }
 
 void ModelView::addToGlobalRotationDegrees(double rx, double ry, double rz)
 {
-	cryph::Matrix4x4 xRot = cryph::Matrix4x4::xRotationDegrees(ry);
-	cryph::Matrix4x4 yRot = cryph::Matrix4x4::xRotationDegrees(rx);
-	cryph::Matrix4x4 zRot = cryph::Matrix4x4::xRotationDegrees(rz);
-	dynamic_view = xRot * yRot * zRot * dynamic_view;
+	// 1. UPDATE dynamic_view
+	// 2. The updated dynamic_view will be used in ModelView::getMatrices
+	// cryph::Matrix4x4 xRot = cryph::Matrix4x4::xRotationDegrees(rx);
+	// cryph::Matrix4x4 yRot = cryph::Matrix4x4::yRotationDegrees(ry);
+	// dynamic_view = xRot * yRot * dynamic_view;
 }
 
 void ModelView::getMatrices(cryph::Matrix4x4& mc_ec, cryph::Matrix4x4& ec_lds)
@@ -28,7 +34,9 @@ void ModelView::getMatrices(cryph::Matrix4x4& mc_ec, cryph::Matrix4x4& ec_lds)
 	//    events. Their current values are stored in protected class variables
 	//    that you directly access.
 	//
-	cryph::Matrix4x4 M_ECu = cryph::Matrix4x4::lookAt(ModelView::eye, ModelView::center, ModelView::up);
+	cryph::Matrix4x4 M_ECu = cryph::Matrix4x4::lookAt(ModelView::eye,
+																										ModelView::center,
+																										ModelView::up);
 
 	// For project 2:
 	// mc_ec = M_ECu;
@@ -46,7 +54,6 @@ void ModelView::getMatrices(cryph::Matrix4x4& mc_ec, cryph::Matrix4x4& ec_lds)
 	//    is initialized in main and is subject to modification at any time while
 	//    processing events. Its current values are also stored in protected class
 	//    variables that you directly access.
-
 	//    2.a. Determine the maximum of delta_mcX, delta_mcY, and delta_mcZ. (For
 	//         example, delta_mcX = mcRegionOfInterest[1] - mcRegionOfInterest[0].)
 	//         Suppose you store the maximum of these delta_mc* values in "maxDelta".
@@ -94,7 +101,6 @@ void ModelView::getMatrices(cryph::Matrix4x4& mc_ec, cryph::Matrix4x4& ec_lds)
 	// copied by glUniformMatrix to the GPU, "mat" can be reused as indicated.)
 }
 
-void ModelView::scaleGlobalZoom(double multiplier)
-{
+void ModelView::scaleGlobalZoom(double multiplier) {
 	dynamic_zoomScale *= multiplier;
 }

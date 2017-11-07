@@ -41,14 +41,23 @@ void SceneElement::establishLightingEnvironment()
 {
 	// This should set:
 	// "actualNumLights", "ecLightPosition", "lightStrength", "globalAmbient"
+
+	// Copy "lightPos" to local array "lightPositionInEC".
+  // While doing so, if any of the light sources are defined in MC,
+  // transform them to EC. Then, send the EC geometric description
+  // along with the non-geometric data:
+	glUniform1i(shaderIF->ppuLoc("actualNumLights"), MAX_NUM_LIGHTS);
+  glUniform4fv(shaderIF->ppuLoc("lightPosition"), numLights, lightPos);
+  glUniform3fv(shaderIF->ppuLoc("lightStrength"), numLights, lightStrength);
+  glUniform3fv(shaderIF->ppuLoc("globalAmbient"), 1, globalAmbient);
 }
 
 void SceneElement::establishMaterial()
 {
+	glUniform3fv(shaderIF->ppuLoc("ka"), 1, matl.ka);
 	glUniform3fv(shaderIF->ppuLoc("kd"), 1, matl.kd);
-	// glUniform3fv(shaderIF->ppuLoc("ka"), 1, matl.ka);
-  // glUniform3fv(shaderIF->ppuLoc("ks"), 1, matl.ks);
-  // glUniform1f (shaderIF->ppuLoc("shininess"), matl.shininess);
+  glUniform3fv(shaderIF->ppuLoc("ks"), 1, matl.ks);
+  glUniform1f (shaderIF->ppuLoc("shininess"), matl.shininess);
 }
 
 void SceneElement::establishTexture()
@@ -66,9 +75,9 @@ void SceneElement::establishTexture()
 void SceneElement::establishView()
 {
 	// Line of sight, dynamic view controls, 3D-2D projection, & mapping to LDS:
+	float m[16];
 	cryph::Matrix4x4 mc_ec, ec_lds;
 	ModelView::getMatrices(mc_ec, ec_lds);
-	float m[16];
 	glUniformMatrix4fv(shaderIF->ppuLoc("mc_ec"), 1, false, mc_ec.extractColMajor(m));
 	glUniformMatrix4fv(shaderIF->ppuLoc("ec_lds"), 1, false, ec_lds.extractColMajor(m));
 }

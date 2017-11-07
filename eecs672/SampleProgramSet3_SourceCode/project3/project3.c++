@@ -1,8 +1,8 @@
-// project2.c++: Starter for EECS 672 Project 2
+// project3.c++: Starter for EECS 672 Project 2
 
 #include "GLFWController.h"
-#include "Crate.h"
-#include "Tree.h"
+#include "SceneElement.h"
+#include "Block.h"
 
 void set3DViewingInformation(double xyz[6])
 {
@@ -66,29 +66,12 @@ int main(int argc, char* argv[])
 	ShaderIF* sIF = new ShaderIF("shaders/basic.vsh", "shaders/phong.fsh");
 
 	// Create your scene, adding things to the Controller....
+	PhongMaterial groundPhong(0.2125, 0.1275, 0.054,
+														0.714, 0.4284, 0.18144,
+														0.393548, 0.271906, 0.166721,
+														25.6, 0.5);
 
-	// Draw the ground
-	vec3 groundColor = { 0.689, 0.80, 0.55 };
-	PhongMaterial groundPhong(0.2125, 0.1275, 0.054, 0.714, 0.4284, 0.18144, 0.393548, 0.271906, 0.166721, 25.6, 1);
 	c.addModel(new Block(sIF, groundPhong, -5.0, 0.0, 0.0, 15.0, 0.5, 12.5));
-
-	// Draw the crates
-	// c.addModel(new Crate(sIF, groundPhong, 3.0, 0.5, 4.2, 1.5, 1.5, 1.5, false));
-	// c.addModel(new Crate(sIF, groundPhong, 7.0, 4.0, 1.2, 0.5, 0.5, 0.5, true));
-	// c.addModel(new Crate(sIF, groundPhong, 0.0, 4.0, 1.2, 0.5, 0.5, 0.5, true));
-	//
-	// // Draw the trees
-	// c.addModel(new Tree(sIF, groundPhong, -1.35, 0.0, 7.2));
-	// c.addModel(new Tree(sIF, groundPhong, -1.5, 0.0, 3.5));
-	// c.addModel(new Tree(sIF, groundPhong, -4.0, 0.0, 5.5));
-	// c.addModel(new Tree(sIF, groundPhong, 7.5, 0.0, 4.2));
-	// c.addModel(new Tree(sIF, groundPhong, 8.6, 0.0, 2.5));
-	//
-	// // Draw bushes
-	// PhongMaterial bushPhong(0, 1, 0, 0, 1, 0, 0, 1, 0, 15, 1);
-	// c.addModel(new Block(sIF, bushPhong, 8.2, 0.5, 8.3, 0.75, 0.75, 0.75));
-	// c.addModel(new Block(sIF, bushPhong, 8.6, 0.5, 5.3, 0.75, 0.75, 0.75));
-	// c.addModel(new Block(sIF, bushPhong, 7.6, 0.5, 6.3, 0.75, 0.75, 0.75));
 
 	// Make background white
 	glClearColor(1.0, 1.0, 1.0, 1.0);

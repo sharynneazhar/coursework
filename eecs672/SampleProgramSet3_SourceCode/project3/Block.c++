@@ -1,8 +1,6 @@
 // Block.c++
 
-#include <iostream>
 #include <math.h>
-
 #include "Block.h"
 
 typedef float vec3[3];
@@ -15,8 +13,8 @@ GLuint Block::indexList[3][4] = {
 };
 
 Block::Block(ShaderIF* sIF, PhongMaterial&matl,
-	float cx, float cy, float cz,
-	float lx, float ly, float lz) :
+						 float cx, float cy, float cz,
+						 float lx, float ly, float lz) :
 	SceneElement(sIF, matl)
 {
 	xmin = cx; xmax = cx + lx;
@@ -83,6 +81,7 @@ void Block::render()
 	GLint pgm;
 	glGetIntegerv(GL_CURRENT_PROGRAM, &pgm);
 	glUseProgram(shaderIF->getShaderPgmID());
+	SceneElement::establishLightingEnvironment();
 
 	// 2. Establish "mc_ec" and "ec_lds" matrices
 	SceneElement::establishView();
