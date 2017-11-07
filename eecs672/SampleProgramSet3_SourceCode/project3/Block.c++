@@ -1,6 +1,5 @@
 // Block.c++
 
-#include <math.h>
 #include "Block.h"
 
 typedef float vec3[3];

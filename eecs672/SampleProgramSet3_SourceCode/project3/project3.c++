@@ -3,6 +3,7 @@
 #include "GLFWController.h"
 #include "SceneElement.h"
 #include "Block.h"
+#include "Crate.h"
 
 void set3DViewingInformation(double xyz[6])
 {
@@ -58,6 +59,17 @@ void set3DViewingInformation(double xyz[6])
 	ModelView::setECZminZmax(ecZmin, ecZmax);
 }
 
+void createScene(Controller&c, ShaderIF* sIF) {
+	// Draw the ground
+	PhongMaterial groundPhong(0.685, 0.80, 0.4);
+	c.addModel(new Block(sIF, groundPhong, -5.0, 0.0, 0.0, 15.0, 0.5, 12.5));
+
+	// Draw the crates
+	c.addModel(new Crate(sIF, 3.0, 0.5, 4.2, 1.5, 1.5, 1.5, false));
+	c.addModel(new Crate(sIF, 7.0, 4.0, 1.2, 0.5, 0.5, 0.5, true));
+	c.addModel(new Crate(sIF, 0.0, 4.0, 1.2, 0.5, 0.5, 0.5, true));
+}
+
 int main(int argc, char* argv[])
 {
 	GLFWController c("PUBG Air Drops", MVC_USE_DEPTH_BIT);
@@ -66,8 +78,7 @@ int main(int argc, char* argv[])
 	ShaderIF* sIF = new ShaderIF("shaders/basic.vsh", "shaders/phong.fsh");
 
 	// Create your scene, adding things to the Controller....
-	PhongMaterial groundPhong(0.685, 0.80, 0.4);
-	c.addModel(new Block(sIF, groundPhong, -5.0, 0.0, 0.0, 15.0, 0.5, 12.5));
+	createScene(c, sIF);
 
 	// Make background white
 	glClearColor(1.0, 1.0, 1.0, 1.0);
