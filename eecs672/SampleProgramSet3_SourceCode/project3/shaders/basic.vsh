@@ -16,6 +16,7 @@ uniform mat4 mc_ec =   // (dynamic rotations) * (ViewOrientation(E,C,up))
 	     0.0, 1.0, 0.0, 0.0, // ==> no dynamic rotations -AND- MC = EC
 	     0.0, 0.0, 1.0, 0.0,
 	     0.0, 0.0, 0.0, 1.0);
+
 uniform mat4 ec_lds = // (W-V map) * (projection matrix)
 	mat4(1.0, 0.0, 0.0, 0.0, // initialize to (almost) identity matrix
 	     0.0, 1.0, 0.0, 0.0, // ==> ORTHOGONAL projection -AND- EC = LDS

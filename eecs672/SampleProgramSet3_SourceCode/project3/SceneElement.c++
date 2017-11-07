@@ -46,6 +46,9 @@ void SceneElement::establishLightingEnvironment()
 void SceneElement::establishMaterial()
 {
 	glUniform3fv(shaderIF->ppuLoc("kd"), 1, matl.kd);
+	// glUniform3fv(shaderIF->ppuLoc("ka"), 1, matl.ka);
+  // glUniform3fv(shaderIF->ppuLoc("ks"), 1, matl.ks);
+  // glUniform1f (shaderIF->ppuLoc("shininess"), matl.shininess);
 }
 
 void SceneElement::establishTexture()

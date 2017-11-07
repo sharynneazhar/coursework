@@ -2,11 +2,11 @@
 
 #include "Crate.h"
 
-Crate::Crate(ShaderIF* sIF, float xMin, float yMin, float zMin,
-	float lenX, float lenY, float lenZ, bool inAirIn) : shaderIF(sIF), inAir(inAirIn)
+Crate::Crate(ShaderIF* sIF, PhongMaterial& matl, float xMin, float yMin, float zMin,
+	float lenX, float lenY, float lenZ, bool inAirIn) : SceneElement(sIF, matl), inAir(inAirIn)
 {
-	vec3 crateBaseColor = { 0.739, 0.0, 0.0 };
-	vec3 crateTopColor = { 0.0, 0.3, 0.739 };
+	PhongMaterial crateBasePhong(1, 0, 0, 1, 0, 0, 1, 0, 0, 15, 1);
+	PhongMaterial crateTopPhong(0, 0, 1, 0, 0, 1, 0, 0, 1, 15, 1);
 
 	if (inAir) {
 		cryph::AffPoint parachuteBottom = cryph::AffPoint(xMin, yMin + 2.5 * lenY, zMin);
@@ -16,9 +16,9 @@ Crate::Crate(ShaderIF* sIF, float xMin, float yMin, float zMin,
 		parachute = new Parachute(sIF, parachuteObj, 1, 1);
 	}
 
-	crateBase = new Block(sIF, xMin, yMin, zMin,
-											  lenX, lenY, lenZ,
-												crateBaseColor);
+	crateBase = new Block(sIF, crateBasePhong,
+												xMin, yMin, zMin,
+											  lenX, lenY, lenZ);
 
 	double xPosOffset = xMin - 0.01;
 	double yPosOffset = yMin + lenY - (lenY / 3) + 0.02;
@@ -26,9 +26,9 @@ Crate::Crate(ShaderIF* sIF, float xMin, float yMin, float zMin,
 	double yLenOffset = lenY / 3;
 	double zLenOffset = lenZ + 0.05;
 
-	crateTop = new Block(sIF, xPosOffset, yPosOffset, zMin,
-											 xLenOffset, yLenOffset, zLenOffset,
-											 crateTopColor);
+	crateTop = new Block(sIF, crateTopPhong,
+											 xPosOffset, yPosOffset, zMin,
+											 xLenOffset, yLenOffset, zLenOffset);
 
 	xmin = xMin;
 	xmax = xMin + lenX;
@@ -64,20 +64,19 @@ void Crate::render()
 	glUseProgram(shaderIF->getShaderPgmID());
 
 	// 2. Establish "mc_ec" and "ec_lds" matrices
-	cryph::Matrix4x4 mc_ec, ec_lds;
-	getMatrices(mc_ec, ec_lds);
-
-	float mat[16];
-	glUniformMatrix4fv(shaderIF->ppuLoc("mc_ec"), 1, false, mc_ec.extractColMajor(mat));
-	glUniformMatrix4fv(shaderIF->ppuLoc("ec_lds"), 1, false, ec_lds.extractColMajor(mat));
-
-	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	SceneElement::establishView();
 
 	// 3. Set GLSL's "kd" variable using this object's "kd" instance variable
-	glUniform3fv(shaderIF->ppuLoc("kd"), 1, kd);
+	//    complete the implementation of SceneElement::establishMaterial and then
+	//    call it from here.
+	SceneElement::establishMaterial();
 
 	// 4. Establish any other attributes and make one or more calls to
 	//    glDrawArrays and/or glDrawElements
+	//    If all or part of this model involves texture mapping, complete the
+	//    implementation of SceneElement::establishTexture and call it from
+	//    here as needed immediately before any glDrawArrays and/or glDrawElements
+	//    calls to which texture is to be applied.
 	crateBase->Block::render();
 	crateTop->Block::render();
 	if (inAir) parachute->Parachute::render();

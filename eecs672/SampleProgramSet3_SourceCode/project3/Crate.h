@@ -3,18 +3,18 @@
 #ifndef CRATE_H
 #define CRATE_H
 
-#include "ModelView.h"
+#include "SceneElement.h"
 #include "ShaderIF.h"
 #include "Block.h"
 #include "Parachute.h"
 
 typedef float vec3[3];
 
-class Crate : public ModelView
+class Crate : public SceneElement
 {
 public:
 	// As before: you will likely want to add parameters to the constructor
-	Crate(ShaderIF* sIF, float xMin, float yMin, float zMin,
+	Crate(ShaderIF* sIF, PhongMaterial& matl, float xMin, float yMin, float zMin,
 		    float lenX, float lenY, float lenZ, bool inAirIn);
 	virtual ~Crate();
 
@@ -23,13 +23,10 @@ public:
 	void render();
 
 private:
-	ShaderIF* shaderIF;
 	Block* crateTop;
 	Block* crateBase;
 	Parachute* parachute;
-
 	float xmin, xmax, ymin, ymax, zmin, zmax;
-	float kd[3];
 	bool inAir;
 };
 

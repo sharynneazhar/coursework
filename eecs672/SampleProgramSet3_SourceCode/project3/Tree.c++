@@ -2,17 +2,19 @@
 
 #include "Tree.h"
 
-Tree::Tree(ShaderIF* sIF, float xMin, float yMin, float zMin) : shaderIF(sIF)
+Tree::Tree(ShaderIF* sIF, PhongMaterial& matl, float xMin, float yMin, float zMin) : SceneElement(sIF, matl)
 {
-	vec3 trunkColor = { 0.52, 0.37, 0.26 };
-	vec3 treeTopColor = { 0.13, 0.37, 0.31};
+	vec3 trunkColor = {1, 1, 1};
+
+	PhongMaterial trunkPhong(1, 1, 1, 1, 1, 1, 1, 1, 1, 15, 1);
+	PhongMaterial treeTopPhong(0, 1, 0, 0, 1, 0, 0, 1, 0, 15, 1);
 
 	trunk = new Cylinder(sIF, xMin, yMin, zMin, 0.0, 0.0, 90.0, 0.25, 2.3, 1.0, trunkColor);
 
 	if (xMin < 0)
-		treeTop = new Block(sIF, xMin - 0.18, yMin + 2.3, zMin, 1.0, 1.0, 1.0, treeTopColor);
+		treeTop = new Block(sIF, treeTopPhong, xMin - 0.18, yMin + 2.3, zMin, 1.0, 1.0, 1.0);
 	else
-		treeTop = new Block(sIF, xMin - 0.36, yMin + 2.3, zMin, 1.0, 1.0, 1.0, treeTopColor);
+		treeTop = new Block(sIF, treeTopPhong, xMin - 0.36, yMin + 2.3, zMin, 1.0, 1.0, 1.0);
 }
 
 Tree::~Tree()
@@ -40,19 +42,19 @@ void Tree::render()
 	glUseProgram(shaderIF->getShaderPgmID());
 
 	// 2. Establish "mc_ec" and "ec_lds" matrices
-	cryph::Matrix4x4 mc_ec, ec_lds;
-	getMatrices(mc_ec, ec_lds);
-
-	float mat[16];
-	glUniformMatrix4fv(shaderIF->ppuLoc("mc_ec"), 1, false, mc_ec.extractColMajor(mat));
-	glUniformMatrix4fv(shaderIF->ppuLoc("ec_lds"), 1, false, ec_lds.extractColMajor(mat));
-	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	SceneElement::establishView();
 
 	// 3. Set GLSL's "kd" variable using this object's "kd" instance variable
-	glUniform3fv(shaderIF->ppuLoc("kd"), 1, kd);
+	//    complete the implementation of SceneElement::establishMaterial and then
+	//    call it from here.
+	SceneElement::establishMaterial();
 
 	// 4. Establish any other attributes and make one or more calls to
 	//    glDrawArrays and/or glDrawElements
+	//    If all or part of this model involves texture mapping, complete the
+	//    implementation of SceneElement::establishTexture and call it from
+	//    here as needed immediately before any glDrawArrays and/or glDrawElements
+	//    calls to which texture is to be applied.
 	trunk->Cylinder::render();
 	treeTop->Block::render();
 
