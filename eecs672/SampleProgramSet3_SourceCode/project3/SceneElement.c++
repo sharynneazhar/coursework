@@ -3,7 +3,7 @@
 #include "SceneElement.h"
 #include "ImageReader.h"
 
-float SceneElement::lightPos[4*MAX_NUM_LIGHTS] =
+float SceneElement::lightPos[4 * MAX_NUM_LIGHTS] =
 	{
 		0.25, 0.5, 1.0, 0.0,
 		0.0, 0.0, 0.0, 1.0,
@@ -18,7 +18,7 @@ bool SceneElement::posInModelCoordinates[MAX_NUM_LIGHTS] =
 // after transformation to EC if the position was originally specified in MC.
 float posToGLSL[4*MAX_NUM_LIGHTS];
 
-float SceneElement::lightStrength[3*MAX_NUM_LIGHTS] =
+float SceneElement::lightStrength[3 * MAX_NUM_LIGHTS] =
 	{
 		0.8, 0.8, 0.8,
 		0.5, 0.5, 0.5,

@@ -20,9 +20,10 @@ void ModelView::addToGlobalRotationDegrees(double rx, double ry, double rz)
 {
 	// 1. UPDATE dynamic_view
 	// 2. The updated dynamic_view will be used in ModelView::getMatrices
-	// cryph::Matrix4x4 xRot = cryph::Matrix4x4::xRotationDegrees(rx);
-	// cryph::Matrix4x4 yRot = cryph::Matrix4x4::yRotationDegrees(ry);
-	// dynamic_view = xRot * yRot * dynamic_view;
+	cryph::Matrix4x4 xRot = cryph::Matrix4x4::xRotationDegrees(rx);
+	cryph::Matrix4x4 yRot = cryph::Matrix4x4::yRotationDegrees(ry);
+	cryph::Matrix4x4 zRot = cryph::Matrix4x4::yRotationDegrees(rz);
+	dynamic_view = xRot * yRot * zRot * dynamic_view;
 }
 
 void ModelView::getMatrices(cryph::Matrix4x4& mc_ec, cryph::Matrix4x4& ec_lds)

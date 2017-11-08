@@ -29,7 +29,7 @@ private:
 
 	float xmin, xmax, ymin, ymax, zmin, zmax;
 
-	void defineBlock();
+	void drawBlock();
 };
 
 #endif

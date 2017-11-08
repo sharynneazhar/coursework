@@ -15,7 +15,7 @@
 #include "PhongMaterial.h"
 #include "ShaderIF.h"
 
-static const int MAX_NUM_LIGHTS = 3; // MUST BE KEPT SAME AS IN the shader program
+static const int MAX_NUM_LIGHTS = 3; 
 
 class SceneElement : public ModelView
 {

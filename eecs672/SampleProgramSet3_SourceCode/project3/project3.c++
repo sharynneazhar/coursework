@@ -1,7 +1,6 @@
 // project3.c++: Starter for EECS 672 Project 2
 
 #include "GLFWController.h"
-#include "SceneElement.h"
 #include "Block.h"
 #include "Crate.h"
 
@@ -27,11 +26,11 @@ void set3DViewingInformation(double xyz[6])
 
 	// Create the line of sight through the center of the scene:
 	// 1) Make the center of attention be the center of the bounding box.
-	cryph::AffPoint center(xmid, ymid + 4, zmid);
+	cryph::AffPoint center(xmid, ymid, zmid);
 
 	// 2) Move the eye away along some direction - here (0,0,1) - so that the
 	//    distance between the eye and the center is (2 * max scene dimension).
-	cryph::AffVector dir(0.05, 0.2, 0.8);
+	cryph::AffVector dir(0.05, 0.3, 1.0);
 	dir.normalize();
 
 	double distEyeCenter = 2.0 * maxDelta;
@@ -51,23 +50,12 @@ void set3DViewingInformation(double xyz[6])
 	// 2) ecZmin < ecZmax < 0
 	// For non-perspective projections, it is only necessary that ecZmin < ecZmax.
 	double ecZpp = -(distEyeCenter - 0.5 * maxDelta);
-	double ecZmin = ecZpp - maxDelta;
+	double ecZmin = ecZpp - 1.5 * maxDelta;
 	double ecZmax = ecZpp + 0.5 * maxDelta;
 
 	ModelView::setProjection(PERSPECTIVE);
 	ModelView::setProjectionPlaneZ(ecZpp);
 	ModelView::setECZminZmax(ecZmin, ecZmax);
-}
-
-void createScene(Controller&c, ShaderIF* sIF) {
-	// Draw the ground
-	PhongMaterial groundPhong(0.685, 0.80, 0.4);
-	c.addModel(new Block(sIF, groundPhong, -5.0, 0.0, 0.0, 15.0, 0.5, 12.5));
-
-	// Draw the crates
-	c.addModel(new Crate(sIF, 3.0, 0.5, 4.2, 1.5, 1.5, 1.5, false));
-	c.addModel(new Crate(sIF, 7.0, 4.0, 1.2, 0.5, 0.5, 0.5, true));
-	c.addModel(new Crate(sIF, 0.0, 4.0, 1.2, 0.5, 0.5, 0.5, true));
 }
 
 int main(int argc, char* argv[])
@@ -77,8 +65,17 @@ int main(int argc, char* argv[])
 
 	ShaderIF* sIF = new ShaderIF("shaders/basic.vsh", "shaders/phong.fsh");
 
-	// Create your scene, adding things to the Controller....
-	createScene(c, sIF);
+	// Draw the ground
+	PhongMaterial groundPhong(0.685, 0.80, 0.4);
+	c.addModel(new Block(sIF, groundPhong, 0.0, 0.0, 0.0, 15.0, 0.25, 12.5));
+
+	// Draw the crates
+	c.addModel(new Crate(sIF, cryph::AffPoint(8.0, 0.5, 4.0),
+		                   cryph::AffVector(0.0, 1.0, 0.0), 2.0, false));
+	c.addModel(new Crate(sIF, cryph::AffPoint(4.0, 5.0, 4.0),
+		                   cryph::AffVector(0.0, 1.0, 0.0), 0.75, true));
+	c.addModel(new Crate(sIF, cryph::AffPoint(12.0, 5.0, 4.0),
+											 cryph::AffVector(0.0, 1.0, 0.0), 0.75, true));
 
 	// Make background white
 	glClearColor(1.0, 1.0, 1.0, 1.0);

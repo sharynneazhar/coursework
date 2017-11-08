@@ -54,3 +54,6 @@ Table.o: Table.c++
 
 PhongMaterial.o: PhongMaterial.h PhongMaterial.c++
 	$(CPP) $(C_FLAGS) PhongMaterial.c++
+
+clean:
+	rm room ../**/*.o ../**/*.so

@@ -3,16 +3,18 @@
 #ifndef CRATE_H
 #define CRATE_H
 
-#include "Block.h"
-// #include "Parachute.h"
+#include "SceneElement.h"
+#include "AffPoint.h"
+#include "AffVector.h"
+#include "BasicShapeRenderer.h"
+#include "CrateTop.h"
+#include "Parachute.h"
 
 class Crate : public SceneElement
 {
 public:
-	// As before: you will likely want to add parameters to the constructor
-	Crate(ShaderIF* sIF, float xMin, float yMin, float zMin,
-		    float lenX, float lenY, float lenZ, bool inAirIn);
-
+	Crate(ShaderIF* sIF, cryph::AffPoint corner, cryph::AffVector u,
+				double length, bool inAir);
 	virtual ~Crate();
 
 	// xyzLimits: {mcXmin, mcXmax, mcYmin, mcYmax, mcZmin, mcZmax}
@@ -20,12 +22,15 @@ public:
 	void render();
 
 private:
-	Block* crateTop;
-	Block* crateBase;
-	// Parachute* parachute;
-
+	CrateTop* crateTop;
+	Parachute* parachute;
+	BasicShape* crate;
+	BasicShapeRenderer* crateR;
 	bool inAir;
-	float xmin, xmax, ymin, ymax, zmin, zmax;
+
+	double xyz[6];
+	void drawCrate();
+
 };
 
 #endif

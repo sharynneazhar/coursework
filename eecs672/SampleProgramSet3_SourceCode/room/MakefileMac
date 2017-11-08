@@ -42,8 +42,8 @@ Barbell.o: Barbell.h Barbell.c++
 Floor.o: Floor.h Floor.c++
 	$(CPP) $(C_FLAGS) Floor.c++
 
-ModelViewAdditions.o: ModelViewAdditions.c++
-	$(CPP) $(C_FLAGS) ModelViewAdditions.c++
+ModelView_Additions.o: ModelView_Additions.c++
+	$(CPP) $(C_FLAGS) ModelView_Additions.c++
 
 Tetrahedron.o: Tetrahedron.h Tetrahedron.c++
 	$(CPP) $(C_FLAGS) Tetrahedron.c++
@@ -53,3 +53,6 @@ Table.o: Table.c++
 
 PhongMaterial.o: PhongMaterial.h PhongMaterial.c++
 	$(CPP) $(C_FLAGS) PhongMaterial.c++
+
+clean:
+	rm room ../**/*.o ../**/*.so

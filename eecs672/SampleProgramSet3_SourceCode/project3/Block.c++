@@ -19,7 +19,7 @@ Block::Block(ShaderIF* sIF, PhongMaterial&matl,
 	xmin = cx; xmax = cx + lx;
 	ymin = cy; ymax = cy + ly;
 	zmin = cz; zmax = cz + lz;
-	defineBlock();
+	drawBlock();
 }
 
 Block::~Block()
@@ -29,7 +29,7 @@ Block::~Block()
 	glDeleteVertexArrays(1, vao);
 }
 
-void Block::defineBlock()
+void Block::drawBlock()
 {
 	vec3 vtx[] = { // The 8 unique vertices (Note the order)
 		{xmin ,ymin, zmax}, {xmin, ymax, zmax},

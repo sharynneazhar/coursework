@@ -2,54 +2,63 @@
 
 #include "Crate.h"
 
-Crate::Crate(ShaderIF* sIF, PhongMaterial&matl,
-	float xMin, float yMin, float zMin,
-	float lenX, float lenY, float lenZ, bool inAirIn) :
-	shaderIF(sIF), inAir(inAirIn)
+PhongMaterial crateBasePhong(0.739, 0.0, 0.0, 0.65, 0.65, 0.65, 1.0, 1.0);
+
+Crate::Crate(ShaderIF* sIF, cryph::AffPoint corner, cryph::AffVector u,
+	double length, bool inAirIn) : SceneElement(sIF, crateBasePhong), inAir(inAirIn)
 {
-	PhongMaterial crateBasePhong(0.739, 0.0, 0.0);
-	PhongMaterial crateTopPhong(0.0, 0.3, 0.739);
+	cryph::AffVector uu(u[0], u[1], 0.0), ww(0, 0, 1); uu.normalize();
+	cryph::AffVector vv = ww.cross(uu);
 
-	// if (inAir) {
-	// 	cryph::AffPoint parachuteBottom = cryph::AffPoint(xMin, yMin + 2.5 * lenY, zMin);
-	// 	cryph::AffPoint parachuteObj(parachuteBottom.x, parachuteBottom.y, parachuteBottom.z);
-	//
-	// 	// TODO: figure out why values less than 1 do not work
-	// 	parachute = new Parachute(sIF, parachuteObj, 1, 1);
-	// }
+	double height = length;
+	double width = length;
+	double depth = length;
+	double thickness = length;
 
-	crateBase = new Block(sIF, crateBasePhong,
-												xMin, yMin, zMin,
-											  lenX, lenY, lenZ);
+	crate = BasicShape::makeBlock(corner + height * ww,
+																uu, width,
+																vv, depth,
+																ww, thickness);
 
-	double xPosOffset = xMin - 0.01;
-	double yPosOffset = yMin + lenY - (lenY / 3) + 0.02;
-	double xLenOffset = lenX + 0.02;
-	double yLenOffset = lenY / 3;
-	double zLenOffset = lenZ + 0.05;
+	crateTop = new CrateTop(sIF, corner, u, length);
 
-	crateTop = new Block(sIF, crateTopPhong,
-		                   xPosOffset, yPosOffset, zMin,
-											 xLenOffset, yLenOffset, zLenOffset);
+	if (inAir)
+		parachute = new Parachute(sIF, corner, u, length);
 
-	xmin = xMin; xmax = xMin + lenX;
-	ymin = yMin; ymax = yMin + lenY;
-	zmin = zMin; zmax = zMin + lenZ;
+	xyz[0] = 1.0; xyz[1] = 0.0;
+
+	if (crate == nullptr) {
+		crateR = nullptr;
+	} else {
+		crateR = new BasicShapeRenderer(sIF, crate);
+		if (xyz[0] > xyz[1]) { // not yet initialized
+			crate->getMCBoundingBox(xyz);
+		} else {
+			double thisxyz[6];
+			crate->getMCBoundingBox(thisxyz);
+			for (int j = 0; j < 3; j++) {
+				if (thisxyz[2 * j] < xyz[2 * j])
+					xyz[2 * j] = thisxyz[2 * j];
+				if (thisxyz[2 * j + 1] > xyz[2 * j + 1])
+					xyz[2 * j + 1] = thisxyz[2 * j + 1];
+			}
+		}
+	}
 }
 
 Crate::~Crate()
 {
-	delete crateTop;
-	delete crateBase;
-	// delete parachute;
+	if (crate != nullptr)
+		delete crate;
+	if (crateR != nullptr)
+		delete crateR;
 }
 
 // xyzLimits: {mcXmin, mcXmax, mcYmin, mcYmax, mcZmin, mcZmax}
 void Crate::getMCBoundingBox(double* xyzLimits) const
 {
-	xyzLimits[0] = xmin; xyzLimits[1] = xmax;
-	xyzLimits[2] = ymin; xyzLimits[3] = ymax;
-	xyzLimits[4] = zmin; xyzLimits[5] = zmax;
+	for (int i = 0 ; i < 6; i++)
+		xyzLimits[i] = xyz[i];
 }
 
 void Crate::render()
@@ -64,11 +73,14 @@ void Crate::render()
 	establishView();
 	establishMaterial();
 
-	// 4. Establish any other attributes and make one or more calls to
-	//    glDrawArrays and/or glDrawElements
-	crateBase->Block::render();
-	crateTop->Block::render();
-	// if (inAir) parachute->Parachute::render();
+	if (crateR != nullptr) {
+		crateR->drawShape();
+		crateTop->render();
+
+		// if (inAir)
+		// 	parachute->render();
+	}
+
 
 	// 5. Reestablish previous shader program
 	glUseProgram(pgm);
