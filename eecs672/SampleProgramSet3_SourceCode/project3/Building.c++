@@ -20,7 +20,7 @@ Building::Building(ShaderIF* sIF, cryph::AffPoint corner, cryph::AffVector u) :
 									                          nPointsAroundSide, nPointsAlongAxis,
 																						BasicShape::CAP_AT_BOTH);
 
-	bottom = cryph::AffPoint(bottom.x, bottom.y + top.y, bottom.z);
+	bottom = cryph::AffPoint(bottom.x, bottom.y + (top.y * 0.75), bottom.z);
 	top = bottom + (radius * ww * 0.85);
 	building[1] = BasicShape::makeBoundedCone(bottom, top, (radius * 1.25), (radius * 1.25),
 									                          nPointsAroundSide, nPointsAlongAxis,

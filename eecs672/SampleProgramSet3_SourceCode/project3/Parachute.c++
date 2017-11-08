@@ -7,50 +7,72 @@ PhongMaterial parachutePhong(0.19225, 0.19225, 0.19225,
 														 0.508273, 0.508273, 0.508273,
 														 51.2, 1.0);
 
-Parachute::Parachute(ShaderIF* sIF, cryph::AffPoint corner, cryph::AffVector u, double radius) :
+Parachute::Parachute(ShaderIF* sIF, cryph::AffPoint corner, cryph::AffVector u, double length) :
 	SceneElement(sIF, parachutePhong)
 {
-	cryph::AffVector uu(u[0], u[1], 0.0), ww(0, 0, 1); uu.normalize();
+	cryph::AffVector uu(u[0], u[1], 0.0), ww(0, 1, 0); uu.normalize();
 	cryph::AffVector vv = ww.cross(uu);
 
 	int nPointsAroundSide = 200;
-	int nPointsAlongAxis = 20;
-	cryph::AffPoint cornerParachute(corner.x + (radius * 1.25), corner.y, corner.z);
-	cryph::AffPoint bottom = cornerParachute + (2.0 * radius * (uu + vv));
-	cryph::AffPoint top = bottom + (radius * ww * 1.15);
+	int nPointsAlongAxis = 2;
+	int radius = length * 1.75;
 
-	parachute = BasicShape::makeBoundedCone(
-										bottom, top, 1, radius,
+	cryph::AffPoint cornerParachute(corner.x - (radius * 0.5), corner.y + (radius * 0.25), corner.z);
+	cryph::AffPoint bottom = cornerParachute + (2.0 * length * (uu + vv));
+	cryph::AffPoint top = bottom + (radius * ww * 0.35);
+	parachute[0] = BasicShape::makeBoundedCone(
+										bottom, top, radius, 0.001,
+										nPointsAroundSide, nPointsAlongAxis,
+										BasicShape::CAP_AT_TOP);
+
+	cryph::AffPoint stringBottom1(corner.x - (length * 0.5),
+																corner.y + (length * 0.25),
+																corner.z + (length * 1.8));
+	cryph::AffPoint stringTop1(bottom.x - (radius * 0.9), bottom.y, bottom.z);
+	parachute[1] = BasicShape::makeBoundedCylinder(
+										stringBottom1, stringTop1, 0.05,
+										nPointsAroundSide, nPointsAlongAxis,
+										BasicShape::CAP_AT_BOTH);
+
+	cryph::AffPoint stringBottom2(corner.x + (length * 0.5),
+																corner.y + (length * 0.25),
+																corner.z + (length * 1.8));
+	cryph::AffPoint stringTop2(bottom.x + (radius * 0.9), bottom.y, bottom.z);
+	parachute[2] = BasicShape::makeBoundedCylinder(
+										stringBottom1, stringTop2, 0.05,
 										nPointsAroundSide, nPointsAlongAxis,
 										BasicShape::CAP_AT_BOTH);
 
 	xyz[0] = 1.0; xyz[1] = 0.0;
-	if (parachute == nullptr) {
-		parachuteR = nullptr;
-	} else {
-		parachuteR = new BasicShapeRenderer(sIF, parachute);
-		if (xyz[0] > xyz[1]) {
-			parachute->getMCBoundingBox(xyz);
+	for (int i = 0; i < 3; i++) {
+		if (parachute[i] == nullptr) {
+			parachuteR[i] = nullptr;
 		} else {
-			double thisxyz[6];
-			parachute->getMCBoundingBox(thisxyz);
-			for (int j = 0; j < 3; j++) {
-				if (thisxyz[2 * j] < xyz[2 * j])
-					xyz[2 * j] = thisxyz[2 * j];
-				if (thisxyz[2 * j + 1] > xyz[2 * j + 1])
-					xyz[2 * j + 1] = thisxyz[2 * j + 1];
+			parachuteR[i] = new BasicShapeRenderer(sIF, parachute[i]);
+			if (xyz[0] > xyz[1]) {
+				parachute[i]->getMCBoundingBox(xyz);
+			} else {
+				double thisxyz[6];
+				parachute[i]->getMCBoundingBox(thisxyz);
+				for (int j = 0; j < 3; j++) {
+					if (thisxyz[2 * j] < xyz[2 * j])
+						xyz[2 * j] = thisxyz[2 * j];
+					if (thisxyz[2 * j + 1] > xyz[2 * j + 1])
+						xyz[2 * j + 1] = thisxyz[2 * j + 1];
+				}
 			}
 		}
 	}
-
 }
 
 Parachute::~Parachute()
 {
-	if (parachute != nullptr)
-		delete parachute;
-	if (parachuteR != nullptr)
-		delete parachuteR;
+	for (int i = 0; i < 3; i++) {
+		if (parachute[i] != nullptr)
+			delete parachute[i];
+		if (parachuteR[i] != nullptr)
+			delete parachuteR[i];
+	}
 }
 
 // xyzLimits: {mcXmin, mcXmax, mcYmin, mcYmax, mcZmin, mcZmax}
@@ -72,8 +94,10 @@ void Parachute::render()
 	establishView();
 	establishMaterial();
 
-	if (parachuteR != nullptr)
-		parachuteR->drawShape();
+	for (int i = 0; i < 3; i++) {
+		if (parachuteR[i] != nullptr)
+			parachuteR[i]->drawShape();
+	}
 
 	// 5. Reestablish previous shader program
 	glUseProgram(pgm);

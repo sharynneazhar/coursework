@@ -77,8 +77,8 @@ void Crate::render()
 		crateR->drawShape();
 		crateTop->render();
 
-		// if (inAir)
-		// 	parachute->render();
+		if (inAir)
+			parachute->render();
 	}
 
 
