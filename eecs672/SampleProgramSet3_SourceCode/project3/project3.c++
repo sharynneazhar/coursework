@@ -3,6 +3,7 @@
 #include "GLFWController.h"
 #include "Block.h"
 #include "Crate.h"
+#include "Building.h"
 
 void set3DViewingInformation(double xyz[6])
 {
@@ -30,7 +31,7 @@ void set3DViewingInformation(double xyz[6])
 
 	// 2) Move the eye away along some direction - here (0,0,1) - so that the
 	//    distance between the eye and the center is (2 * max scene dimension).
-	cryph::AffVector dir(0.05, 0.3, 1.0);
+	cryph::AffVector dir(0.0, 0.3, 1.0);
 	dir.normalize();
 
 	double distEyeCenter = 2.0 * maxDelta;
@@ -67,15 +68,18 @@ int main(int argc, char* argv[])
 
 	// Draw the ground
 	PhongMaterial groundPhong(0.685, 0.80, 0.4);
-	c.addModel(new Block(sIF, groundPhong, 0.0, 0.0, 0.0, 15.0, 0.25, 12.5));
+	c.addModel(new Block(sIF, groundPhong, 0.0, 0.0, 0.0, 25.0, 0.25, 25.0));
 
 	// Draw the crates
-	c.addModel(new Crate(sIF, cryph::AffPoint(8.0, 0.5, 4.0),
+	c.addModel(new Crate(sIF, cryph::AffPoint(8.0, 0.5, 10.0),
 		                   cryph::AffVector(0.0, 1.0, 0.0), 2.0, false));
-	c.addModel(new Crate(sIF, cryph::AffPoint(4.0, 5.0, 4.0),
+	c.addModel(new Crate(sIF, cryph::AffPoint(4.0, 10.0, 8.0),
 		                   cryph::AffVector(0.0, 1.0, 0.0), 0.75, true));
-	c.addModel(new Crate(sIF, cryph::AffPoint(12.0, 5.0, 4.0),
+	c.addModel(new Crate(sIF, cryph::AffPoint(6.0, 5.0, 0.0),
 											 cryph::AffVector(0.0, 1.0, 0.0), 0.75, true));
+
+	// Draw the building
+	c.addModel(new Building(sIF, cryph::AffPoint(18.0, 0.5, 15.0), cryph::AffVector(0.0, 1.0, 0.0)));
 
 	// Make background white
 	glClearColor(1.0, 1.0, 1.0, 1.0);
