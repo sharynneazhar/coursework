@@ -2,10 +2,7 @@
 
 #include "Parachute.h"
 
-PhongMaterial parachutePhong(0.105882, 0.058824, 0.113725,
-														 0.427451, 0.470588, 0.541176,
-														 0.333333, 0.333333, 0.521569,
-														 9.84615, 1.0);
+PhongMaterial parachutePhong(0.658824, 0.658824, 0.658824, 0.8, 0.8);
 
 Parachute::Parachute(ShaderIF* sIF, cryph::AffPoint corner, cryph::AffVector u, double length) :
 	SceneElement(sIF, parachutePhong)

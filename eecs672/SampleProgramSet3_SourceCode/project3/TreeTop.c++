@@ -2,10 +2,8 @@
 
 #include "TreeTop.h"
 
-PhongMaterial treeTopPhong(0.13, 0.57, 0.31, 0.5, 0.5);
-
-TreeTop::TreeTop(ShaderIF* sIF, cryph::AffPoint point, double radius) :
-	SceneElement(sIF, treeTopPhong)
+TreeTop::TreeTop(ShaderIF* sIF, PhongMaterial& matl, cryph::AffPoint point, double radius) :
+	SceneElement(sIF, matl)
 {
 	cryph::AffVector u(0.0, 1.0, 0.0);
 	cryph::AffVector uu(u[0], u[1], 0.0), ww(0, 1, 0); uu.normalize();

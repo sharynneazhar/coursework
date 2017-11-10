@@ -11,7 +11,7 @@
 class TreeTop : public SceneElement
 {
 public:
-	TreeTop(ShaderIF* sIF, cryph::AffPoint point, double radius);
+	TreeTop(ShaderIF* sIF, PhongMaterial& matl, cryph::AffPoint point, double radius);
 	virtual ~TreeTop();
 
 	// xyzLimits: {mcXmin, mcXmax, mcYmin, mcYmax, mcZmin, mcZmax}
