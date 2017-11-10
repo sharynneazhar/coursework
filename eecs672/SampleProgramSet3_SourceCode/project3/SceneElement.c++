@@ -5,14 +5,14 @@
 
 float SceneElement::lightPos[4 * MAX_NUM_LIGHTS] =
 	{
-		0.25, 0.5, 1.0, 0.0,
-		0.0, 0.0, 0.0, 1.0,
-		-0.25, 0.5, 1.0, 0.0
+		-10.0, -5.0, -10.0, 1.0,
+		35.0, -5.0, -10.0, 1.0,
+		0.0, 1.0, 0.7, 0.0
 	};
 
 // Are coordinates in "lightPos" stored in MC or EC?
 bool SceneElement::posInModelCoordinates[MAX_NUM_LIGHTS] =
-	{ false, false, false };
+	{ true, true, false };
 // The following is the buffer actually sent to GLSL. It will contain a copy of
 // the (x,y,z,w) for light sources defined in EC; it will contain the coordinates
 // after transformation to EC if the position was originally specified in MC.
@@ -20,9 +20,9 @@ float posToGLSL[4*MAX_NUM_LIGHTS];
 
 float SceneElement::lightStrength[3 * MAX_NUM_LIGHTS] =
 	{
-		0.8, 0.8, 0.8,
-		0.5, 0.5, 0.5,
-		0.6, 0.6, 0.6
+		0.0, 0.0, 0.8,
+		1.0, 0.2, 1.0,
+		1.0, 1.0, 1.0
 	};
 
 float SceneElement::globalAmbient[] = { 0.2, 0.2, 0.2 };
@@ -46,6 +46,26 @@ void SceneElement::establishLightingEnvironment()
   // While doing so, if any of the light sources are defined in MC,
   // transform them to EC. Then, send the EC geometric description
   // along with the non-geometric data:
+	cryph::Matrix4x4 mc_ec, ec_lds;
+	getMatrices(mc_ec, ec_lds);
+
+	float lightPositionInEC[MAX_NUM_LIGHTS * 4];
+	for (int i = 0; i < (MAX_NUM_LIGHTS * 4); i++)  {
+		if (posInModelCoordinates[i] == true) {
+			cryph::AffPoint p(lightPos[4 * i], lightPos[4 * i + 1], lightPos[4 * i + 2]);
+			p = mc_ec * p;
+			lightPositionInEC[4 * i] = p.x;
+			lightPositionInEC[4 * i + 1] = p.y;
+			lightPositionInEC[4 * i + 2] = p.z;
+			lightPositionInEC[4 * i + 3] = lightPos[4 * i + 3];
+		} else {
+			lightPositionInEC[4 * i] = lightPos[4 * i];
+			lightPositionInEC[4 * i + 1] = lightPos[4 * i + 1];
+			lightPositionInEC[4 * i + 2] = lightPos[4 * i + 2];
+			lightPositionInEC[4 * i + 3] = lightPos[4 * i + 3];
+		}
+	}
+
 	glUniform1i(shaderIF->ppuLoc("actualNumLights"), MAX_NUM_LIGHTS);
   glUniform4fv(shaderIF->ppuLoc("lightPosition"), MAX_NUM_LIGHTS, lightPos);
   glUniform3fv(shaderIF->ppuLoc("lightStrength"), MAX_NUM_LIGHTS, lightStrength);
@@ -57,7 +77,8 @@ void SceneElement::establishMaterial()
 	glUniform3fv(shaderIF->ppuLoc("ka"), 1, matl.ka);
 	glUniform3fv(shaderIF->ppuLoc("kd"), 1, matl.kd);
   glUniform3fv(shaderIF->ppuLoc("ks"), 1, matl.ks);
-  glUniform1f (shaderIF->ppuLoc("shininess"), matl.shininess);
+	glUniform1f(shaderIF->ppuLoc("alpha"), matl.alpha);
+  glUniform1f(shaderIF->ppuLoc("shininess"), matl.shininess);
 }
 
 void SceneElement::establishTexture()
@@ -80,6 +101,14 @@ void SceneElement::establishView()
 	ModelView::getMatrices(mc_ec, ec_lds);
 	glUniformMatrix4fv(shaderIF->ppuLoc("mc_ec"), 1, false, mc_ec.extractColMajor(m));
 	glUniformMatrix4fv(shaderIF->ppuLoc("ec_lds"), 1, false, ec_lds.extractColMajor(m));
+
+	if (ModelView::projType == PERSPECTIVE) {
+		glUniform1i(shaderIF->ppuLoc("projection"), 1);
+	} else if(ModelView::projType == ORTHOGONAL) {
+		glUniform1i(shaderIF->ppuLoc("projection"), 2);
+	} else if (ModelView::projType == OBLIQUE) {
+		glUniform1i(shaderIF->ppuLoc("projection"), 3);
+	}
 }
 
 bool SceneElement::handleCommand(unsigned char anASCIIChar, double ldsX, double ldsY)

@@ -3,6 +3,7 @@
 #include "GLFWController.h"
 #include "Block.h"
 #include "Crate.h"
+#include "LightPost.h"
 #include "Building.h"
 
 void set3DViewingInformation(double xyz[6])
@@ -51,7 +52,7 @@ void set3DViewingInformation(double xyz[6])
 	// 2) ecZmin < ecZmax < 0
 	// For non-perspective projections, it is only necessary that ecZmin < ecZmax.
 	double ecZpp = -(distEyeCenter - 0.5 * maxDelta);
-	double ecZmin = ecZpp - 1.5 * maxDelta;
+	double ecZmin = ecZpp - maxDelta;
 	double ecZmax = ecZpp + 0.5 * maxDelta;
 
 	ModelView::setProjection(PERSPECTIVE);
@@ -61,28 +62,32 @@ void set3DViewingInformation(double xyz[6])
 
 int main(int argc, char* argv[])
 {
-	GLFWController c("PUBG Air Drops", MVC_USE_DEPTH_BIT);
+	GLFWController c("PUBG Disco?", MVC_USE_DEPTH_BIT);
 	c.reportVersions(std::cout);
 
 	ShaderIF* sIF = new ShaderIF("shaders/basic.vsh", "shaders/phong.fsh");
 
-	// Draw the ground
-	PhongMaterial groundPhong(0.685, 0.80, 0.4);
-	c.addModel(new Block(sIF, groundPhong, 0.0, 0.0, 0.0, 25.0, 0.25, 25.0));
-
 	// Draw the crates
-	c.addModel(new Crate(sIF, cryph::AffPoint(8.0, 0.5, 10.0),
-		                   cryph::AffVector(0.0, 1.0, 0.0), 2.0, false));
-	c.addModel(new Crate(sIF, cryph::AffPoint(4.0, 10.0, 10.0),
-		                   cryph::AffVector(0.0, 1.0, 0.0), 1.15, true));
-	c.addModel(new Crate(sIF, cryph::AffPoint(20.0, 8.0, 0.0),
-											 cryph::AffVector(0.0, 1.0, 0.0), 0.75, true));
+	cryph::AffVector u(0.0, 1.0, 0.0);
+	c.addModel(new Crate(sIF, cryph::AffPoint(8.0, 0.5, 10.0), u, 2.0, false));
+	c.addModel(new Crate(sIF, cryph::AffPoint(4.0, 10.0, 10.0), u, 1.15, true));
+	c.addModel(new Crate(sIF, cryph::AffPoint(20.0, 8.0, 0.0), u, 0.75, true));
 
 	// Draw the building
 	c.addModel(new Building(sIF, cryph::AffPoint(18.0, 0.5, 15.0), cryph::AffVector(0.0, 1.0, 0.0)));
 
-	// Make background white
-	glClearColor(1.0, 1.0, 1.0, 1.0);
+	// Draw the lightposts
+	PhongMaterial blueLight(0.0, 0.0, 0.7, 1, 1);
+	PhongMaterial purpleLight(1.0, 0.2, 1.0, 1, 1);
+	c.addModel(new LightPost(sIF, purpleLight, 23.0, 0.0, 23.0, 0.5, 5.0, 0.5, 0));
+	c.addModel(new LightPost(sIF, blueLight, 12.0, 0.0, 23.0, 0.5, 5.0, 0.5, 1));
+
+	// Draw the ground
+	PhongMaterial groundPhong(0.685, 0.90, 0.4, 0.6, 0.6);
+	c.addModel(new Block(sIF, groundPhong, 0.0, 0.0, 0.0, 25.0, 0.1, 25.0));
+
+	// glClearColor(1.0, 1.0, 1.0, 0.0);
+	glClearColor(0.0, 0.0, 0.0, 0.0);
 
 	double xyz[6];
 	c.getOverallMCBoundingBox(xyz);

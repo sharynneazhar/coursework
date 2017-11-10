@@ -5,6 +5,7 @@
 in PVA {
 	vec3 ecPosition;
 	vec3 ecUnitNormal;
+	vec3 ecObliqueVec;
 } pvaIn;
 
 out vec4 fragmentColor;
@@ -19,6 +20,7 @@ uniform vec3 lightStrength[MAX_NUM_LIGHTS];
 uniform int actualNumLights;
 uniform vec3 globalAmbient;
 uniform vec3 ka, kd, ks;
+uniform float alpha;
 uniform float shininess;
 
 vec4 evaluateLightingModel(in vec3 ec_Q, in vec3 ec_nHat) {
@@ -30,14 +32,17 @@ vec4 evaluateLightingModel(in vec3 ec_Q, in vec3 ec_nHat) {
 	// arrays ("vec4 p_ecLightSourcePos" and "vec3 ecLightSourceStrength") and
 	// using them INSTEAD OF the liHat and lightStrength you see here.
 
+	vec3 globalAmbient = ka * globalAmbient;
 	vec3 diffuseVec = vec3(0.0, 0.0, 0.0);
 	vec3 specularVec = vec3(0.0, 0.0, 0.0);
 	vec3 vHat;
 
 	// Create a unit vector towards the viewer (method depends on type of projection!)
-	if (projection == 0) { // perspective
-		vHat = -(normalize(ec_Q));
-	} else if (projection == 1 || projection == 2) { // oblique or orthogonal
+	if (projection == 1) { // perspective
+		vHat = normalize(-ec_Q);
+	} else if (projection == 2) { // orthogonal
+		vHat = pvaIn.ecObliqueVec;
+	} else {
 		vHat = vec3(0.0, 0.0, 1.0);
 	}
 
@@ -54,47 +59,46 @@ vec4 evaluateLightingModel(in vec3 ec_Q, in vec3 ec_nHat) {
     //     1. compute and accumulate diffuse contribution
     //     2. if viewer on appropriate side of the primary reflection vector,
     //        compute and accumulate specular contribution.
-
+    vec4 currentLightPos = lightPosition[i];
 		vec3 liHat = vec3(0.0, 0.0, 0.0);
 
-		if (lightPosition[i].w == 0.0) {
-			liHat = normalize(lightPosition[i].xyz);
+		if (currentLightPos.w == 0.0) {
+			liHat = normalize(currentLightPos.xyz);
 		} else {
-			liHat = normalize(lightPosition[i].xyz - ec_Q);
+			liHat = normalize(currentLightPos.xyz - ec_Q);
 		}
 
 		if (dot(liHat, ec_nHat) > 0) {
-			vec3 riHat = normalize(reflect(vHat, ec_nHat));
+			vec3 riHat = normalize(reflect(-liHat, ec_nHat));
 			float riDotV = dot(riHat, vHat);
-			float atten = 1;
+			float dist = 0.5 * distance(currentLightPos.xyz, ec_Q);
+			float atten = (1 / dist) * 25;
 
-			if (lightPosition[i][3] == 1) {
-				float dist = distance(lightPosition[i].xyz, ec_Q);
-				atten = 1 / dist;
+			if (currentLightPos.w == 0.0) {
+				diffuseVec += kd * lightStrength[i] * dot(liHat, ec_nHat);
+			} else {
+				diffuseVec += atten * kd * lightStrength[i] * dot(liHat, ec_nHat);
 			}
 
 			if (riDotV > 0) {
-				specularVec += atten * lightStrength[i] * (ks * pow(riDotV, shininess));
+				if (currentLightPos.w == 0.0) {
+					specularVec += ks * lightStrength[i] * pow(riDotV, shininess);
+				} else {
+					specularVec += atten * ks * lightStrength[i] * ks * pow(riDotV, shininess);
+				}
 			}
-
-			diffuseVec += atten * lightStrength[i] * (kd * dot(ec_nHat, liHat));
 		}
 	}
 
-	vec3 retVal = ka * globalAmbient + (diffuseVec + specularVec);
+	vec3 lightTotal = globalAmbient + diffuseVec + specularVec;
 
-	float maxVal = 0.0;
-	for (int i = 0; i < length(retVal); i++) {
-		if (retVal[i] > maxVal) {
-			maxVal = retVal[i];
+	for (int i = 0; i < 3; i++) {
+		if (lightTotal[i] >= 1.0) {
+			lightTotal[i] = 1.0;
 		}
 	}
 
-	if (maxVal > 1.0) {
-		retVal = retVal / maxVal;
-	}
-
-	return vec4(retVal, 1.0);
+	return vec4(lightTotal, alpha);
 }
 
 void main () {

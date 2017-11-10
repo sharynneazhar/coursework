@@ -8,7 +8,6 @@
 
 class Block : public SceneElement
 {
-
 public:
 	Block(ShaderIF* sIF, PhongMaterial&matl,
 				float cx, float cy, float cz,

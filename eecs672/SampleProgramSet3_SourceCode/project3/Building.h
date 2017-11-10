@@ -7,6 +7,7 @@
 #include "AffPoint.h"
 #include "AffVector.h"
 #include "BasicShapeRenderer.h"
+#include "Door.h"
 
 class Building : public SceneElement
 {
@@ -21,6 +22,7 @@ public:
 private:
 	BasicShape* building[2];
 	BasicShapeRenderer* buildingR[2];
+	Door* door;
 
 	double xyz[6];
 	void drawBuilding();

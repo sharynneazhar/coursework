@@ -36,8 +36,7 @@ void ModelView::getMatrices(cryph::Matrix4x4& mc_ec, cryph::Matrix4x4& ec_lds)
 	//    that you directly access.
 	//
 	cryph::Matrix4x4 M_ECu = cryph::Matrix4x4::lookAt(ModelView::eye,
-																										ModelView::center,
-																										ModelView::up);
+		ModelView::center, ModelView::up);
 
 	// For project 2:
 	// mc_ec = M_ECu;
@@ -48,7 +47,10 @@ void ModelView::getMatrices(cryph::Matrix4x4& mc_ec, cryph::Matrix4x4& ec_lds)
 	//        mc_ec = postTrans * dynamic_view * preTrans * M_ECu (if
 	//                         rotations are to be about the center of attention)
 	//    NOTE: If using preTrans/postTrans, be sure you build them CORRECTLY here!!!
-	mc_ec = dynamic_view * M_ECu;
+	cryph::AffVector distVec(0, 0, ModelView::distEyeCenter);
+	cryph::Matrix4x4 preTrans = cryph::Matrix4x4::translation(distVec);
+	cryph::Matrix4x4 postTrans = cryph::Matrix4x4::translation(-distVec);
+	mc_ec = postTrans * dynamic_view * preTrans * M_ECu;
 
 	// 2. Create the ec_lds matrix:
 	//    Use the mcRegionOfInterest. (As with eye, center, up, the mcRegionOfInterest

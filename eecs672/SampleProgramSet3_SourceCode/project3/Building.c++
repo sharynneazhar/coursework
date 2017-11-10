@@ -2,7 +2,7 @@
 
 #include "Building.h"
 
-PhongMaterial buildingPhong(0.91, 0.76, 0.65);
+PhongMaterial buildingPhong(0.95, 0.79, 0.6);
 
 Building::Building(ShaderIF* sIF, cryph::AffPoint corner, cryph::AffVector u) :
 	SceneElement(sIF, buildingPhong)
@@ -16,15 +16,17 @@ Building::Building(ShaderIF* sIF, cryph::AffPoint corner, cryph::AffVector u) :
 
 	cryph::AffPoint bottom = corner;
 	cryph::AffPoint top = bottom + (radius * ww * 0.85);
-	building[0] = BasicShape::makeBoundedCone(bottom, top, radius, radius,
-									                          nPointsAroundSide, nPointsAlongAxis,
-																						BasicShape::CAP_AT_BOTH);
+	building[0] = BasicShape::makeBoundedCylinder(bottom, top, radius,
+									                          	  nPointsAroundSide, nPointsAlongAxis,
+																								BasicShape::CAP_AT_BOTH);
+
+	door = new Door(sIF, bottom, top, radius);
 
 	bottom = cryph::AffPoint(bottom.x, bottom.y + (top.y * 0.75), bottom.z);
 	top = bottom + (radius * ww * 0.85);
-	building[1] = BasicShape::makeBoundedCone(bottom, top, (radius * 1.25), (radius * 1.25),
-									                          nPointsAroundSide, nPointsAlongAxis,
-																						BasicShape::CAP_AT_BOTH);
+	building[1] = BasicShape::makeBoundedCylinder(bottom, top, (radius * 1.25),
+									                              nPointsAroundSide, nPointsAlongAxis,
+																								BasicShape::CAP_AT_BOTH);
 
 	xyz[0] = 1.0; xyz[1] = 0.0;
 
@@ -82,6 +84,8 @@ void Building::render()
 		if (buildingR != nullptr)
 			buildingR[i]->drawShape();
 	}
+
+	door->render();
 
 
 	// 5. Reestablish previous shader program
