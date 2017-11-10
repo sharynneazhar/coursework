@@ -6,7 +6,7 @@ LINK = g++ -fPIC -g
 LOCAL_UTIL_LIBRARIES = ../lib/libcryph.so ../lib/libfont.so ../lib/libglsl.so ../lib/libimage.so ../lib/libmvc.so
 GL_LIBRARIES = -L/usr/local/lib -lglfw -framework OpenGL
 
-OBJS = project3.o ModelView_Additions.o PhongMaterial.o SceneElement.o Block.o CrateTop.o Parachute.o Crate.o LightPost.o Building.o Door.o
+OBJS = project3.o ModelView_Additions.o PhongMaterial.o SceneElement.o Block.o CrateTop.o Parachute.o Crate.o LightPost.o Building.o Door.o Tree.o TreeTop.o
 
 project3: $(OBJS) $(LOCAL_UTIL_LIBRARIES)
 	$(LINK) -o project3 $(OBJS) $(LOCAL_UTIL_LIBRARIES) $(GL_LIBRARIES)
@@ -48,6 +48,10 @@ Building.o: Building.h Building.c++
 	$(CPP) $(C_FLAGS) Building.c++
 Door.o: Door.h Door.c++
 	$(CPP) $(C_FLAGS) Door.c++
+Tree.o: Tree.h Tree.c++
+	$(CPP) $(C_FLAGS) Tree.c++
+TreeTop.o: TreeTop.h TreeTop.c++
+	$(CPP) $(C_FLAGS) TreeTop.c++
 
 clean:
 	rm project3 ../**/*.o ../**/*.so

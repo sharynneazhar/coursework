@@ -14,7 +14,7 @@ Door::Door(ShaderIF* sIF, cryph::AffPoint corner, cryph::AffVector u, double rad
 	int nPointsAlongAxis = 20;
 	int offset = radius;
 
-	radius = (radius * 0.25);
+	radius = (radius * 0.28);
 	cryph::AffPoint bottom = cryph::AffPoint(corner.x, corner.y, corner.z + (offset * 0.85));
 	cryph::AffPoint top = bottom + (radius * ww * 1.5);
 	door = BasicShape::makeBoundedCylinder(bottom, top, radius,

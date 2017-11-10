@@ -1,10 +1,13 @@
 // project3.c++: Starter for EECS 672 Project 2
 
+#include <stdlib.h>
+#include <time.h>
 #include "GLFWController.h"
 #include "Block.h"
 #include "Crate.h"
 #include "LightPost.h"
 #include "Building.h"
+#include "Tree.h"
 
 void set3DViewingInformation(double xyz[6])
 {
@@ -62,19 +65,26 @@ void set3DViewingInformation(double xyz[6])
 
 int main(int argc, char* argv[])
 {
+	srand(time(NULL)); // initialize random seed
+
 	GLFWController c("PUBG Disco?", MVC_USE_DEPTH_BIT);
 	c.reportVersions(std::cout);
 
 	ShaderIF* sIF = new ShaderIF("shaders/basic.vsh", "shaders/phong.fsh");
+	cryph::AffVector u(0.0, 1.0, 0.0);
 
 	// Draw the crates
-	cryph::AffVector u(0.0, 1.0, 0.0);
-	c.addModel(new Crate(sIF, cryph::AffPoint(8.0, 0.5, 10.0), u, 2.0, false));
-	c.addModel(new Crate(sIF, cryph::AffPoint(4.0, 10.0, 10.0), u, 1.15, true));
-	c.addModel(new Crate(sIF, cryph::AffPoint(20.0, 8.0, 0.0), u, 0.75, true));
+	c.addModel(new Crate(sIF, cryph::AffPoint(8.0, 0.5, 10.0), 2.2, false));
+	for (int i = 0; i < rand() % 5 + 1; i++) {
+		double xPos = (20.0 - 1.0) * ((double) rand() / (double) RAND_MAX) + 4.0;
+		double yPos = (15.0 - 10.0) * ((double) rand() / (double) RAND_MAX) + 10.0;
+		double zPos = (10.0 - 1.0) * ((double) rand() / (double) RAND_MAX) + 4.0;
+		double size = (1.0 - 0.5) * ((double) rand() / (double) RAND_MAX) + 0.5;
+		c.addModel(new Crate(sIF, cryph::AffPoint(xPos, yPos, zPos), size, true));
+	}
 
 	// Draw the building
-	c.addModel(new Building(sIF, cryph::AffPoint(18.0, 0.5, 15.0), cryph::AffVector(0.0, 1.0, 0.0)));
+	c.addModel(new Building(sIF, cryph::AffPoint(18.0, 0.5, 15.0)));
 
 	// Draw the lightposts
 	PhongMaterial blueLight(0.0, 0.0, 0.7, 1, 1);
@@ -82,11 +92,18 @@ int main(int argc, char* argv[])
 	c.addModel(new LightPost(sIF, purpleLight, 23.0, 0.0, 23.0, 0.5, 5.0, 0.5, 0));
 	c.addModel(new LightPost(sIF, blueLight, 12.0, 0.0, 23.0, 0.5, 5.0, 0.5, 1));
 
+	// Draw the trees
+	for (int i = 0; i < 5; i++) {
+		double xPos = (8.5 - 1.0) * ((double) rand() / (double) RAND_MAX) + 1.0;
+		double zPos = (23.0 - 2.0) * ((double) rand() / (double) RAND_MAX) + 2.0;
+		c.addModel(new Tree(sIF, cryph::AffPoint(xPos, 0.0, zPos), 3.0));
+	}
+
 	// Draw the ground
-	PhongMaterial groundPhong(0.685, 0.90, 0.4, 0.6, 0.6);
+	PhongMaterial groundPhong(0.685, 0.955, 0.4, 0.556, 0.456);
 	c.addModel(new Block(sIF, groundPhong, 0.0, 0.0, 0.0, 25.0, 0.1, 25.0));
 
-	// glClearColor(1.0, 1.0, 1.0, 0.0);
+	// Make background white
 	glClearColor(0.0, 0.0, 0.0, 0.0);
 
 	double xyz[6];

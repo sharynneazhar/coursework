@@ -4,15 +4,15 @@
 
 PhongMaterial buildingPhong(0.95, 0.79, 0.6);
 
-Building::Building(ShaderIF* sIF, cryph::AffPoint corner, cryph::AffVector u) :
-	SceneElement(sIF, buildingPhong)
+Building::Building(ShaderIF* sIF, cryph::AffPoint corner) :SceneElement(sIF, buildingPhong)
 {
+	cryph::AffVector u(0.0, 1.0, 0.0);
 	cryph::AffVector uu(u[0], u[1], 0.0), ww(0, 1, 0); uu.normalize();
 	cryph::AffVector vv = ww.cross(uu);
 
 	int nPointsAroundSide = 200;
 	int nPointsAlongAxis = 20;
-	int radius = 4.5;
+	double radius = 4.5;
 
 	cryph::AffPoint bottom = corner;
 	cryph::AffPoint top = bottom + (radius * ww * 0.85);

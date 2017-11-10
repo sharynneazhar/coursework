@@ -15,7 +15,7 @@ Parachute::Parachute(ShaderIF* sIF, cryph::AffPoint corner, cryph::AffVector u, 
 
 	int nPointsAroundSide = 200;
 	int nPointsAlongAxis = 2;
-	int radius = length * 1.75;
+	double radius = length * 1.75;
 
 	cryph::AffPoint cornerParachute(corner.x - (radius * 0.5), corner.y + (radius * 0.25), corner.z);
 	cryph::AffPoint bottom = cornerParachute + (2.0 * length * (uu + vv));

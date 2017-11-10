@@ -1,31 +1,31 @@
-// Building.h
+// Tree.h
 
-#ifndef BUILDING_H
-#define BUILDING_H
+#ifndef TREE_H
+#define TREE_H
 
 #include "SceneElement.h"
 #include "AffPoint.h"
 #include "AffVector.h"
 #include "BasicShapeRenderer.h"
-#include "Door.h"
+#include "TreeTop.h"
 
-class Building : public SceneElement
+class Tree : public SceneElement
 {
 public:
-	Building(ShaderIF* sIF, cryph::AffPoint corner);
-	virtual ~Building();
+	Tree(ShaderIF* sIF, cryph::AffPoint point, double height);
+	virtual ~Tree();
 
 	// xyzLimits: {mcXmin, mcXmax, mcYmin, mcYmax, mcZmin, mcZmax}
 	void getMCBoundingBox(double* xyzLimitsF) const;
 	void render();
 
 private:
-	BasicShape* building[2];
-	BasicShapeRenderer* buildingR[2];
-	Door* door;
+	TreeTop* treeTop;
+	BasicShape* tree;
+	BasicShapeRenderer* treeR;
 
 	double xyz[6];
-	void drawBuilding();
+	void drawTree();
 
 };
 

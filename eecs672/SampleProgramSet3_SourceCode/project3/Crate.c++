@@ -4,9 +4,10 @@
 
 PhongMaterial crateBasePhong(0.739, 0.0, 0.0, 0.65, 0.65, 0.65, 1.0, 1.0);
 
-Crate::Crate(ShaderIF* sIF, cryph::AffPoint corner, cryph::AffVector u,
-	double length, bool inAirIn) : SceneElement(sIF, crateBasePhong), inAir(inAirIn)
+Crate::Crate(ShaderIF* sIF, cryph::AffPoint corner, double length, bool inAirIn) :
+	SceneElement(sIF, crateBasePhong), inAir(inAirIn)
 {
+	cryph::AffVector u(0.0, 1.0, 0.0);
 	cryph::AffVector uu(u[0], u[1], 0.0), ww(0, 0, 1); uu.normalize();
 	cryph::AffVector vv = ww.cross(uu);
 

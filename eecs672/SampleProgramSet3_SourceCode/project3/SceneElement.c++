@@ -7,7 +7,7 @@ float SceneElement::lightPos[4 * MAX_NUM_LIGHTS] =
 	{
 		-10.0, -5.0, -10.0, 1.0,
 		35.0, -5.0, -10.0, 1.0,
-		0.0, 1.0, 0.7, 0.0
+		0.0, 1.2, 0.7, 0.0
 	};
 
 // Are coordinates in "lightPos" stored in MC or EC?
@@ -20,7 +20,7 @@ float posToGLSL[4*MAX_NUM_LIGHTS];
 
 float SceneElement::lightStrength[3 * MAX_NUM_LIGHTS] =
 	{
-		0.0, 0.0, 0.8,
+		0.2, 0.2, 1.0,
 		1.0, 0.2, 1.0,
 		1.0, 1.0, 1.0
 	};

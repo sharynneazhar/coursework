@@ -13,8 +13,7 @@
 class Crate : public SceneElement
 {
 public:
-	Crate(ShaderIF* sIF, cryph::AffPoint corner, cryph::AffVector u,
-				double length, bool inAir);
+	Crate(ShaderIF* sIF, cryph::AffPoint corner, double length, bool inAir);
 	virtual ~Crate();
 
 	// xyzLimits: {mcXmin, mcXmax, mcYmin, mcYmax, mcZmin, mcZmax}
