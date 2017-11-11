@@ -5,14 +5,14 @@
 
 float SceneElement::lightPos[4 * MAX_NUM_LIGHTS] =
 	{
-		-10.0, -5.0, -10.0, 1.0,
-		35.0, -5.0, -10.0, 1.0,
-		0.0, 1.2, 0.7, 0.0
+	  0.0, 0.0, 0.0, 1.0,    // blue light
+		0.0, 0.0, 0.0, 1.0,     // purple light
+		0.0, 15.0, -2.0, 0.0     // directional "moon" light
 	};
 
 // Are coordinates in "lightPos" stored in MC or EC?
 bool SceneElement::posInModelCoordinates[MAX_NUM_LIGHTS] =
-	{ true, true, false };
+	{ true, true, true };
 // The following is the buffer actually sent to GLSL. It will contain a copy of
 // the (x,y,z,w) for light sources defined in EC; it will contain the coordinates
 // after transformation to EC if the position was originally specified in MC.
@@ -20,9 +20,9 @@ float posToGLSL[4*MAX_NUM_LIGHTS];
 
 float SceneElement::lightStrength[3 * MAX_NUM_LIGHTS] =
 	{
-		0.2, 0.2, 1.0,
-		1.0, 0.2, 1.0,
-		1.0, 1.0, 1.0
+		0.0, 0.0, 0.6, // blue light
+		0.6, 0.0, 0.6, // purple light
+		0.5, 0.5, 0.5  // greyish moon light
 	};
 
 float SceneElement::globalAmbient[] = { 0.2, 0.2, 0.2 };

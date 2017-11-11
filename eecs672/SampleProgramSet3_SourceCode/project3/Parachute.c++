@@ -2,11 +2,12 @@
 
 #include "Parachute.h"
 
-PhongMaterial parachutePhong(0.658824, 0.658824, 0.658824, 0.8, 0.8);
+PhongMaterial parachutePhong(0.658824, 0.658824, 0.658824, 0.5, 0.5, 0.5, 0.8, 0.8);
 
-Parachute::Parachute(ShaderIF* sIF, cryph::AffPoint corner, cryph::AffVector u, double length) :
+Parachute::Parachute(ShaderIF* sIF, cryph::AffPoint corner, double length) :
 	SceneElement(sIF, parachutePhong)
 {
+	cryph::AffVector u(0.0, 1.0, 0.0);
 	cryph::AffVector uu(u[0], u[1], 0.0), ww(0, 1, 0); uu.normalize();
 	cryph::AffVector vv = ww.cross(uu);
 
@@ -14,6 +15,7 @@ Parachute::Parachute(ShaderIF* sIF, cryph::AffPoint corner, cryph::AffVector u, 
 	int nPointsAlongAxis = 2;
 	double radius = length * 1.75;
 
+	// Draw the parachute
 	cryph::AffPoint cornerParachute(corner.x - (radius * 0.5), corner.y + (radius * 0.25), corner.z);
 	cryph::AffPoint bottom = cornerParachute + (2.0 * length * (uu + vv));
 	cryph::AffPoint top = bottom + (radius * ww * 0.35);
@@ -22,6 +24,7 @@ Parachute::Parachute(ShaderIF* sIF, cryph::AffPoint corner, cryph::AffVector u, 
 										nPointsAroundSide, nPointsAlongAxis,
 										BasicShape::CAP_AT_TOP);
 
+	// Draw the parachute strings
 	cryph::AffPoint stringBottom1(corner.x - (length * 0.5),
 																corner.y + (length * 0.25),
 																corner.z + (length * 1.8));

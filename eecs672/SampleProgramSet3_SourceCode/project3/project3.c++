@@ -75,6 +75,8 @@ int main(int argc, char* argv[])
 	cryph::AffVector u(0.0, 1.0, 0.0);
 
 	// Draw the crates
+	// 1. A crate on the ground
+	// 2. Up to 5 different parachuting crates randomly placed
 	c.addModel(new Crate(sIF, cryph::AffPoint(8.0, 0.0, 10.0), 2.0, false));
 	for (int i = 0; i < rand() % 5 + 2; i++) {
 		double xPos = (20.0 - 1.0) * ((double) rand() / (double) RAND_MAX) + 4.0;
@@ -94,12 +96,13 @@ int main(int argc, char* argv[])
 	c.addModel(new LightPost(sIF, blueLight, 12.0, 0.0, 23.0, 0.45, 5.0, 0.45, 1));
 
 	// Draw the trees
+	// Up to 10 trees randomly placed
 	for (int i = 0; i < rand() % 10 + 3; i++) {
-		double xPos = (8.5 - 1.0) * ((double) rand() / (double) RAND_MAX) + 1.0;
+		double xPos = (12.0 - 1.0) * ((double) rand() / (double) RAND_MAX) + 1.0;
 		double zPos = (23.0 - 2.0) * ((double) rand() / (double) RAND_MAX) + 2.0;
 
 		// Check if the tree will be on the crate, move it
-		bool isOnCrate = (xPos >= 7.8 && xPos <= 10.0) && (zPos >= 9.8 && zPos <= 12.0);
+		bool isOnCrate = (xPos >= 7.0 && xPos <= 13.0) && (zPos >= 7.0 && zPos <= 13.0);
 		if (isOnCrate)
 			c.addModel(new Tree(sIF, cryph::AffPoint((xPos + 2.2), 0.0, zPos), 3.0));
 		else
@@ -107,11 +110,11 @@ int main(int argc, char* argv[])
 	}
 
 	// Draw the ground
-	PhongMaterial groundPhong(0.13, 0.37, 0.31, 0.556, 0.456);
-	c.addModel(new Block(sIF, groundPhong, 0.0, 0.0, 0.0, 25.0, 0.1, 25.0));
+	PhongMaterial groundPhong(0.502, 0.502, 0.000, 0.5, 0.5, 0.5, 0.5, 0.5);
+	c.addModel(new Block(sIF, groundPhong, 0.0, 0.0, 0.0, 25.0, 0.15, 25.0));
 
-	// Make background white
-	glClearColor(0.0, 0.0, 0.0, 0.0);
+	// Specify background color
+	glClearColor(0.1, 0.1, 0.1, 1.0);
 
 	double xyz[6];
 	c.getOverallMCBoundingBox(xyz);

@@ -2,7 +2,7 @@
 
 #include "Crate.h"
 
-PhongMaterial crateBasePhong(0.739, 0.0, 0.0, 0.65, 0.65, 0.65, 1.0, 1.0);
+PhongMaterial crateBasePhong(1.0, 0.0, 0.0, 0.5, 0.5, 0.5, 0.5, 0.5);
 
 Crate::Crate(ShaderIF* sIF, cryph::AffPoint corner, double length, bool inAirIn) :
 	SceneElement(sIF, crateBasePhong), inAir(inAirIn)
@@ -11,20 +11,13 @@ Crate::Crate(ShaderIF* sIF, cryph::AffPoint corner, double length, bool inAirIn)
 	cryph::AffVector uu(u[0], u[1], 0.0), ww(0, 0, 1); uu.normalize();
 	cryph::AffVector vv = ww.cross(uu);
 
-	double height = length;
-	double width = length;
-	double depth = length;
-	double thickness = length;
+	crate = BasicShape::makeBlock(corner + length * ww,
+																uu, length,
+																vv, length,
+																ww, length);
 
-	crate = BasicShape::makeBlock(corner + height * ww,
-																uu, width,
-																vv, depth,
-																ww, thickness);
-
-	crateTop = new CrateTop(sIF, corner, u, length);
-
-	if (inAir)
-		parachute = new Parachute(sIF, corner, u, length);
+	crateTop = new CrateTop(sIF, corner, length);
+	parachute = new Parachute(sIF, corner, length);
 
 	xyz[0] = 1.0; xyz[1] = 0.0;
 
@@ -32,7 +25,7 @@ Crate::Crate(ShaderIF* sIF, cryph::AffPoint corner, double length, bool inAirIn)
 		crateR = nullptr;
 	} else {
 		crateR = new BasicShapeRenderer(sIF, crate);
-		if (xyz[0] > xyz[1]) { // not yet initialized
+		if (xyz[0] > xyz[1]) {
 			crate->getMCBoundingBox(xyz);
 		} else {
 			double thisxyz[6];
@@ -78,6 +71,7 @@ void Crate::render()
 		crateR->drawShape();
 		crateTop->render();
 
+		// If flagged, then render parachute
 		if (inAir)
 			parachute->render();
 	}

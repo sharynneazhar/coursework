@@ -5,7 +5,6 @@
 in PVA {
 	vec3 ecPosition;
 	vec3 ecUnitNormal;
-	vec3 ecObliqueVec;
 } pvaIn;
 
 out vec4 fragmentColor;
@@ -40,9 +39,7 @@ vec4 evaluateLightingModel(in vec3 ec_Q, in vec3 ec_nHat) {
 	// Create a unit vector towards the viewer (method depends on type of projection!)
 	if (projection == 1) { // perspective
 		vHat = normalize(-ec_Q);
-	} else if (projection == 2) { // orthogonal
-		vHat = pvaIn.ecObliqueVec;
-	} else {
+	} else if (projection == 2 || projection == 3) { // orthogonal
 		vHat = vec3(0.0, 0.0, 1.0);
 	}
 
@@ -59,29 +56,28 @@ vec4 evaluateLightingModel(in vec3 ec_Q, in vec3 ec_nHat) {
     //     1. compute and accumulate diffuse contribution
     //     2. if viewer on appropriate side of the primary reflection vector,
     //        compute and accumulate specular contribution.
-    vec4 currentLightPos = lightPosition[i];
 		vec3 liHat = vec3(0.0, 0.0, 0.0);
 
-		if (currentLightPos.w == 0.0) {
-			liHat = normalize(currentLightPos.xyz);
+		if (lightPosition[i].w == 0.0) {
+			liHat = normalize(lightPosition[i].xyz);
 		} else {
-			liHat = normalize(currentLightPos.xyz - ec_Q);
+			liHat = normalize(lightPosition[i].xyz - ec_Q);
 		}
 
 		if (dot(liHat, ec_nHat) > 0) {
 			vec3 riHat = normalize(reflect(-liHat, ec_nHat));
 			float riDotV = dot(riHat, vHat);
-			float dist = 0.5 * distance(currentLightPos.xyz, ec_Q);
-			float atten = (1 / dist) * 25;
+			float dist = 0.5 * distance(lightPosition[i].xyz, ec_Q);
+			float atten = (1 / dist) * 20;
 
-			if (currentLightPos.w == 0.0) {
+			if (lightPosition[i].w == 0.0) {
 				diffuseVec += kd * lightStrength[i] * dot(liHat, ec_nHat);
 			} else {
 				diffuseVec += atten * kd * lightStrength[i] * dot(liHat, ec_nHat);
 			}
 
 			if (riDotV > 0) {
-				if (currentLightPos.w == 0.0) {
+				if (lightPosition[i].w == 0.0) {
 					specularVec += ks * lightStrength[i] * pow(riDotV, shininess);
 				} else {
 					specularVec += atten * ks * lightStrength[i] * ks * pow(riDotV, shininess);

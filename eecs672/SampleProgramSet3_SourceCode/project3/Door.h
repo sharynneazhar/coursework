@@ -11,7 +11,7 @@
 class Door : public SceneElement
 {
 public:
-	Door(ShaderIF* sIF, cryph::AffPoint corner, cryph::AffVector u, double offset);
+	Door(ShaderIF* sIF, cryph::AffPoint corner, double offset);
 	virtual ~Door();
 
 	// xyzLimits: {mcXmin, mcXmax, mcYmin, mcYmax, mcZmin, mcZmax}

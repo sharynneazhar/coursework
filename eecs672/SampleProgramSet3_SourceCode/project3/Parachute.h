@@ -11,7 +11,7 @@
 class Parachute : public SceneElement
 {
 public:
-	Parachute(ShaderIF* sIF, cryph::AffPoint corner, cryph::AffVector u, double length);
+	Parachute(ShaderIF* sIF, cryph::AffPoint corner, double length);
 	virtual ~Parachute();
 
 	// xyzLimits: {mcXmin, mcXmax, mcYmin, mcYmax, mcZmin, mcZmax}

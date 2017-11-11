@@ -2,11 +2,12 @@
 
 #include "Door.h"
 
-PhongMaterial doorPhong(0.8, 0.8, 0.8, 0.5, 0.5, 0.5, 1.0, 1.0);
+PhongMaterial doorPhong(1.0, 1.0, 1.0, 0.5, 0.5, 0.5, 0.5, 0.5);
 
-Door::Door(ShaderIF* sIF, cryph::AffPoint corner, cryph::AffVector u, double radius) :
+Door::Door(ShaderIF* sIF, cryph::AffPoint corner, double radius) :
 	SceneElement(sIF, doorPhong)
 {
+	cryph::AffVector u(0.0, 1.0, 0.0);
 	cryph::AffVector uu(u[0], u[1], 0.0), ww(0, 1, 0); uu.normalize();
 	cryph::AffVector vv = ww.cross(uu);
 
@@ -14,7 +15,7 @@ Door::Door(ShaderIF* sIF, cryph::AffPoint corner, cryph::AffVector u, double rad
 	int nPointsAlongAxis = 20;
 	int offset = radius;
 
-	radius = (radius * 0.28);
+	radius = (radius * 0.29);
 	cryph::AffPoint bottom = cryph::AffPoint(corner.x, corner.y, corner.z + (offset * 0.85));
 	cryph::AffPoint top = bottom + (radius * ww * 1.5);
 	door = BasicShape::makeBoundedCylinder(bottom, top, radius,

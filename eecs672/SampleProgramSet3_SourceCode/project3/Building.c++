@@ -2,7 +2,7 @@
 
 #include "Building.h"
 
-PhongMaterial buildingPhong(0.95, 0.79, 0.6);
+PhongMaterial buildingPhong(0.941, 0.502, 0.502, 0.5, 0.5, 0.5, 0.5, 0.5);
 
 Building::Building(ShaderIF* sIF, cryph::AffPoint corner) :SceneElement(sIF, buildingPhong)
 {
@@ -20,7 +20,7 @@ Building::Building(ShaderIF* sIF, cryph::AffPoint corner) :SceneElement(sIF, bui
 									                          	  nPointsAroundSide, nPointsAlongAxis,
 																								BasicShape::CAP_AT_BOTH);
 
-	door = new Door(sIF, bottom, top, radius);
+	door = new Door(sIF, bottom, radius);
 
 	bottom = cryph::AffPoint(bottom.x, bottom.y + (top.y * 0.75), bottom.z);
 	top = bottom + (radius * ww * 0.85);

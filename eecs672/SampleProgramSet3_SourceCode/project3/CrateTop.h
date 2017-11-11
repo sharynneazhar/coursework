@@ -11,7 +11,7 @@
 class CrateTop : public SceneElement
 {
 public:
-	CrateTop(ShaderIF* sIF, cryph::AffPoint corner, cryph::AffVector u, double length);
+	CrateTop(ShaderIF* sIF, cryph::AffPoint corner, double length);
 	virtual ~CrateTop();
 
 	// xyzLimits: {mcXmin, mcXmax, mcYmin, mcYmax, mcZmin, mcZmax}

@@ -2,9 +2,9 @@
 
 #include "Tree.h"
 
-PhongMaterial treePhong(0.32, 0.2, 0.039, 1.0, 1.0);
-PhongMaterial forestGreen(0.419608, 0.556863, 0.137255, 0.5, 0.5);
-PhongMaterial forestYellow(0.219608, 0.556863, 0.137255, 0.5, 0.5);
+PhongMaterial treePhong(0.627, 0.322, 0.176, 0.627, 0.322, 0.176, 0.5, 0.5);
+PhongMaterial forestGreen(0.419608, 0.556863, 0.137255, 0.419608, 0.556863, 0.137255, 0.5, 0.5);
+PhongMaterial forestRed(0.824, 0.412, 0.118, 0.824, 0.412, 0.118, 0.5, 0.5);
 
 Tree::Tree(ShaderIF* sIF, cryph::AffPoint point, double height) : SceneElement(sIF, treePhong)
 {
@@ -14,7 +14,7 @@ Tree::Tree(ShaderIF* sIF, cryph::AffPoint point, double height) : SceneElement(s
 
 	int nPointsAroundSide = 200;
 	int nPointsAlongAxis = 20;
-	double radius = 0.35;
+	double radius = 0.25;
 
 	cryph::AffPoint bottom = point;
 	cryph::AffPoint top = bottom + (height * ww);
@@ -26,7 +26,7 @@ Tree::Tree(ShaderIF* sIF, cryph::AffPoint point, double height) : SceneElement(s
 	if (isEven)
 		treeTop = new TreeTop(sIF, forestGreen, top, 0.9);
 	else
-		treeTop = new TreeTop(sIF, forestYellow, top, 0.9);
+		treeTop = new TreeTop(sIF, forestRed, top, 0.9);
 
 	xyz[0] = 1.0; xyz[1] = 0.0;
 

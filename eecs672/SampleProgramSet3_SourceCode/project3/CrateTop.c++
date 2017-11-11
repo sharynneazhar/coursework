@@ -4,8 +4,9 @@
 
 PhongMaterial crateTopPhong(0.0, 0.3, 0.739, 0.5, 0.5, 0.5, 1.0, 1.0);
 
-CrateTop::CrateTop(ShaderIF* sIF, cryph::AffPoint corner, cryph::AffVector u, double length) : SceneElement(sIF, crateTopPhong)
+CrateTop::CrateTop(ShaderIF* sIF, cryph::AffPoint corner, double length) : SceneElement(sIF, crateTopPhong)
 {
+	cryph::AffVector u(0.0, 1.0, 0.0);
 	cryph::AffVector uu(u[0], u[1], 0.0), ww(0, 0, 1); uu.normalize();
 	cryph::AffVector vv = ww.cross(uu);
 
@@ -22,6 +23,7 @@ CrateTop::CrateTop(ShaderIF* sIF, cryph::AffPoint corner, cryph::AffVector u, do
 																	 ww, thickness);
 
 	xyz[0] = 1.0; xyz[1] = 0.0;
+	
 	if (crateTop == nullptr) {
 		crateTopR = nullptr;
 	} else {
