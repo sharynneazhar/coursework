@@ -13,7 +13,7 @@ extern int tstshl(int,int);
 extern int tstshr(int,int);
 
 int main( int argc, const char *argv[] ) {
-    
+
     printf( "10 = %d\n", tstconst() );
     printf( "12 + 6 = %d\n", tstadd(12,6) );
     printf( "12 - 6 = %d\n", tstsub(12,6) );
