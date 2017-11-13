@@ -57,7 +57,7 @@ top :               /* empty rule */
 global : ALLOC ID INT   {
     printf( "    .data\n" );
     printf( "    .globl %s\n", $2 );
-    printf( "%s:\n",$2); 
+    printf( "%s:\n",$2);
     printf( "    .fill     %lld, 1, 0\n\n", $3 );
 }
 
@@ -72,7 +72,7 @@ func  : fhead formals locals stmts FEND {
     for (string_t *str = function->strings; str != NULL; str = str->next) {
         printf( "    .data\n" );
         printf( "    .globl %s\n", str->name );
-        printf( "%s:\n", str->name ); 
+        printf( "%s:\n", str->name );
         printf( "    .asciz    %s\n\n", str->str );
     }
 
@@ -128,7 +128,7 @@ stmts   : /* empty rule */
  * function_labeltemp to print the operand as a label (values can be
  * used in arithmetic operations while labels can be used in branch
  * operations).
- * 
+ *
  * When parsing binary and unary operations we know that the result of the
  * operation is left in register EAX (see documentation for binop and unop).
  * For the ID ASSIGN binop example, we use this fact to make sure that we
@@ -140,14 +140,14 @@ ops     : /* empty rule */        { $$ = NULL; }
         | ops ID ASSIGN GLOBAL ID { $$ = function_getglb(function,$5,$2); }
         | ops ID ASSIGN PARAM INT { $$ = function_getarg(function,$5,$2); }
         | ops ID ASSIGN INT       { $$ = function_getint(function,$4,$2); }
-        | ops ID ASSIGN STR       { $$ = function_getstr(function,$4,$2); } 
+        | ops ID ASSIGN STR       { $$ = function_getstr(function,$4,$2); }
         | ops ID ASSIGN unop      { $$ = function_gettemp(function,4,$2); }
-        | ops ID ASSIGN binop     { $$ = function_gettemp(function,4,$2); 
+        | ops ID ASSIGN binop     { $$ = function_gettemp(function,4,$2);
                                     printf( "    movl       %%eax, " );
                                     function_printtemp(function,$2);
                                     printf( "\n" ); }
         | ops unop                { }
-        | ops binop               { } 
+        | ops binop               { }
 
 /******************************************************************************
  * Parse and generate code for a unary operation. In the example given,
@@ -155,13 +155,22 @@ ops     : /* empty rule */        { $$ = NULL; }
  * move the correct return value into the EAX register (EAX is the return
  * value register according to cdecl calling conventions).
  ******************************************************************************/
-unop    : ISUB ID       { }
+unop    : ISUB ID       { printf( "    movl       " );
+                          function_printtemp(function,$2);
+                          printf( ", %%eax\n" );
+                          printf( "    neg       " );
+                          function_printtemp(function, $2);
+                          printf( ", %%eax\n" ); }
         | IINV ID       { }
         | IDEREF ID     { }
-        | IARG ID       { }
-        | ICALL ID INT  { /* printf( "calling " );
+        | IARG ID       { printf("    pushl       ");
+			                    function_printtemp(function, $2);
+			                    printf("\n"); }
+        | ICALL ID INT  { printf( "   call       " );
                           function_labeltemp(function,$2);
-                          printf( " with %lld arguments\n", $3); */ }
+                          printf("\n");
+			                    while($3--) {
+                            printf("    popl %%eax\n"); } }
         | IRET ID       { printf( "    movl       " );
                           function_printtemp(function,$2);
                           printf( ", %%eax\n" ); }
@@ -194,20 +203,60 @@ binop   : ID IEQ ID     { }
         | ID IAND ID    { }
         | ID IOR ID     { }
         | ID IXOR ID    { }
-        | ID ISHL ID    { }
-        | ID ISHR ID    { }
+        | ID ISHL ID    { printf( "    movl       " );
+                          function_printtemp(function,$3);
+                          printf( ", %%eax\n" );
+                          printf( "    movb       " );
+                          function_printtemp(function,$1);
+                          printf( ", %%cl\n" );
+                          printf( "    shll       " );
+                          printf( "%%cl, " );
+                          printf( "%%eax\n" ); }
+        | ID ISHR ID    { printf( "    movl       " );
+                          function_printtemp(function,$3);
+                          printf( ", %%eax\n" );
+                          printf( "    movb       " );
+                          function_printtemp(function,$1);
+                          printf( ", %%cl\n" );
+                          printf( "    shrl       " );
+                          printf( "%%cl, " );
+                          printf( "%%eax\n" ); }
         | ID IADD ID    { printf( "    movl       " );
                           function_printtemp(function,$3);
                           printf( ", %%eax\n" );
-
                           printf( "    addl       " );
                           function_printtemp(function,$1);
                           printf( ", " );
                           printf( "%%eax\n" ); }
-        | ID ISUB ID    { }
-        | ID IMUL ID    { }
-        | ID IDIV ID    { }
-        | ID IMOD ID    { }
+        | ID ISUB ID    { printf( "    movl       " );
+                          function_printtemp(function,$3);
+                          printf( ", %%eax\n" );
+                          printf( "    subl       " );
+                          function_printtemp(function,$1);
+                          printf( ", " );
+                          printf( "%%eax\n" ); }
+        | ID IMUL ID    { printf( "    movl       " );
+                          function_printtemp(function,$3);
+                          printf( ", %%eax\n" );
+                          printf( "    imull       " );
+                          function_printtemp(function,$1);
+                          printf( ", " );
+                          printf( "%%eax\n" ); }
+        | ID IDIV ID    { printf( "    movl       " );
+                          function_printtemp(function,$3);
+                          printf( ", %%eax\n" );
+                          printf("    movl        $0, %%edx\n");
+                          printf( "    idivl       " );
+                          function_printtemp(function,$1);
+                          printf( "\n" ); }
+        | ID IMOD ID    { printf( "    movl       " );
+                          function_printtemp(function,$3);
+                          printf( ", %%eax\n" );
+                          printf("    movl        $0, %%edx\n");
+                          printf( "    idivl       " );
+                          function_printtemp(function,$1);
+                          printf( "\n" );
+			                    printf("     movl       %%edx, %%eax\n"); }
         | ID IIDX ID    { }
         | ID FEQ ID     { }
         | ID FNE ID     { }

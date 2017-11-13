@@ -28,7 +28,7 @@ int main( int argc, const char *argv[] ) {
     //        sure the correct code is generated for this function.
     //        Also, you will need to make sure strings are handled
     //        correctly in order to prevent this function from crashing.
-    //tstcall();
+    tstcall();
 
     return 0;
 }
