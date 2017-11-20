@@ -168,7 +168,7 @@ unop    : ISUB ID       { printf( "    movl       " );
                           function_labeltemp(function,$2);
                           printf("\n");
                           for(int i = 0; i < $3; i++)
-                            printf("    popl %%eax\n"); } }
+                            printf("    popl %%eax\n"); }
         | IRET ID       { printf( "    movl       " );
                           function_printtemp(function,$2);
                           printf( ", %%eax\n" ); }
