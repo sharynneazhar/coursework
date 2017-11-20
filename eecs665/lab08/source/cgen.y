@@ -169,7 +169,7 @@ unop    : ISUB ID       { printf( "    movl       " );
         | ICALL ID INT  { printf( "   call       " );
                           function_labeltemp(function,$2);
                           printf("\n");
-			                    while($3--) {
+                          for(int i = 0; i < $3; i++)
                             printf("    popl %%eax\n"); } }
         | IRET ID       { printf( "    movl       " );
                           function_printtemp(function,$2);
