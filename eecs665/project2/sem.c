@@ -18,7 +18,8 @@ int numblabels = 0;                     /* toal backpatch labels in file */
  */
 void backpatch(struct sem_rec *p, int k)
 {
-   fprintf(stderr, "sem: backpatch not implemented\n");
+  printf("B%d=L%d\n", p->s_place, k + 1);
+  p->s_place = k + 1;
 }
 
 /*
@@ -27,9 +28,7 @@ void backpatch(struct sem_rec *p, int k)
 void bgnstmt()
 {
   extern int lineno;
-
   printf("bgnstmt %d\n", lineno);
-  //   fprintf(stderr, "sem: bgnstmt not implemented\n");
 }
 
 /*
@@ -194,8 +193,10 @@ void dowhile(int m1, struct sem_rec *e, int m2, struct sem_rec *n,
  * endloopscope - end the scope for a loop
  */
 void endloopscope(int m)
-{
-   fprintf(stderr, "sem: endloopscope not implemented\n");
+{ 
+  int i;
+  for (i = 0; i < m; i++)
+    leaveblock();
 }
 
 /*
@@ -203,8 +204,7 @@ void endloopscope(int m)
  */
 struct sem_rec *exprs(struct sem_rec *l, struct sem_rec *e)
 {
-   fprintf(stderr, "sem: exprs not implemented\n");
-   return ((struct sem_rec *) NULL);
+  return merge(l, e);
 }
 
 /*
@@ -239,7 +239,7 @@ struct id_entry *fname(int t, char *id)
  */
 void ftail()
 {
-  printf("fend\n")
+  printf("fend\n");
   leaveblock();
 
   localnum = 0;

@@ -1,0 +1,29 @@
+alloc m 48
+func scale
+formal 8
+localloc 4
+bgnstmt 6
+t1 := param 0
+t2 := @f t1
+t3 = 0
+bgnstmt 6
+t4 = 0
+bgnstmt 8
+t5 := local 0
+t6 = 0
+t7 := t5 =i t6
+t8 := local 0
+t9 := @i t8
+t10 = 6
+t11 := local 0
+t12 = 1
+bgnstmt 8
+t13 := local 0
+t14 := @i t13
+t15 := global m
+t16 := t15 []f t14
+t17 := param 0
+t18 := @f t17
+bgnstmt 10
+t19 = 1
+fend
