@@ -58,15 +58,15 @@ struct sem_rec *ccexpr(struct sem_rec *e)
    struct sem_rec *t1;
 
    if(e){
-   
+
      t1 = gen("!=", e, cast(con("0"), e->s_mode), e->s_mode);
-     
+
      printf("bt t%d B%d\n", t1->s_place, ++numblabels);
      printf("br B%d\n", ++numblabels);
      return (node(0, 0,
-		  node(numblabels-1, 0, (struct sem_rec *) NULL, 
+		  node(numblabels-1, 0, (struct sem_rec *) NULL,
 		       (struct sem_rec *) NULL),
-		  node(numblabels, 0, (struct sem_rec *) NULL, 
+		  node(numblabels, 0, (struct sem_rec *) NULL,
 		       (struct sem_rec *) NULL)));
    }
    else
@@ -107,8 +107,8 @@ struct sem_rec *con(char *x)
 
   /* print the quad t%d = const */
   printf("t%d = %s\n", nexttemp(), x);
-  
-  /* construct a new node corresponding to this constant generation 
+
+  /* construct a new node corresponding to this constant generation
      into a temporary. This will allow this temporary to be referenced
      in an expression later*/
   return(node(currtemp(), p->i_type, (struct sem_rec *) NULL,
@@ -212,7 +212,16 @@ struct sem_rec *exprs(struct sem_rec *l, struct sem_rec *e)
  */
 void fhead(struct id_entry *p)
 {
-   fprintf(stderr, "sem: fhead not implemented\n");
+  int i;
+  for (i = 0; i < formalnum; i++) {
+    int numBytes = formaltypes[i] == 'f' ? 8 : 4;
+    printf("formal %d\n", numBytes);
+  }
+
+  for (i = 0; i < localnum; i++) {
+    int numBytes = localtypes[i] == 'f' ? 8 : 4;
+    printf("localloc %d\n", numBytes);
+  }
 }
 
 /*
@@ -220,8 +229,9 @@ void fhead(struct id_entry *p)
  */
 struct id_entry *fname(int t, char *id)
 {
-   fprintf(stderr, "sem: fname not implemented\n");
-   return ((struct id_entry *) NULL);
+  printf("func %s\n", id);
+  enterblock();
+  return dclr(id, t, 4);
 }
 
 /*
@@ -229,7 +239,11 @@ struct id_entry *fname(int t, char *id)
  */
 void ftail()
 {
-   fprintf(stderr, "sem: ftail not implemented\n");
+  printf("fend\n")
+  leaveblock();
+
+  localnum = 0;
+  formalnum = 0;
 }
 
 /*
@@ -357,7 +371,7 @@ struct sem_rec *set(char *op, struct sem_rec *x, struct sem_rec *y)
   /* if for type consistency of x and y */
   cast_y = y;
   if((x->s_mode & T_DOUBLE) && !(y->s_mode & T_DOUBLE)){
-    
+
     /*cast y to a double*/
     printf("t%d = cvf t%d\n", nexttemp(), y->s_place);
     cast_y = node(currtemp(), T_DOUBLE, (struct sem_rec *) NULL,
@@ -373,10 +387,10 @@ struct sem_rec *set(char *op, struct sem_rec *x, struct sem_rec *y)
 
   /*output quad for assignment*/
   if(x->s_mode & T_DOUBLE)
-    printf("t%d := t%d =f t%d\n", nexttemp(), 
+    printf("t%d := t%d =f t%d\n", nexttemp(),
 	   x->s_place, cast_y->s_place);
   else
-    printf("t%d := t%d =i t%d\n", nexttemp(), 
+    printf("t%d := t%d =i t%d\n", nexttemp(),
 	   x->s_place, cast_y->s_place);
 
   /*create a new node to allow just created temporary to be referenced later */
