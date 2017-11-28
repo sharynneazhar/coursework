@@ -17,5 +17,10 @@ y.tab.h cgram.c: cgram.y
 	yacc -vd cgram.y
 	mv y.tab.c cgram.c
 
+test:
+	./csem < test.c > test.out
+	./sem_base.exe < test.c > expected.out
+	diff test.out expected.out
+
 clean:
-	rm csem sym.o scan.o sem.o semutil.o cgram.o
+	rm csem sym.o scan.o sem.o semutil.o cgram.o expected.out
