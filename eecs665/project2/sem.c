@@ -18,8 +18,7 @@ int numblabels = 0;                     /* toal backpatch labels in file */
  */
 void backpatch(struct sem_rec *p, int k)
 {
-  printf("B%d=L%d\n", p->s_place, k + 1);
-  p->s_place = k + 1;
+  printf("B%d=L%d\n", p->s_place, k);
 }
 
 /*
@@ -36,8 +35,18 @@ void bgnstmt()
  */
 struct sem_rec *call(char *f, struct sem_rec *args)
 {
-   fprintf(stderr, "sem: call not implemented\n");
-   return ((struct sem_rec *) NULL);
+  char type;
+  int argCount = 0;
+
+  while(args != NULL) {
+    type = args->s_mode & T_DOUBLE ? 'f' : 'i';
+    printf("arg%c t%i\n", type, args->s_place);
+    args = args->back.s_link;
+    argCount++;
+  } 
+  
+  printf("t%i := global %s\n", nexttemp(), f);
+  return gen("f", node(currtemp(), 0, NULL, NULL), node(argCount, 0, NULL, NULL), 0); 
 }
 
 /*
