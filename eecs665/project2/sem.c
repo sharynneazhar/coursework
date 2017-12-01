@@ -35,18 +35,17 @@ void bgnstmt()
  */
 struct sem_rec *call(char *f, struct sem_rec *args)
 {
-  char type;
-  int argCount = 0;
+  int numArgs = 0;
 
-  while(args != NULL) {
-    type = args->s_mode & T_DOUBLE ? 'f' : 'i';
-    printf("arg%c t%i\n", type, args->s_place);
+  while (args) {
+    char type = (args->s_mode == T_INT) ? 'i' : 'f';
+    printf("arg%c t%d\n", type, args->s_place);
     args = args->back.s_link;
-    argCount++;
+    numArgs++;
   }
 
-  printf("t%i := global %s\n", nexttemp(), f);
-  return gen("f", node(currtemp(), 0, NULL, NULL), node(argCount, 0, NULL, NULL), 0);
+  printf("t%d := global %s\n", nexttemp(), f);
+  return gen("f", node(currtemp(), 0, NULL, NULL), node(numArgs, 0, NULL, NULL), 0);
 }
 
 /*
@@ -54,7 +53,7 @@ struct sem_rec *call(char *f, struct sem_rec *args)
  */
 struct sem_rec *ccand(struct sem_rec *e1, int m, struct sem_rec *e2)
 {
-  backpatch(e1->s_false, m);
+  backpatch(e1->back.s_true, m);
   return node(0, 0, e2->back.s_true, merge(e1->s_false, e2->s_false));
 }
 
@@ -64,15 +63,19 @@ struct sem_rec *ccand(struct sem_rec *e1, int m, struct sem_rec *e2)
 struct sem_rec *ccexpr(struct sem_rec *e)
 {
    struct sem_rec *t1;
+
    if (e) {
      t1 = gen("!=", e, cast(con("0"), e->s_mode), e->s_mode);
+
      printf("bt t%d B%d\n", t1->s_place, ++numblabels);
      printf("br B%d\n", ++numblabels);
+
      return (node(0, 0,
-		         node(numblabels-1, 0, (struct sem_rec *) NULL, (struct sem_rec *) NULL),
-		         node(numblabels, 0, (struct sem_rec *) NULL, (struct sem_rec *) NULL)));
-   } else
+             node(numblabels-1, 0, (struct sem_rec *) NULL, (struct sem_rec *) NULL),
+	     node(numblabels, 0, (struct sem_rec *) NULL, (struct sem_rec *) NULL)));
+   } else {
      fprintf(stderr, "Argument sem_rec is NULL\n");
+   }
 }
 
 /*
@@ -107,7 +110,7 @@ struct sem_rec *con(char *x)
   }
 
   /* print the quad t%d = const */
-  printf("t%d = %s\n", nexttemp(), x);
+  printf("t%d := %s\n", nexttemp(), x);
 
   /* construct a new node corresponding to this constant generation
      into a temporary. This will allow this temporary to be referenced
@@ -154,7 +157,7 @@ void dofor(int m1, struct sem_rec *e2, int m2, struct sem_rec *n1,
  * dogoto - goto statement
  */
 void dogoto(char *id) {
-  lookup(id, 0);
+  n();
 }
 
 /*
@@ -180,11 +183,11 @@ void doifelse(struct sem_rec *e, int m1, struct sem_rec *n, int m2, int m3) {
 void doret(struct sem_rec *e) {
   char type = 'i';
 
-  if (e->s_mode & T_DOUBLE)
+  if (e->s_mode == T_DOUBLE)
     type = 'f';
-  else if (e->s_mode & T_INT)
+  else if (e->s_mode == T_INT)
     type = 'i';
-  else if (e->s_mode & T_ADDR)
+  else if (e->s_mode == T_ADDR)
     type = 'a';
 
   printf("ret%c t%i\n", type, e->s_place);
@@ -251,9 +254,6 @@ void ftail()
 {
   printf("fend\n");
   leaveblock();
-
-  localnum = 0;
-  formalnum = 0;
 }
 
 /*
@@ -319,9 +319,7 @@ int m()
 struct sem_rec *n()
 {
   printf("br B%i\n", ++numblabels);
-  struct sem_rec* temp = (struct sem_rec *) malloc(sizeof(struct sem_rec));
-  temp->s_place = numblabels;
-  return temp;
+  return node(numblabels, 0, 0, 0);
 }
 
 /*
@@ -368,19 +366,19 @@ struct sem_rec *opb(char *op, struct sem_rec *x, struct sem_rec *y)
  */
 struct sem_rec *rel(char *op, struct sem_rec *x, struct sem_rec *y)
 {
-  int conv = T_INT;
-  if(x->s_mode & T_DOUBLE || y->s_mode & T_DOUBLE)
-    conv = T_DOUBLE;
+  int type = T_INT;
 
-  struct sem_rec * temp = gen(op, cast(x, conv), cast(y, conv), conv);
-  printf("bt t%i B%i\n", currtemp(), ++numblabels);
+  if ((x->s_mode & T_DOUBLE) || (y->s_mode & T_DOUBLE)) {
+    type = T_DOUBLE;
+  }
 
-  temp->back.s_true = (struct sem_rec *) malloc(sizeof(struct sem_rec));
-  temp->back.s_true->s_place = numblabels;
-  printf("br B%i\n", ++numblabels);
+  struct sem_rec *temp = gen(op, cast(x, type), cast(y, type), type);
 
-  temp->s_false = (struct sem_rec *) malloc(sizeof(struct sem_rec));
-  temp->s_false->s_place = numblabels;
+  printf("bt t%d B%d\n", currtemp(), ++numblabels);
+  printf("br B%d\n", ++numblabels);
+
+  temp->back.s_true = node(numblabels - 1, temp->s_mode, 0, 0);
+  temp->s_false = node(numblabels, temp->s_mode, 0, 0);
 
   return temp;
 }

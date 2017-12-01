@@ -5,25 +5,54 @@ localloc 4
 bgnstmt 6
 t1 := param 0
 t2 := @f t1
-t3 = 0
+t3 := 0
+t4 := cvf t3
+t5 := t2 ==f t4
+bt t5 B1
+br B2
+label L1
 bgnstmt 6
-t4 = 0
+t6 := 0
+reti t6
+label L2
+B1=L1
+B2=L2
 bgnstmt 8
-t5 := local 0
-t6 = 0
-t7 := t5 =i t6
-t8 := local 0
-t9 := @i t8
-t10 = 6
-t11 := local 0
-t12 = 1
+t7 := local 0
+t8 := 0
+t9 := t7 =i t8
+label L3
+t10 := local 0
+t11 := @i t10
+t12 := 6
+t13 := t11 <i t12
+bt t13 B3
+br B4
+label L4
+t14 := local 0
+t15 := 1
+t16 := @i t14
+t17 := t16 +i t15
+t18 := t14 =i t17
+br B5
+label L5
 bgnstmt 8
-t13 := local 0
-t14 := @i t13
-t15 := global m
-t16 := t15 []f t14
-t17 := param 0
-t18 := @f t17
+t19 := local 0
+t20 := @i t19
+t21 := global m
+t22 := t21 []f t20
+t23 := param 0
+t24 := @f t23
+t25 := @f t22
+t26 := t25 *f t24
+t27 := t22 =f t26
+br B6
+label L6
+B3=L5
+B4=L6
+B5=L3
+B6=L4
 bgnstmt 10
-t19 = 1
+t28 := 1
+reti t28
 fend
