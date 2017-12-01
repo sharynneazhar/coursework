@@ -15,6 +15,7 @@ int numblabels = 0;                     /* toal backpatch labels in file */
 
 /*
  * backpatch - backpatch list of quadruples starting at p with k
+ * DONE
  */
 void backpatch(struct sem_rec *p, int k)
 {
@@ -32,24 +33,28 @@ void bgnstmt()
 
 /*
  * call - procedure invocation
+ * DONE
  */
 struct sem_rec *call(char *f, struct sem_rec *args)
 {
   int numArgs = 0;
 
   while (args) {
-    char type = (args->s_mode == T_INT) ? 'i' : 'f';
+    char type = (args->s_mode & T_INT) ? 'i' : 'f';
     printf("arg%c t%d\n", type, args->s_place);
     args = args->back.s_link;
     numArgs++;
   }
 
   printf("t%d := global %s\n", nexttemp(), f);
-  return gen("f", node(currtemp(), 0, NULL, NULL), node(numArgs, 0, NULL, NULL), 0);
+  return gen("f", 
+						 node(currtemp(), 0, NULL, NULL), 
+						 node(numArgs, 0, NULL, NULL), 0);
 }
 
 /*
  * ccand - logical and
+ * DONE
  */
 struct sem_rec *ccand(struct sem_rec *e1, int m, struct sem_rec *e2)
 {
@@ -62,20 +67,18 @@ struct sem_rec *ccand(struct sem_rec *e1, int m, struct sem_rec *e2)
  */
 struct sem_rec *ccexpr(struct sem_rec *e)
 {
-   struct sem_rec *t1;
+   struct sem_rec *temp;
 
    if (e) {
-     t1 = gen("!=", e, cast(con("0"), e->s_mode), e->s_mode);
-
-     printf("bt t%d B%d\n", t1->s_place, ++numblabels);
+     temp = gen("!=", e, cast(con("0"), e->s_mode), e->s_mode);
+     printf("bt t%d B%d\n", temp->s_place, ++numblabels);
      printf("br B%d\n", ++numblabels);
 
      return (node(0, 0,
-             node(numblabels-1, 0, (struct sem_rec *) NULL, (struct sem_rec *) NULL),
-	     node(numblabels, 0, (struct sem_rec *) NULL, (struct sem_rec *) NULL)));
-   } else {
+									node(numblabels-1, 0, (struct sem_rec *) NULL, (struct sem_rec *) NULL),
+	     						node(numblabels, 0, (struct sem_rec *) NULL, (struct sem_rec *) NULL)));
+   } else
      fprintf(stderr, "Argument sem_rec is NULL\n");
-   }
 }
 
 /*
@@ -335,7 +338,7 @@ struct sem_rec *op1(char *op, struct sem_rec *y)
   }
   else {
     y = cast(y, T_INT);
-    y->s_mode = T_INT;
+    return gen(op, 0, y, T_INT);
   }
 
   return gen(op, NULL, y, y->s_mode);
@@ -346,11 +349,10 @@ struct sem_rec *op1(char *op, struct sem_rec *y)
  */
 struct sem_rec *op2(char *op, struct sem_rec *x, struct sem_rec *y)
 {
-  int conv = T_INT;
+  int type = T_INT;
   if (x->s_mode & T_DOUBLE || y->s_mode & T_DOUBLE)
-    conv = T_DOUBLE;
-
-  return gen(op, cast(x, conv), cast(y, conv), conv);
+    type = T_DOUBLE;
+  return gen(op, cast(x, type), cast(y, type), type);
 }
 
 /*
