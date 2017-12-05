@@ -5,6 +5,7 @@
 #include <time.h>
 #include "GLFWController.h"
 #include "Block.h"
+#include "Ground.h"
 #include "Crate.h"
 #include "LightPost.h"
 #include "Building.h"
@@ -36,14 +37,14 @@ void set3DViewingInformation(double xyz[6])
 
 	// 2) Move the eye away along some direction - here (0,0,1) - so that the
 	//    distance between the eye and the center is (2 * max scene dimension).
-	cryph::AffVector dir(0.0, 0.15, 1.0);
+	cryph::AffVector dir(-0.05, 0.15, 1.0);
 	dir.normalize();
 
 	double distEyeCenter = 2.0 * maxDelta;
 	cryph::AffPoint eye = center + distEyeCenter * dir;
 
 	// 3) Set the "up" direction vector to orient the 3D view
-	cryph::AffVector up = cryph::AffVector::yu;
+	cryph::AffVector up(0.0, 1.0, 0.0);
 
 	// Notify the ModelView of our MC->EC viewing requests:
 	ModelView::setEyeCenterUp(eye, center, up);
@@ -68,7 +69,7 @@ int main(int argc, char* argv[])
 {
 	srand(time(NULL)); // initialize random seed
 
-	GLFWController c("PUBG Disco?", MVC_USE_DEPTH_BIT);
+	GLFWController c("PUBG Cargo Air Drops", MVC_USE_DEPTH_BIT);
 	c.reportVersions(std::cout);
 
 	ShaderIF* sIF = new ShaderIF("shaders/basic.vsh", "shaders/phong.fsh");
@@ -110,8 +111,8 @@ int main(int argc, char* argv[])
 	}
 
 	// Draw the ground
-	PhongMaterial groundPhong(0.502, 0.502, 0.000, 0.5, 0.5, 0.5, 0.5, 0.5);
-	c.addModel(new Block(sIF, groundPhong, 0.0, 0.0, 0.0, 25.0, 0.15, 25.0));
+	PhongMaterial groundPhong(0.0, 0.1, 0.0, 0.3, 0.3, 0.3, 12, 1);
+	c.addModel(new Ground(sIF, groundPhong, 35.0, 18.0));
 
 	// Specify background color
 	glClearColor(0.1, 0.1, 0.1, 1.0);
