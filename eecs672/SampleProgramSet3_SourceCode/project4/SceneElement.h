@@ -15,7 +15,7 @@
 #include "PhongMaterial.h"
 #include "ShaderIF.h"
 
-static const int MAX_NUM_LIGHTS = 3; 
+static const int MAX_NUM_LIGHTS = 3;
 
 class SceneElement : public ModelView
 {
@@ -40,6 +40,7 @@ protected:
 
 private:
 	GLuint texID;
+	GLenum wrapS, wrapT;
 	int colorGenerationMode;
 	int textureSource;
 
