@@ -10,7 +10,7 @@
 class Ground : public SceneElement
 {
 public:
-	Ground(ShaderIF* sIF, PhongMaterial&matl, float width, float depth);
+	Ground(ShaderIF* sIF, float width, float depth);
 	virtual ~Ground();
 
 	// xyzLimits: {mcXmin, mcXmax, mcYmin, mcYmax, mcZmin, mcZmax}

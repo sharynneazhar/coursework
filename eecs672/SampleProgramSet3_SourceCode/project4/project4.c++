@@ -111,8 +111,7 @@ int main(int argc, char* argv[])
 	}
 
 	// Draw the ground
-	PhongMaterial groundPhong(0.0, 0.1, 0.0, 0.3, 0.3, 0.3, 12, 1);
-	c.addModel(new Ground(sIF, groundPhong, 35.0, 18.0));
+	c.addModel(new Ground(sIF, 35.0, 18.0));
 
 	// Specify background color
 	glClearColor(0.1, 0.1, 0.1, 1.0);

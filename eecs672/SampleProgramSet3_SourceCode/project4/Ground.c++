@@ -5,6 +5,8 @@
 typedef float vec3[3];
 typedef float vec2[2];
 
+PhongMaterial groundPhong(0.0, 0.1, 0.0, 0.3, 0.3, 0.3, 12, 1);
+
 // index lists for the three faces that can't be drawn with glDrawArrays
 GLuint Ground::indexList[3][4] = {
 	{ 6, 7, 0, 1 }, // xmin face
@@ -12,8 +14,8 @@ GLuint Ground::indexList[3][4] = {
 	{ 1, 7, 3, 5 }  // ymax face
 };
 
-Ground::Ground(ShaderIF* sIF, PhongMaterial&matl, float width, float depth) :
-	SceneElement(sIF, matl)
+Ground::Ground(ShaderIF* sIF, float width, float depth) :
+	SceneElement(sIF, groundPhong)
 {
 	xyz[0] = 0.0; xyz[1] = 0.0 + width;
 	xyz[2] = 0.0; xyz[3] = 0.0 + 0.15;
