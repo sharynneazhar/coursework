@@ -5,9 +5,9 @@
 
 float SceneElement::lightPos[4 * MAX_NUM_LIGHTS] =
 	{
-	  0.0, 0.0, 0.0, 1.0,    // blue light
-		0.0, 0.0, 0.0, 1.0,    // purple light
-		8.25, 55.5, -2.0, 0.0   // directional "moon" light
+	  -9.5, 1.15, -55.75, 1.0,    // blue light
+		23.0, 1.15, -20.75, 1.0,  // purple light
+		8.25, 55.5, -2.0, 0.0  // directional "moon" light
 	};
 
 // Are coordinates in "lightPos" stored in MC or EC?
@@ -21,12 +21,12 @@ float posToGLSL[4 * MAX_NUM_LIGHTS];
 
 float SceneElement::lightStrength[3 * MAX_NUM_LIGHTS] =
 {
-	0.0, 0.0, 0.6, // blue light
-	0.6, 0.0, 0.6, // purple light
+	0.0, 0.0, 2.6, // blue light
+	2.8, 0.0, 2.0, // purple light
 	1.4, 1.4, 1.4  // greyish moon light
 };
 
-	float SceneElement::globalAmbient[] = { 0.75, 0.75, 0.75 };
+float SceneElement::globalAmbient[] = { 0.75, 0.75, 0.75 };
 
 SceneElement::SceneElement(ShaderIF* sIF, const PhongMaterial& matlIn) :
 	shaderIF(sIF), matl(matlIn), texID(0), colorGenerationMode(-1),

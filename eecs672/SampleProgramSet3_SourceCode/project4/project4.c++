@@ -78,7 +78,7 @@ int main(int argc, char* argv[])
 	// Draw the crates
 	// 1. A crate on the ground
 	// 2. Up to 5 different parachuting crates randomly placed
-	c.addModel(new Crate(sIF, cryph::AffPoint(8.0, 0.0, 10.0), 1.5, false));
+	c.addModel(new Crate(sIF, cryph::AffPoint(8.0, 0.0, 10.0), 2.0, false));
 	for (int i = 0; i < rand() % 5 + 2; i++) {
 		double xPos = (20.0 - 1.0) * ((double) rand() / (double) RAND_MAX) + 4.0;
 		double yPos = (15.0 - 10.0) * ((double) rand() / (double) RAND_MAX) + 10.0;
@@ -88,17 +88,17 @@ int main(int argc, char* argv[])
 	}
 
 	// Draw the building
-	// c.addModel(new Building(sIF, cryph::AffPoint(18.0, 0.0, 15.0)));
+	c.addModel(new Building(sIF, cryph::AffPoint(18.0, 0.0, 15.0)));
 
-	// // Draw the lightposts
-	// PhongMaterial blueLight(0.0, 0.0, 0.7, 1, 1);
-	// PhongMaterial purpleLight(1.0, 0.2, 1.0, 1, 1);
-	// c.addModel(new LightPost(sIF, purpleLight, 23.0, 0.0, 23.0, 0.45, 5.0, 0.45, 0));
-	// c.addModel(new LightPost(sIF, blueLight, 12.0, 0.0, 23.0, 0.45, 5.0, 0.45, 1));
+	// Draw the lightposts
+	PhongMaterial blueLight(0.0, 0.0, 0.7, 1, 1);
+	PhongMaterial purpleLight(1.0, 0.2, 1.0, 1, 1);
+	c.addModel(new LightPost(sIF, purpleLight, 23.0, 0.0, 23.0, 0.45, 5.0, 0.45, 0));
+	c.addModel(new LightPost(sIF, blueLight, 2.0, 0.0, 5.0, 0.45, 5.0, 0.45, 1));
 
 	// Draw the trees
 	// Up to 10 trees randomly placed
-	for (int i = 0; i < rand() % 15 + 8; i++) {
+	for (int i = 0; i < rand() % 15 + 4; i++) {
 		double xPos = (13.0 - 1.0) * ((double) rand() / (double) RAND_MAX) + 1.0;
 		double zPos = (23.0 - 2.0) * ((double) rand() / (double) RAND_MAX) + 2.0;
 

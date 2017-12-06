@@ -18,6 +18,7 @@ public:
 	virtual ~LightPost();
 
 	void getMCBoundingBox(double* xyzLimitsF) const;
+	bool handleCommand(unsigned char anASCIIChar, double ldsX, double ldsY);
 	void render();
 
 private:

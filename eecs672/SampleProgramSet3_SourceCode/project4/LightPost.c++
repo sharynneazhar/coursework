@@ -26,6 +26,11 @@ LightPost::~LightPost()
 	delete light;
 }
 
+bool LightPost::handleCommand(unsigned char anASCIIChar, double ldsX, double ldsY) {
+	// Building does not look for events; just hand off to inherited handleCommand.
+	return this->SceneElement::handleCommand(anASCIIChar, ldsX, ldsY);
+}
+
 // xyzLimits: {mcXmin, mcXmax, mcYmin, mcYmax, mcZmin, mcZmax}
 void LightPost::getMCBoundingBox(double* xyzLimits) const
 {
