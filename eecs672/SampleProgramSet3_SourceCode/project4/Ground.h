@@ -5,7 +5,6 @@
 
 #include "SceneElement.h"
 #include "ShaderIF.h"
-#include "ImageReader.h"
 
 class Ground : public SceneElement
 {
@@ -27,9 +26,6 @@ private:
 	float xyz[6];
 
 	void defineInitialGeometry();
-	void establishTextureEnvironment();
-	GLuint defineTexture(const char* texImageSource);
-
 };
 
 #endif

@@ -2,59 +2,50 @@
 
 #include "Tree.h"
 
-PhongMaterial treePhong(0.627, 0.322, 0.176, 0.627, 0.322, 0.176, 0.5, 0.5);
-PhongMaterial forestGreen(0.419608, 0.556863, 0.137255, 0.419608, 0.556863, 0.137255, 0.5, 0.5);
-PhongMaterial forestRed(0.824, 0.412, 0.118, 0.824, 0.412, 0.118, 0.5, 0.5);
+PhongMaterial trunkPhong(0.627, 0.322, 0.176, 0.627, 0.322, 0.176, 0.5, 0.5);
 
-Tree::Tree(ShaderIF* sIF, cryph::AffPoint point, double height) : SceneElement(sIF, treePhong)
+Tree::Tree(ShaderIF* sIF, cryph::AffPoint point) : SceneElement(sIF, trunkPhong)
 {
-	cryph::AffVector u(0.0, 1.0, 0.0);
-	cryph::AffVector uu(u[0], u[1], 0.0), ww(0, 1, 0); uu.normalize();
-	cryph::AffVector vv = ww.cross(uu);
+	float radius = 0.35;
 
-	int nPointsAroundSide = 200;
-	int nPointsAlongAxis = 20;
-	double radius = 0.25;
-
-	cryph::AffPoint bottom = point;
-	cryph::AffPoint top = bottom + (height * ww);
-	tree = BasicShape::makeBoundedCylinder(bottom, top, radius,
-						                          	 nPointsAroundSide, nPointsAlongAxis,
-																				 BasicShape::CAP_AT_BOTH);
-
-	bool isEven = (int) point.x % 2 == 0;
-	if (isEven)
-		treeTop = new TreeTop(sIF, forestGreen, top, 0.9);
-	else
-		treeTop = new TreeTop(sIF, forestRed, top, 0.9);
+	defineTrunk(point, radius);
 
 	xyz[0] = 1.0; xyz[1] = 0.0;
 
-	if (tree == nullptr) {
-		treeR = nullptr;
-	} else {
-		treeR = new BasicShapeRenderer(sIF, tree);
-		if (xyz[0] > xyz[1]) { // not yet initialized
-			tree->getMCBoundingBox(xyz);
-		} else {
-			double thisxyz[6];
-			tree->getMCBoundingBox(thisxyz);
-			for (int j = 0; j < 3; j++) {
-				if (thisxyz[2 * j] < xyz[2 * j])
-					xyz[2 * j] = thisxyz[2 * j];
-				if (thisxyz[2 * j + 1] > xyz[2 * j + 1])
-					xyz[2 * j + 1] = thisxyz[2 * j + 1];
-			}
-		}
-	}
+	trunkR = new BasicShapeRenderer(shaderIF, trunk);
+	trunk->getMCBoundingBox(xyz);
+	// setTextureImage("images/tree-bark.png");
 }
 
 Tree::~Tree()
 {
-	if (tree != nullptr)
-		delete tree;
-	if (treeR != nullptr)
-		delete treeR;
+	if (trunk != nullptr)
+		delete trunk;
+	if (trunkR != nullptr)
+		delete trunkR;
+	if (treeTop != nullptr)
+		delete treeTop;
+}
+
+void Tree::defineTrunk(cryph::AffPoint point, float radius) {
+	cryph::AffVector u(0.0, 1.0, 0.0);
+	cryph::AffVector uu(u[0], u[1], 0.0), ww(0, 1, 0); uu.normalize();
+	cryph::AffVector vv = ww.cross(uu);
+
+	cryph::AffPoint bottom = point;
+	cryph::AffPoint top = bottom + (2.5 * ww);
+
+	trunk = BasicShape::makeBoundedCylinder(bottom, top, radius,
+																					10, 2, BasicShape::CAP_AT_BOTH,
+																					0, 1, 0, 7);
+
+	treeTop = new TreeTop(shaderIF, top, 0.9);
+}
+
+bool Tree::handleCommand(unsigned char anASCIIChar, double ldsX, double ldsY)
+{
+	// Ground does not look for events; just hand off to inherited handleCommand.
+	return this->SceneElement::handleCommand(anASCIIChar, ldsX, ldsY);
 }
 
 // xyzLimits: {mcXmin, mcXmax, mcYmin, mcYmax, mcZmin, mcZmax}
@@ -72,15 +63,13 @@ void Tree::render()
 	glUseProgram(shaderIF->getShaderPgmID());
 
 	// 2. Establish the SceneElement
+	establishTexture();
 	establishLightingEnvironment();
 	establishView();
 	establishMaterial();
 
-	if (treeR != nullptr) {
-		treeR->drawShape();
-		treeTop->render();
-	}
-
+	trunkR->drawShape();
+	treeTop->render();
 
 	// 5. Reestablish previous shader program
 	glUseProgram(pgm);

@@ -12,21 +12,22 @@
 class Tree : public SceneElement
 {
 public:
-	Tree(ShaderIF* sIF, cryph::AffPoint point, double height);
+	Tree(ShaderIF* sIF, cryph::AffPoint point);
 	virtual ~Tree();
 
 	// xyzLimits: {mcXmin, mcXmax, mcYmin, mcYmax, mcZmin, mcZmax}
 	void getMCBoundingBox(double* xyzLimitsF) const;
+	bool handleCommand(unsigned char anASCIIChar, double ldsX, double ldsY);
 	void render();
 
 private:
+	BasicShape* trunk;
+	BasicShapeRenderer* trunkR;
 	TreeTop* treeTop;
-	BasicShape* tree;
-	BasicShapeRenderer* treeR;
 
 	double xyz[6];
-	void drawTree();
 
+	void defineTrunk(cryph::AffPoint point, float radius);
 };
 
 #endif

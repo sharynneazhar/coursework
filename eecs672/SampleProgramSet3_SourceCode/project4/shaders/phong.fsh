@@ -88,7 +88,7 @@ vec4 evaluateLightingModel() {
 			vec3 riHat = normalize(reflect(-liHat, ec_nHat));
 			float riDotV = dot(riHat, vHat);
 			float dist = 0.5 * distance(lightPosition[i].xyz, ec_Q);
-			float atten = (1 / dist) * 10;
+			float atten = (1 / dist) * 8;
 
 			if (lightPosition[i].w == 0.0) {
 				diffuseVec += kd * lightStrength[i] * dot(liHat, ec_nHat);
@@ -117,14 +117,13 @@ vec4 evaluateLightingModel() {
 	return vec4(lightTotal, alpha);
 }
 
-vec4 composeColor(vec4 lmColor, vec4 tColor)
-{
+vec4 composeColor(vec4 lmColor, vec4 tColor) {
 	vec4 texColor = lmColor + tColor;
-	return texColor;
+	return (textureFlag == 1) ? texColor : lmColor;
 }
 
 void main () {
 	vec4 lightModelColor = evaluateLightingModel();
-	vec4 textureColor = textureFlag == 1 ? texture(textureMap, pvaIn.texCoords) : vec4(0.0);
+	vec4 textureColor = (textureFlag == 1) ? texture(textureMap, pvaIn.texCoords) : vec4(0.0);
 	fragmentColor = composeColor(lightModelColor, textureColor);
 }

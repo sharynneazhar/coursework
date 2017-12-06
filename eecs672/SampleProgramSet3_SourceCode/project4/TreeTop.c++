@@ -2,50 +2,40 @@
 
 #include "TreeTop.h"
 
-TreeTop::TreeTop(ShaderIF* sIF, PhongMaterial& matl, cryph::AffPoint point, double radius) :
-	SceneElement(sIF, matl)
+PhongMaterial forestGreen(0.419608, 0.556863, 0.137255, 0.419608, 0.556863, 0.137255, 0.5, 0.5);
+
+TreeTop::TreeTop(ShaderIF* sIF, cryph::AffPoint point, double radius) : SceneElement(sIF, forestGreen)
 {
-	cryph::AffVector u(0.0, 1.0, 0.0);
-	cryph::AffVector uu(u[0], u[1], 0.0), ww(0, 1, 0); uu.normalize();
-	cryph::AffVector vv = ww.cross(uu);
-
-	treeTop[0] = BasicShape::makeSphere(point, radius, 20, 20);
-	treeTop[1] = BasicShape::makeSphere(cryph::AffPoint(point.x + 0.5, (point.y - 0.5), point.z),
-																		  (radius * 0.8), 20, 20);
-	treeTop[2] = BasicShape::makeSphere(cryph::AffPoint(point.x - 0.5, (point.y - 0.5), point.z),
-																			(radius * 0.8), 20, 20);
-
+	defineTop(point, radius);
 	xyz[0] = 1.0; xyz[1] = 0.0;
 
 	for (int i = 0 ; i < 3; i++) {
-		if (treeTop[i] == nullptr) {
-			treeTopR[i] = nullptr;
-		} else {
-			treeTopR[i] = new BasicShapeRenderer(sIF, treeTop[i]);
-			if (xyz[0] > xyz[1]) { // not yet initialized
-				treeTop[i]->getMCBoundingBox(xyz);
-			} else {
-				double thisxyz[6];
-				treeTop[i]->getMCBoundingBox(thisxyz);
-				for (int j = 0; j < 3; j++) {
-					if (thisxyz[2 * j] < xyz[2 * j])
-						xyz[2 * j] = thisxyz[2 * j];
-					if (thisxyz[2 * j + 1] > xyz[2 * j + 1])
-						xyz[2 * j + 1] = thisxyz[2 * j + 1];
-				}
-			}
-		}
+		treeTopR[i] = new BasicShapeRenderer(sIF, treeTop[i]);
+		treeTop[i]->getMCBoundingBox(xyz);
+		// setTextureImage("images/tree-leaves.jpg");
 	}
 }
 
 TreeTop::~TreeTop()
 {
-	for (int i = 0 ; i < 3; i++) {
-		if (treeTop[i] != nullptr)
-			delete treeTop[i];
-		if (treeTopR[i] != nullptr)
-			delete treeTopR[i];
-	}
+
+}
+
+void TreeTop::defineTop(cryph::AffPoint point, float radius) {
+	cryph::AffVector u(0.0, 1.0, 0.0);
+	cryph::AffVector uu(u[0], u[1], 0.0), ww(0, 1, 0); uu.normalize();
+	cryph::AffVector vv = ww.cross(uu);
+
+	cryph::AffPoint side1 = cryph::AffPoint(point.x + 0.5, (point.y - 0.5), point.z);
+	cryph::AffPoint side2 = cryph::AffPoint(point.x - 0.5, (point.y - 0.5), point.z);
+	treeTop[0] = BasicShape::makeSphere(point, radius, 20, 20);
+	treeTop[1] = BasicShape::makeSphere(side1, (radius * 0.8), 20, 20);
+	treeTop[2] = BasicShape::makeSphere(side2, (radius * 0.8), 20, 20);
+}
+
+bool TreeTop::handleCommand(unsigned char anASCIIChar, double ldsX, double ldsY) {
+	// Ground does not look for events; just hand off to inherited handleCommand.
+	return this->SceneElement::handleCommand(anASCIIChar, ldsX, ldsY);
 }
 
 // xyzLimits: {mcXmin, mcXmax, mcYmin, mcYmax, mcZmin, mcZmax}
@@ -63,6 +53,7 @@ void TreeTop::render()
 	glUseProgram(shaderIF->getShaderPgmID());
 
 	// 2. Establish the SceneElement
+	establishTexture();
 	establishLightingEnvironment();
 	establishView();
 	establishMaterial();

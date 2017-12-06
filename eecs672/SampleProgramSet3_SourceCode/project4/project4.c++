@@ -37,7 +37,7 @@ void set3DViewingInformation(double xyz[6])
 
 	// 2) Move the eye away along some direction - here (0,0,1) - so that the
 	//    distance between the eye and the center is (2 * max scene dimension).
-	cryph::AffVector dir(-0.05, 0.15, 1.0);
+	cryph::AffVector dir(0.0, 0.15, 1.0);
 	dir.normalize();
 
 	double distEyeCenter = 2.0 * maxDelta;
@@ -78,7 +78,7 @@ int main(int argc, char* argv[])
 	// Draw the crates
 	// 1. A crate on the ground
 	// 2. Up to 5 different parachuting crates randomly placed
-	c.addModel(new Crate(sIF, cryph::AffPoint(8.0, 0.0, 10.0), 2.0, false));
+	c.addModel(new Crate(sIF, cryph::AffPoint(8.0, 0.0, 10.0), 1.5, false));
 	for (int i = 0; i < rand() % 5 + 2; i++) {
 		double xPos = (20.0 - 1.0) * ((double) rand() / (double) RAND_MAX) + 4.0;
 		double yPos = (15.0 - 10.0) * ((double) rand() / (double) RAND_MAX) + 10.0;
@@ -88,30 +88,30 @@ int main(int argc, char* argv[])
 	}
 
 	// Draw the building
-	c.addModel(new Building(sIF, cryph::AffPoint(18.0, 0.5, 15.0)));
+	// c.addModel(new Building(sIF, cryph::AffPoint(18.0, 0.0, 15.0)));
 
-	// Draw the lightposts
-	PhongMaterial blueLight(0.0, 0.0, 0.7, 1, 1);
-	PhongMaterial purpleLight(1.0, 0.2, 1.0, 1, 1);
-	c.addModel(new LightPost(sIF, purpleLight, 23.0, 0.0, 23.0, 0.45, 5.0, 0.45, 0));
-	c.addModel(new LightPost(sIF, blueLight, 12.0, 0.0, 23.0, 0.45, 5.0, 0.45, 1));
+	// // Draw the lightposts
+	// PhongMaterial blueLight(0.0, 0.0, 0.7, 1, 1);
+	// PhongMaterial purpleLight(1.0, 0.2, 1.0, 1, 1);
+	// c.addModel(new LightPost(sIF, purpleLight, 23.0, 0.0, 23.0, 0.45, 5.0, 0.45, 0));
+	// c.addModel(new LightPost(sIF, blueLight, 12.0, 0.0, 23.0, 0.45, 5.0, 0.45, 1));
 
 	// Draw the trees
 	// Up to 10 trees randomly placed
-	for (int i = 0; i < rand() % 10 + 3; i++) {
-		double xPos = (12.0 - 1.0) * ((double) rand() / (double) RAND_MAX) + 1.0;
+	for (int i = 0; i < rand() % 15 + 8; i++) {
+		double xPos = (13.0 - 1.0) * ((double) rand() / (double) RAND_MAX) + 1.0;
 		double zPos = (23.0 - 2.0) * ((double) rand() / (double) RAND_MAX) + 2.0;
 
 		// Check if the tree will be on the crate, move it
 		bool isOnCrate = (xPos >= 7.0 && xPos <= 13.0) && (zPos >= 7.0 && zPos <= 13.0);
 		if (isOnCrate)
-			c.addModel(new Tree(sIF, cryph::AffPoint((xPos + 2.2), 0.0, zPos), 3.0));
+			c.addModel(new Tree(sIF, cryph::AffPoint((xPos + 2.2), -0.2, zPos)));
 		else
-			c.addModel(new Tree(sIF, cryph::AffPoint(xPos, 0.0, zPos), 3.0));
+			c.addModel(new Tree(sIF, cryph::AffPoint(xPos, -0.2, zPos)));
 	}
 
 	// Draw the ground
-	c.addModel(new Ground(sIF, 35.0, 18.0));
+	c.addModel(new Ground(sIF, 25.0, 25.0));
 
 	// Specify background color
 	glClearColor(0.1, 0.1, 0.1, 1.0);

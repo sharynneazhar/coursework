@@ -42,8 +42,8 @@ void Ground::defineInitialGeometry()
 
 	// SO: https://stackoverflow.com/questions/3870437/repeating-textures-in-opengl
 	vec2 texCoords[] = {
-		{0, 0}, {0, 3}, {3, 0}, {3, 3},
-		{3, 3}, {3, 0}, {0, 3}, {0, 0},
+		{0, 0}, {0, 4}, {4, 0}, {4, 4},
+		{4, 4}, {4, 0}, {0, 4}, {0, 0},
 	};
 
 	glGenVertexArrays(1, vao);

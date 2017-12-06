@@ -63,6 +63,8 @@ void Crate::render()
 	glUseProgram(shaderIF->getShaderPgmID());
 
 	// 2. Establish the SceneElement
+	glUniform1i(shaderIF->ppuLoc("textureFlag"), 0);
+
 	establishLightingEnvironment();
 	establishView();
 	establishMaterial();
