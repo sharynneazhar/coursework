@@ -13,8 +13,7 @@ GLuint Block::indexList[3][4] = {
 
 Block::Block(ShaderIF* sIF, PhongMaterial&matl,
 						 float cx, float cy, float cz,
-						 float lx, float ly, float lz) :
-	SceneElement(sIF, matl)
+						 float lx, float ly, float lz) : SceneElement(sIF, matl)
 {
 	xmin = cx; xmax = cx + lx;
 	ymin = cy; ymax = cy + ly;
@@ -60,12 +59,9 @@ void Block::drawBlock()
 // xyzLimits: {mcXmin, mcXmax, mcYmin, mcYmax, mcZmin, mcZmax}
 void Block::getMCBoundingBox(double* xyzLimits) const
 {
-	xyzLimits[0] = xmin;
-	xyzLimits[1] = xmax;
-	xyzLimits[2] = ymin;
-	xyzLimits[3] = ymax;
-	xyzLimits[4] = zmin;
-	xyzLimits[5] = zmax;
+	xyzLimits[0] = xmin; xyzLimits[1] = xmax;
+	xyzLimits[2] = ymin; xyzLimits[3] = ymax;
+	xyzLimits[4] = zmin; xyzLimits[5] = zmax;
 }
 
 bool Block::handleCommand(unsigned char anASCIIChar, double ldsX, double ldsY)

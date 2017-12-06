@@ -16,6 +16,7 @@ public:
 
 	// xyzLimits: {mcXmin, mcXmax, mcYmin, mcYmax, mcZmin, mcZmax}
 	void getMCBoundingBox(double* xyzLimitsF) const;
+	bool handleCommand(unsigned char anASCIIChar, double ldsX, double ldsY);
 	void render();
 
 private:
@@ -23,8 +24,6 @@ private:
 	BasicShapeRenderer* doorR;
 
 	double xyz[6];
-	void drawDoor();
-
 };
 
 #endif

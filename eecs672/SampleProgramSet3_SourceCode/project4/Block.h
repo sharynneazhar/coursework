@@ -10,8 +10,8 @@ class Block : public SceneElement
 {
 public:
 	Block(ShaderIF* sIF, PhongMaterial&matl,
-				float cx, float cy, float cz,
-				float lx, float ly, float lz);
+				float cx, float cy, float cz, // the lower left corner
+				float lx, float ly, float lz); // the lengths in 3 directions
 	virtual ~Block();
 
 	// xyzLimits: {mcXmin, mcXmax, mcYmin, mcYmax, mcZmin, mcZmax}
@@ -25,7 +25,6 @@ private:
 	GLuint ebo[3];
 
 	static GLuint indexList[3][4];
-
 	float xmin, xmax, ymin, ymax, zmin, zmax;
 
 	void drawBlock();
