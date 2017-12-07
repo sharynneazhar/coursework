@@ -61,7 +61,7 @@ void Building::render() {
 
 	buildingR[0]->drawShape();
 
-	glUniform1i(shaderIF->ppuLoc("textureFlag"), 0);
+	glUniform1i(shaderIF->ppuLoc("sceneHasTextures"), 0);
 	buildingR[1]->drawShape();
 
 	door->render();

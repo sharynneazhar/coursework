@@ -16,9 +16,11 @@ TreeTop::TreeTop(ShaderIF* sIF, cryph::AffPoint point, double radius) : SceneEle
 	}
 }
 
-TreeTop::~TreeTop()
-{
-
+TreeTop::~TreeTop() {
+	for (int i = 0; i < 3; i++) {
+		delete treeTop[i];
+		delete treeTopR[i];
+	}
 }
 
 void TreeTop::defineTop(cryph::AffPoint point, float radius) {

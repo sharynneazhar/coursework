@@ -10,7 +10,6 @@ Door::Door(ShaderIF* sIF, cryph::AffPoint corner, double radius) :
 	cryph::AffVector u(0.0, 1.0, 0.0);
 	cryph::AffVector uu(u[0], u[1], 0.0), ww(0, 1, 0); uu.normalize();
 	cryph::AffVector vv = ww.cross(uu);
-	setTextureImage("images/door.png");
 
 	int offset = radius;
 	radius = (radius * 0.29);
@@ -50,14 +49,13 @@ void Door::render() {
 	glUseProgram(shaderIF->getShaderPgmID());
 
 	// 2. Establish the SceneElement
-	establishTexture();
 	establishLightingEnvironment();
 	establishView();
 	establishMaterial();
 
 	doorR->drawShape();
 
-	glUniform1i(shaderIF->ppuLoc("textureFlag"), 0);
+	glUniform1i(shaderIF->ppuLoc("sceneHasTextures"), 0);
 
 	// 5. Reestablish previous shader program
 	glUseProgram(pgm);
