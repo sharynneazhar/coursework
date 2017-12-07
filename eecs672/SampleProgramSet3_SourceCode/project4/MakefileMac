@@ -6,7 +6,7 @@ LINK = g++ -fPIC -g
 LOCAL_UTIL_LIBRARIES = ../lib/libcryph.so ../lib/libfont.so ../lib/libglsl.so ../lib/libimage.so ../lib/libmvc.so
 GL_LIBRARIES = -L/usr/local/lib -lglfw -framework OpenGL
 
-OBJS = project4.o ProjController.o ModelView_Additions.o PhongMaterial.o SceneElement.o Block.o Ground.o CrateTop.o Parachute.o Crate.o LightPost.o LightBulb.o Building.o Door.o Tree.o TreeTop.o
+OBJS = $(addprefix objects/, project4.o ProjController.o ModelView_Additions.o PhongMaterial.o SceneElement.o Block.o Ground.o CrateTop.o Parachute.o Crate.o LightPost.o LightBulb.o Building.o Door.o Tree.o TreeTop.o)
 
 project4: $(OBJS) $(LOCAL_UTIL_LIBRARIES)
 	$(LINK) -o project4 $(OBJS) $(LOCAL_UTIL_LIBRARIES) $(GL_LIBRARIES)
@@ -26,38 +26,9 @@ project4: $(OBJS) $(LOCAL_UTIL_LIBRARIES)
 ../lib/libmvc.so: ../mvcutil/Controller.h ../mvcutil/Controller.c++ ../mvcutil/ModelView.h ../mvcutil/ModelView.c++
 	(cd ../mvcutil; make -f MakefileMac)
 
-project4.o: project4.c++
-	$(CPP) $(C_FLAGS) project4.c++
-ProjController.o: ProjController.c++
-	$(CPP) $(C_FLAGS) ProjController.c++
-ModelView_Additions.o: ModelView_Additions.c++
-	$(CPP) $(C_FLAGS) ModelView_Additions.c++
-PhongMaterial.o: PhongMaterial.c++
-	$(CPP) $(C_FLAGS) PhongMaterial.c++
-SceneElement.o: SceneElement.h SceneElement.c++
-	$(CPP) $(C_FLAGS) SceneElement.c++
-Block.o: Block.h Block.c++
-	$(CPP) $(C_FLAGS) Block.c++
-Ground.o: Ground.h Ground.c++
-	$(CPP) $(C_FLAGS) Ground.c++
-CrateTop.o: CrateTop.h CrateTop.c++
-	$(CPP) $(C_FLAGS) CrateTop.c++
-Parachute.o: Parachute.h Parachute.c++
-	$(CPP) $(C_FLAGS) Parachute.c++
-Crate.o: Crate.h Crate.c++
-	$(CPP) $(C_FLAGS) Crate.c++
-LightPost.o: LightPost.h LightPost.c++
-	$(CPP) $(C_FLAGS) LightPost.c++
-LightBulb.o: LightBulb.h LightBulb.c++
-	$(CPP) $(C_FLAGS) LightBulb.c++
-Building.o: Building.h Building.c++
-	$(CPP) $(C_FLAGS) Building.c++
-Door.o: Door.h Door.c++
-	$(CPP) $(C_FLAGS) Door.c++
-Tree.o: Tree.h Tree.c++
-	$(CPP) $(C_FLAGS) Tree.c++
-TreeTop.o: TreeTop.h TreeTop.c++
-	$(CPP) $(C_FLAGS) TreeTop.c++
+objects/%.o: %.c++
+	@mkdir -p objects/
+	$(CPP) $(C_FLAGS) -c -o $@ $<
 
 clean:
-	rm project4 ../**/*.o ../**/*.so
+	rm -rf project4 objects ../**/*.o ../**/*.so
