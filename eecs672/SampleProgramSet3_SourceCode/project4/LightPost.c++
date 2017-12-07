@@ -17,10 +17,10 @@ LightPost::LightPost(ShaderIF* sIF, PhongMaterial&matl, float cx, float cy, floa
 	cryph::AffPoint bulbCenter(0,0,0);
 	if (direction == 0) {
 		light = new Block(sIF, matl, cx - (1.75 * lx), cy + (ly - lx), cz - (lz / 2), lx * 2, ly / 4, lz * 2);
-		bulbCenter = cryph::AffPoint(cx - (0.75 * lx), cy + ly - 0.5, cz);
+		bulbCenter = cryph::AffPoint(cx - (0.75 * lx), cy + ly - 0.5, cz + 0.17);
 	} else {
 		light = new Block(sIF, matl, cx + (0.75 * lx), cy + (ly - lx), cz - (lz / 2), lx * 2, ly / 4, lz * 2);
-		bulbCenter = cryph::AffPoint(cx + (1.75 * lx), cy + ly - 0.5, cz);
+	        bulbCenter = cryph::AffPoint(cx + (1.75 * lx), cy + ly - 0.5, cz + 0.17);
 	}
 
 	lightBulb = new LightBulb(sIF, bulbCenter);

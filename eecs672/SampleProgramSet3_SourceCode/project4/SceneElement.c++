@@ -42,9 +42,9 @@ void SceneElement::establishLightingEnvironment()
 	// This should set:
 	// "actualNumLights", "ecLightPosition", "lightStrength", "globalAmbient"
 	// Copy "lightPos" to local array "lightPositionInEC".
-  // While doing so, if any of the light sources are defined in MC,
-  // transform them to EC. Then, send the EC geometric description
-  // along with the non-geometric data:
+        // While doing so, if any of the light sources are defined in MC,
+        // transform them to EC. Then, send the EC geometric description
+        // along with the non-geometric data:
 	cryph::Matrix4x4 mc_ec, ec_lds;
 	getMatrices(mc_ec, ec_lds);
 
@@ -52,7 +52,7 @@ void SceneElement::establishLightingEnvironment()
 
 	for (int i = 0; i < MAX_NUM_LIGHTS; i++)  {
 		if (posInModelCoordinates[i]) {
-			if (lightPos[4 * i + 3] == 1) {
+			if (lightPos[4 * i + 3] == 1.0) {
 				cryph::AffPoint p(lightPos[4 * i], lightPos[4 * i + 1], lightPos[4 * i + 2]);
 				p = mc_ec * p;
 				lightPositionInEC[4 * i] = p.x;
@@ -76,18 +76,18 @@ void SceneElement::establishLightingEnvironment()
 	}
 
 	glUniform1i(shaderIF->ppuLoc("actualNumLights"), MAX_NUM_LIGHTS);
-  glUniform4fv(shaderIF->ppuLoc("lightPosition"), MAX_NUM_LIGHTS, lightPos);
-  glUniform3fv(shaderIF->ppuLoc("lightStrength"), MAX_NUM_LIGHTS, lightStrength);
-  glUniform3fv(shaderIF->ppuLoc("globalAmbient"), 1, globalAmbient);
+        glUniform4fv(shaderIF->ppuLoc("lightPosition"), MAX_NUM_LIGHTS, lightPos);
+        glUniform3fv(shaderIF->ppuLoc("lightStrength"), MAX_NUM_LIGHTS, lightStrength);
+        glUniform3fv(shaderIF->ppuLoc("globalAmbient"), 1, globalAmbient);
 }
 
 void SceneElement::establishMaterial()
 {
 	glUniform3fv(shaderIF->ppuLoc("ka"), 1, matl.ka);
 	glUniform3fv(shaderIF->ppuLoc("kd"), 1, matl.kd);
-  glUniform3fv(shaderIF->ppuLoc("ks"), 1, matl.ks);
+        glUniform3fv(shaderIF->ppuLoc("ks"), 1, matl.ks);
 	glUniform1f(shaderIF->ppuLoc("alpha"), matl.alpha);
-  glUniform1f(shaderIF->ppuLoc("shininess"), matl.shininess);
+        glUniform1f(shaderIF->ppuLoc("shininess"), matl.shininess);
 }
 
 void SceneElement::establishTexture()
