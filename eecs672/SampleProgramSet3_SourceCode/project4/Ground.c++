@@ -21,7 +21,7 @@ Ground::Ground(ShaderIF* sIF, float width, float depth) :
 	xyz[2] = -0.15; xyz[3] = 0.0 + 0.15;
 	xyz[4] = 0.0; xyz[5] = 0.0 + depth;
 	defineInitialGeometry();
-	setTextureImage("images/ground.jpg");
+	setTextureImage("textures/ground.jpg");
 }
 
 Ground::~Ground()

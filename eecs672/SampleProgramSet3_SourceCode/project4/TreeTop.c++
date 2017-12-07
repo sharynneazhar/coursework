@@ -12,7 +12,7 @@ TreeTop::TreeTop(ShaderIF* sIF, cryph::AffPoint point, double radius) : SceneEle
 	for (int i = 0 ; i < 3; i++) {
 		treeTopR[i] = new BasicShapeRenderer(sIF, treeTop[i]);
 		treeTop[i]->getMCBoundingBox(xyz);
-		// setTextureImage("images/tree-leaves.jpg");
+		// setTextureImage("textures/tree-leaves.jpg");
 	}
 }
 

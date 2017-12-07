@@ -5,16 +5,15 @@
 #include <time.h>
 
 #include "ProjController.h"
-#include "Block.h"
 #include "Ground.h"
 #include "Crate.h"
 #include "Parachute.h"
 #include "LightPost.h"
 #include "Building.h"
 #include "Tree.h"
+#include "Puddle.h"
 
-void set3DViewingInformation(double xyz[6])
-{
+void set3DViewingInformation(double xyz[6]) {
 	// Tell class ModelView we initially want to see the whole scene:
 	ModelView::setMCRegionOfInterest(xyz);
 
@@ -67,11 +66,10 @@ void set3DViewingInformation(double xyz[6])
 	ModelView::setECZminZmax(ecZmin, ecZmax);
 }
 
-int main(int argc, char* argv[])
-{
+int main(int argc, char* argv[]) {
 	srand(time(NULL)); // initialize random seed
 
-	ProjController c("PUBG Cargo Air Drops", MVC_USE_DEPTH_BIT);
+	ProjController c("PUBG Airdrops", MVC_USE_DEPTH_BIT);
 	c.reportVersions(std::cout);
 
 	ShaderIF* sIF = new ShaderIF("shaders/basic.vsh", "shaders/phong.fsh");
@@ -100,8 +98,8 @@ int main(int argc, char* argv[])
 	c.addModel(new LightPost(sIF, blueLight, 2.0, 0.0, 5.0, 0.45, 5.0, 0.45, 1));
 
 	// Draw the trees
-	// Up to 10 trees randomly placed
-	for (int i = 0; i < rand() % 15 + 4; i++) {
+	// Up to 8 trees randomly placed
+	for (int i = 0; i < (rand() % 8) + 4; i++) {
 		double xPos = (13.0 - 1.0) * ((double) rand() / (double) RAND_MAX) + 1.0;
 		double zPos = (23.0 - 2.0) * ((double) rand() / (double) RAND_MAX) + 2.0;
 
@@ -112,6 +110,11 @@ int main(int argc, char* argv[])
 		else
 			c.addModel(new Tree(sIF, cryph::AffPoint(xPos, -0.2, zPos)));
 	}
+
+	// Draw the puddle
+	c.addModel(new Puddle(sIF, cryph::AffPoint(13.0, 0.0, 22.0), 3.15));
+	c.addModel(new Puddle(sIF, cryph::AffPoint(11.75, 0.0, 20.0), 1.45));
+	c.addModel(new Puddle(sIF, cryph::AffPoint(5.75, 0.0, 13.0), 1.45));
 
 	// Draw the ground
 	c.addModel(new Ground(sIF, 25.0, 25.0));

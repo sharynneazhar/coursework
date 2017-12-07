@@ -14,7 +14,7 @@ Tree::Tree(ShaderIF* sIF, cryph::AffPoint point) : SceneElement(sIF, trunkPhong)
 
 	trunkR = new BasicShapeRenderer(shaderIF, trunk);
 	trunk->getMCBoundingBox(xyz);
-	// setTextureImage("images/tree-bark.png");
+	// setTextureImage("textures/tree-bark.png");
 }
 
 Tree::~Tree()

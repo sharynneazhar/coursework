@@ -32,7 +32,7 @@ Parachute::Parachute(ShaderIF* sIF, cryph::AffPoint corner, double length) :
 	for (int i = 0; i < 3; i++) {
 		parachuteR[i] = new BasicShapeRenderer(sIF, parachute[i]);
 		parachute[i]->getMCBoundingBox(xyz);
-		setTextureImage("images/parachute.jpg");
+		setTextureImage("textures/parachute.jpg");
 	}
 }
 

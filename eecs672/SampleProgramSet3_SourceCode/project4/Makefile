@@ -7,7 +7,7 @@ LOCAL_UTIL_LIBRARIES = ../lib/libcryph.so ../lib/libfont.so ../lib/libglsl.so ..
 GL_LIB_LOC = -L/usr/lib/nvidia-375
 GL_LIBRARIES = $(GL_LIB_LOC) -lglfw -lGLU -lGL
 
-OBJS = $(addprefix objects/, project4.o ProjController.o ModelView_Additions.o PhongMaterial.o SceneElement.o Block.o Ground.o CrateTop.o Parachute.o Crate.o LightPost.o LightBulb.o Building.o Door.o Tree.o TreeTop.o)
+OBJS = $(addprefix objects/, project4.o ProjController.o ModelView_Additions.o PhongMaterial.o SceneElement.o Block.o Ground.o CrateTop.o Parachute.o Crate.o LightPost.o LightBulb.o Building.o Door.o Tree.o TreeTop.o Puddle.o)
 
 project4: $(OBJS) $(LOCAL_UTIL_LIBRARIES)
 	$(LINK) -o project4 $(OBJS) $(LOCAL_UTIL_LIBRARIES) $(GL_LIBRARIES)

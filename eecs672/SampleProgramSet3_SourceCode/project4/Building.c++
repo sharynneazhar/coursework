@@ -15,13 +15,13 @@ Building::Building(ShaderIF* sIF, cryph::AffPoint corner) :SceneElement(sIF, bui
 	building[0] = BasicShape::makeBoundedCylinder(bottom, top, 4.5, 20, 2, BasicShape::CAP_AT_BOTH, 0, 20, 0, 2);
 	buildingR[0] = new BasicShapeRenderer(sIF, building[0]);
 	building[0]->getMCBoundingBox(xyz);
-	setTextureImage("images/wall.jpg");
+	setTextureImage("textures/wall.jpg");
 
 	door = new Door(sIF, bottom, 4.5);
 
 	bottom = cryph::AffPoint(bottom.x, bottom.y + (top.y * 0.75), bottom.z);
 	top = bottom + (4.5 * ww * 0.85);
-	building[1] = BasicShape::makeBoundedCylinder(bottom, top, 5.5, 20, 2, BasicShape::CAP_AT_BOTH, 0, 1, 0, 20);
+	building[1] = BasicShape::makeBoundedCylinder(bottom, top, 5.5, 8, 2, BasicShape::CAP_AT_BOTH, 0, 1, 0, 20);
 	buildingR[1] = new BasicShapeRenderer(sIF, building[1]);
 	building[1]->getMCBoundingBox(xyz);
 
