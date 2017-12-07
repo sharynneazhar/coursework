@@ -7,7 +7,7 @@ LOCAL_UTIL_LIBRARIES = ../lib/libcryph.so ../lib/libfont.so ../lib/libglsl.so ..
 GL_LIB_LOC = -L/usr/lib/nvidia-375
 GL_LIBRARIES = $(GL_LIB_LOC) -lglfw -lGLU -lGL
 
-OBJS = project4.o ModelView_Additions.o PhongMaterial.o SceneElement.o Block.o Ground.o CrateTop.o Parachute.o Crate.o LightPost.o Building.o Door.o Tree.o TreeTop.o
+OBJS = project4.o ProjController.o ModelView_Additions.o PhongMaterial.o SceneElement.o Block.o Ground.o CrateTop.o Parachute.o Crate.o LightPost.o LightBulb.o Building.o Door.o Tree.o TreeTop.o
 
 project4: $(OBJS) $(LOCAL_UTIL_LIBRARIES)
 	$(LINK) -o project4 $(OBJS) $(LOCAL_UTIL_LIBRARIES) $(GL_LIBRARIES)
@@ -29,6 +29,8 @@ project4: $(OBJS) $(LOCAL_UTIL_LIBRARIES)
 
 project4.o: project4.c++
 	$(CPP) $(C_FLAGS) project4.c++
+ProjController.o: ProjController.c++
+	$(CPP) $(C_FLAGS) ProjController.c++
 ModelView_Additions.o: ModelView_Additions.c++
 	$(CPP) $(C_FLAGS) ModelView_Additions.c++
 PhongMaterial.o: PhongMaterial.c++
@@ -47,6 +49,8 @@ Crate.o: Crate.h Crate.c++
 	$(CPP) $(C_FLAGS) Crate.c++
 LightPost.o: LightPost.h LightPost.c++
 	$(CPP) $(C_FLAGS) LightPost.c++
+LightBulb.o: LightBulb.h LightBulb.c++
+	$(CPP) $(C_FLAGS) LightBulb.c++
 Building.o: Building.h Building.c++
 	$(CPP) $(C_FLAGS) Building.c++
 Door.o: Door.h Door.c++

@@ -4,15 +4,14 @@
 #include "ImageReader.h"
 
 float SceneElement::lightPos[4 * MAX_NUM_LIGHTS] =
-	{
-	  -9.5, 1.15, -55.75, 1.0,    // blue light
-		23.0, 1.15, -20.75, 1.0,  // purple light
-		8.25, 55.5, -2.0, 0.0  // directional "moon" light
-	};
+{
+	-10.5, 0.15, -55.75, 1.0, // blue light
+	23.0, 1.15, -20.00, 1.0,  // purple light
+	8.25, 55.5, -2.0, 0.0     // directional "moon" light
+};
 
 // Are coordinates in "lightPos" stored in MC or EC?
-bool SceneElement::posInModelCoordinates[MAX_NUM_LIGHTS] =
-	{ true, true, true };
+bool SceneElement::posInModelCoordinates[MAX_NUM_LIGHTS] = { true, true, true };
 
 // The following is the buffer actually sent to GLSL. It will contain a copy of
 // the (x,y,z,w) for light sources defined in EC; it will contain the coordinates
@@ -21,8 +20,8 @@ float posToGLSL[4 * MAX_NUM_LIGHTS];
 
 float SceneElement::lightStrength[3 * MAX_NUM_LIGHTS] =
 {
-	0.0, 0.0, 2.6, // blue light
-	2.8, 0.0, 2.0, // purple light
+	0.0, 0.0, 5.5, // blue light
+	5.8, 0.0, 5.0, // purple light
 	1.4, 1.4, 1.4  // greyish moon light
 };
 
@@ -42,7 +41,6 @@ void SceneElement::establishLightingEnvironment()
 {
 	// This should set:
 	// "actualNumLights", "ecLightPosition", "lightStrength", "globalAmbient"
-
 	// Copy "lightPos" to local array "lightPositionInEC".
   // While doing so, if any of the light sources are defined in MC,
   // transform them to EC. Then, send the EC geometric description
@@ -51,16 +49,26 @@ void SceneElement::establishLightingEnvironment()
 	getMatrices(mc_ec, ec_lds);
 
 	float lightPositionInEC[MAX_NUM_LIGHTS * 4];
-	for (int i = 0; i < (MAX_NUM_LIGHTS * 4); i++)  {
-		if (posInModelCoordinates[i] == true) {
-			cryph::AffPoint p(lightPos[4 * i], lightPos[4 * i + 1], lightPos[4 * i + 2]);
-			p = mc_ec * p;
-			lightPositionInEC[4 * i] = p.x;
-			lightPositionInEC[4 * i + 1] = p.y;
-			lightPositionInEC[4 * i + 2] = p.z;
-			lightPositionInEC[4 * i + 3] = lightPos[4 * i + 3];
+
+	for (int i = 0; i < MAX_NUM_LIGHTS; i++)  {
+		if (posInModelCoordinates[i]) {
+			if (lightPos[4 * i + 3] == 1) {
+				cryph::AffPoint p(lightPos[4 * i], lightPos[4 * i + 1], lightPos[4 * i + 2]);
+				p = mc_ec * p;
+				lightPositionInEC[4 * i] = p.x;
+				lightPositionInEC[4 * i + 1] = p.y;
+				lightPositionInEC[4 * i + 2] = p.z;
+				lightPositionInEC[4 * i + 3] = lightPos[4 * i + 3];
+			} else {
+				cryph::AffVector v(lightPos[4 * i], lightPos[4 * i + 1], lightPos[4 * i + 2]);
+				v = mc_ec * v;
+				lightPositionInEC[4 * i] = v.dx;
+				lightPositionInEC[4 * i + 1] = v.dy;
+				lightPositionInEC[4 * i + 2] = v.dz;
+				lightPositionInEC[4 * i + 3] = lightPos[4 * i + 3];
+			}
 		} else {
-			lightPositionInEC[4 * i] = lightPos[4 * i];
+			lightPositionInEC[4 * i] = lightPos[i];
 			lightPositionInEC[4 * i + 1] = lightPos[4 * i + 1];
 			lightPositionInEC[4 * i + 2] = lightPos[4 * i + 2];
 			lightPositionInEC[4 * i + 3] = lightPos[4 * i + 3];
@@ -106,7 +114,7 @@ void SceneElement::establishTexture()
 	// use the color from the texture map, (iii) etc.
 
 	// So set them...
-	glUniform1i(shaderIF->ppuLoc("textureFlag"), 1);
+	glUniform1i(shaderIF->ppuLoc("sceneHasTextures"), 1);
 }
 
 void SceneElement::establishView()

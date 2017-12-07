@@ -3,7 +3,8 @@
 #include <iostream>
 #include <stdlib.h>
 #include <time.h>
-#include "GLFWController.h"
+
+#include "ProjController.h"
 #include "Block.h"
 #include "Ground.h"
 #include "Crate.h"
@@ -70,7 +71,7 @@ int main(int argc, char* argv[])
 {
 	srand(time(NULL)); // initialize random seed
 
-	GLFWController c("PUBG Cargo Air Drops", MVC_USE_DEPTH_BIT);
+	ProjController c("PUBG Cargo Air Drops", MVC_USE_DEPTH_BIT);
 	c.reportVersions(std::cout);
 
 	ShaderIF* sIF = new ShaderIF("shaders/basic.vsh", "shaders/phong.fsh");
@@ -93,8 +94,8 @@ int main(int argc, char* argv[])
 	c.addModel(new Building(sIF, cryph::AffPoint(18.0, 0.0, 15.0)));
 
 	// Draw the lightposts
-	PhongMaterial blueLight(0.0, 0.0, 0.7, 1, 1);
-	PhongMaterial purpleLight(1.0, 0.2, 1.0, 1, 1);
+	PhongMaterial blueLight(0.25, 0.5, 1.0, 0.1, 0.396, 0.097254, 12, 0.5);
+	PhongMaterial purpleLight(1.0, 0.2, 1.0, 0.1, 0.396, 0.097254, 12, 0.5);
 	c.addModel(new LightPost(sIF, purpleLight, 23.0, 0.0, 23.0, 0.45, 5.0, 0.45, 0));
 	c.addModel(new LightPost(sIF, blueLight, 2.0, 0.0, 5.0, 0.45, 5.0, 0.45, 1));
 

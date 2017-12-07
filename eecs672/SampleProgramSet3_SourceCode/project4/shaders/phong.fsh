@@ -25,10 +25,13 @@ uniform int actualNumLights;
 uniform vec4 lightPosition[MAX_NUM_LIGHTS];
 uniform vec3 lightStrength[MAX_NUM_LIGHTS];
 uniform vec3 globalAmbient;
-uniform float alpha;
 uniform float shininess;
 
-uniform int textureFlag;
+uniform int sceneHasTranslucentObjects = 0;
+uniform int drawingOpaqueObjects = 1;
+uniform float alpha;
+
+uniform int sceneHasTextures = 0;
 uniform sampler2D textureMap;
 
 uniform mat4 ec_lds = // (W-V map) * (projection matrix)
@@ -56,7 +59,7 @@ vec4 evaluateLightingModel() {
 
 	// Create a unit vector towards the viewer (method depends on type of projection!)
 	if (ec_lds[3][3] != 0.0f) { // perspective
-		vHat = normalize(-ec_Q);
+		vHat = -normalize(ec_Q);
 	} else if (ec_lds[1][0] != 0.0f) { // orthogonal
 		vHat = vec3(0.0, 0.0, 1.0);
 	} else { // oblique
@@ -119,11 +122,12 @@ vec4 evaluateLightingModel() {
 
 vec4 composeColor(vec4 lmColor, vec4 tColor) {
 	vec4 texColor = lmColor + tColor;
-	return (textureFlag == 1) ? texColor : lmColor;
+	return (sceneHasTextures == 1) ? texColor : lmColor;
 }
 
 void main () {
 	vec4 lightModelColor = evaluateLightingModel();
-	vec4 textureColor = (textureFlag == 1) ? texture(textureMap, pvaIn.texCoords) : vec4(0.0);
+	vec4 textureColor = (sceneHasTextures == 1) ? texture(textureMap, pvaIn.texCoords) : vec4(0.0);
 	fragmentColor = composeColor(lightModelColor, textureColor);
+	fragmentColor.a = alpha;
 }
