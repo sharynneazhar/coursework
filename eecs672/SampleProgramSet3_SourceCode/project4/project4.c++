@@ -7,6 +7,7 @@
 #include "Block.h"
 #include "Ground.h"
 #include "Crate.h"
+#include "Parachute.h"
 #include "LightPost.h"
 #include "Building.h"
 #include "Tree.h"
@@ -33,7 +34,7 @@ void set3DViewingInformation(double xyz[6])
 
 	// Create the line of sight through the center of the scene:
 	// 1) Make the center of attention be the center of the bounding box.
-	cryph::AffPoint center(xmid, ymid, zmid);
+	cryph::AffPoint center(xmid, ymid + 2, zmid);
 
 	// 2) Move the eye away along some direction - here (0,0,1) - so that the
 	//    distance between the eye and the center is (2 * max scene dimension).
@@ -78,13 +79,14 @@ int main(int argc, char* argv[])
 	// Draw the crates
 	// 1. A crate on the ground
 	// 2. Up to 5 different parachuting crates randomly placed
-	c.addModel(new Crate(sIF, cryph::AffPoint(8.0, 0.0, 10.0), 2.0, false));
+	c.addModel(new Crate(sIF, cryph::AffPoint(8.0, 0.0, 10.0), 1.75));
 	for (int i = 0; i < rand() % 5 + 2; i++) {
 		double xPos = (20.0 - 1.0) * ((double) rand() / (double) RAND_MAX) + 4.0;
 		double yPos = (15.0 - 10.0) * ((double) rand() / (double) RAND_MAX) + 10.0;
 		double zPos = (10.0 - 1.0) * ((double) rand() / (double) RAND_MAX) + 4.0;
 		double size = (1.0 - 0.5) * ((double) rand() / (double) RAND_MAX) + 0.5;
-		c.addModel(new Crate(sIF, cryph::AffPoint(xPos, yPos, zPos), size, true));
+		c.addModel(new Crate(sIF, cryph::AffPoint(xPos, yPos, zPos), 1.0));
+		c.addModel(new Parachute(sIF, cryph::AffPoint(xPos, yPos, zPos), 1.0));
 	}
 
 	// Draw the building

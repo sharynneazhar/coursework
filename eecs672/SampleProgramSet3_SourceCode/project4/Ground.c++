@@ -18,7 +18,7 @@ Ground::Ground(ShaderIF* sIF, float width, float depth) :
 	SceneElement(sIF, groundPhong)
 {
 	xyz[0] = 0.0; xyz[1] = 0.0 + width;
-	xyz[2] = 0.0; xyz[3] = 0.0 + 0.15;
+	xyz[2] = -0.15; xyz[3] = 0.0 + 0.15;
 	xyz[4] = 0.0; xyz[5] = 0.0 + depth;
 	defineInitialGeometry();
 	setTextureImage("images/ground.jpg");

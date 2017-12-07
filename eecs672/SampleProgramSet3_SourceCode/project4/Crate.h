@@ -8,28 +8,23 @@
 #include "AffVector.h"
 #include "BasicShapeRenderer.h"
 #include "CrateTop.h"
-#include "Parachute.h"
 
 class Crate : public SceneElement
 {
 public:
-	Crate(ShaderIF* sIF, cryph::AffPoint corner, double length, bool inAir);
+	Crate(ShaderIF* sIF, cryph::AffPoint corner, double length);
 	virtual ~Crate();
 
 	// xyzLimits: {mcXmin, mcXmax, mcYmin, mcYmax, mcZmin, mcZmax}
 	void getMCBoundingBox(double* xyzLimitsF) const;
+	bool handleCommand(unsigned char anASCIIChar, double ldsX, double ldsY);
 	void render();
 
 private:
-	CrateTop* crateTop;
-	Parachute* parachute;
 	BasicShape* crate;
 	BasicShapeRenderer* crateR;
-	bool inAir;
-
+	CrateTop* crateTop;
 	double xyz[6];
-	void drawCrate();
-
 };
 
 #endif

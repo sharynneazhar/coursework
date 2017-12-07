@@ -13,9 +13,9 @@ CrateTop::CrateTop(ShaderIF* sIF, cryph::AffPoint corner, double length) : Scene
 	double height = length * 1.005;
 	double width = length * 0.3;
 	double depth = length * 1.1;
-	double thickness = length * 1.005;
+	double thickness = length * 1.225;
 
-	cryph::AffPoint cornerTop(corner.x + (length * 0.05), corner.y + (length * 0.80), corner.z);
+	cryph::AffPoint cornerTop(corner.x + (length * 0.05), corner.y + (length * 0.80), corner.z - 0.15);
 	cornerTop = cornerTop + height * ww;
 	crateTop = BasicShape::makeBlock(cornerTop,
 																	 uu, width,
@@ -23,25 +23,9 @@ CrateTop::CrateTop(ShaderIF* sIF, cryph::AffPoint corner, double length) : Scene
 																	 ww, thickness);
 
 	xyz[0] = 1.0; xyz[1] = 0.0;
-	
-	if (crateTop == nullptr) {
-		crateTopR = nullptr;
-	} else {
-		crateTopR = new BasicShapeRenderer(sIF, crateTop);
-		if (xyz[0] > xyz[1]) { // not yet initialized
-			crateTop->getMCBoundingBox(xyz);
-		} else {
-			double thisxyz[6];
-			crateTop->getMCBoundingBox(thisxyz);
-			for (int j = 0; j < 3; j++) {
-				if (thisxyz[2 * j] < xyz[2 * j])
-					xyz[2 * j] = thisxyz[2 * j];
-				if (thisxyz[2 * j + 1] > xyz[2 * j + 1])
-					xyz[2 * j + 1] = thisxyz[2 * j + 1];
-			}
-		}
-	}
 
+	crateTopR = new BasicShapeRenderer(sIF, crateTop);
+	crateTop->getMCBoundingBox(xyz);
 }
 
 CrateTop::~CrateTop()

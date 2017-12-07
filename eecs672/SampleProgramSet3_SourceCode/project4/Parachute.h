@@ -16,6 +16,7 @@ public:
 
 	// xyzLimits: {mcXmin, mcXmax, mcYmin, mcYmax, mcZmin, mcZmax}
 	void getMCBoundingBox(double* xyzLimitsF) const;
+	bool handleCommand(unsigned char anASCIIChar, double ldsX, double ldsY);
 	void render();
 
 private:
@@ -23,8 +24,7 @@ private:
 	BasicShapeRenderer* parachuteR[3];
 
 	double xyz[6];
-	void drawParachute();
-
+	void defineParahute();
 };
 
 #endif

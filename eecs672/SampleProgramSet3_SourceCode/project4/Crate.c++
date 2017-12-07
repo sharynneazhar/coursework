@@ -4,8 +4,8 @@
 
 PhongMaterial crateBasePhong(1.0, 0.0, 0.0, 0.5, 0.5, 0.5, 0.5, 0.5);
 
-Crate::Crate(ShaderIF* sIF, cryph::AffPoint corner, double length, bool inAirIn) :
-	SceneElement(sIF, crateBasePhong), inAir(inAirIn)
+Crate::Crate(ShaderIF* sIF, cryph::AffPoint corner, double length) :
+	SceneElement(sIF, crateBasePhong)
 {
 	cryph::AffVector u(0.0, 1.0, 0.0);
 	cryph::AffVector uu(u[0], u[1], 0.0), ww(0, 0, 1); uu.normalize();
@@ -17,31 +17,14 @@ Crate::Crate(ShaderIF* sIF, cryph::AffPoint corner, double length, bool inAirIn)
 																ww, length);
 
 	crateTop = new CrateTop(sIF, corner, length);
-	parachute = new Parachute(sIF, corner, length);
 
 	xyz[0] = 1.0; xyz[1] = 0.0;
 
-	if (crate == nullptr) {
-		crateR = nullptr;
-	} else {
-		crateR = new BasicShapeRenderer(sIF, crate);
-		if (xyz[0] > xyz[1]) {
-			crate->getMCBoundingBox(xyz);
-		} else {
-			double thisxyz[6];
-			crate->getMCBoundingBox(thisxyz);
-			for (int j = 0; j < 3; j++) {
-				if (thisxyz[2 * j] < xyz[2 * j])
-					xyz[2 * j] = thisxyz[2 * j];
-				if (thisxyz[2 * j + 1] > xyz[2 * j + 1])
-					xyz[2 * j + 1] = thisxyz[2 * j + 1];
-			}
-		}
-	}
+	crateR = new BasicShapeRenderer(sIF, crate);
+	crate->getMCBoundingBox(xyz);
 }
 
-Crate::~Crate()
-{
+Crate::~Crate() {
 	if (crate != nullptr)
 		delete crate;
 	if (crateR != nullptr)
@@ -49,14 +32,17 @@ Crate::~Crate()
 }
 
 // xyzLimits: {mcXmin, mcXmax, mcYmin, mcYmax, mcZmin, mcZmax}
-void Crate::getMCBoundingBox(double* xyzLimits) const
-{
+void Crate::getMCBoundingBox(double* xyzLimits) const {
 	for (int i = 0 ; i < 6; i++)
 		xyzLimits[i] = xyz[i];
 }
 
-void Crate::render()
-{
+bool Crate::handleCommand(unsigned char anASCIIChar, double ldsX, double ldsY) {
+	// Ground does not look for events; just hand off to inherited handleCommand.
+	return this->SceneElement::handleCommand(anASCIIChar, ldsX, ldsY);
+}
+
+void Crate::render() {
 	// 1. Save current and establish new current shader program
 	GLint pgm;
 	glGetIntegerv(GL_CURRENT_PROGRAM, &pgm);
@@ -64,7 +50,6 @@ void Crate::render()
 
 	// 2. Establish the SceneElement
 	glUniform1i(shaderIF->ppuLoc("textureFlag"), 0);
-
 	establishLightingEnvironment();
 	establishView();
 	establishMaterial();
@@ -72,12 +57,7 @@ void Crate::render()
 	if (crateR != nullptr) {
 		crateR->drawShape();
 		crateTop->render();
-
-		// If flagged, then render parachute
-		if (inAir)
-			parachute->render();
 	}
-
 
 	// 5. Reestablish previous shader program
 	glUseProgram(pgm);
