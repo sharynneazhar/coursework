@@ -8,6 +8,7 @@ A library of lab and homework assignments completed
 * EECS 448: Software Engineering I
 * EECS 560: Data Structures
 * EECS 645: Intro to Computer Architecture
+* EECS 662: Programming Languages
 * EECS 665: Compiler Construction
 * EECS 672: Intro to Computer Graphics
 * EECS 678: Intro to Operating Systems
