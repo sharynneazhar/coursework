@@ -240,6 +240,7 @@ genAE n =
 
 
 -- QuickCheck Tests
+-- Using verbose to display test cases generated
 testParser :: Int -> IO ()
 testParser n = verboseCheckWith stdArgs {maxSuccess=n}
   (\t -> parseAE (pprintAE t) == t)
