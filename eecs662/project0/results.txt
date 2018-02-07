@@ -1,0 +1,35 @@
+-- Sample output from running "testEval 10"
+
+*Main> testEval 10
+
+Passed:
+Minus (Minus (Minus (Num 43) (Minus (Minus (Num 23) (Num 55)) (If0 (Num 6) (Num 44) (Num 63)))) (Minus (Minus (Mult (Num 57) (Num 81)) (Minus (Num 46) (Num 94))) (Minus (Minus (Num 59) (Num 50)) (Minus (Num 66) (Num 96))))) (Minus (If0 (Plus (Num 6) (Minus (Num 45) (Num 14))) (Minus (Plus (Num 61) (Num 3)) (Plus (Num 60) (Num 71))) (If0 (Minus (Num 75) (Num 81)) (If0 (Num 48) (Num 73) (Num 66)) (Minus (Num 53) (Num 49)))) (Minus (Minus (If0 (Num 20) (Num 96) (Num 5)) (Num 78)) (Plus (Mult (Num 82) (Num 75)) (Plus (Num 9) (Num 25)))))
+
+Passed:
+Num 80
+
+Passed:
+Minus (If0 (Num 1) (Mult (Num 40) (Plus (Mult (Num 84) (Num 87)) (If0 (Num 34) (Num 52) (Num 66)))) (Num 100)) (Mult (Mult (If0 (Mult (Num 47) (Num 78)) (Minus (Num 57) (Num 26)) (Num 35)) (Minus (Plus (Num 80) (Num 58)) (If0 (Num 5) (Num 48) (Num 30)))) (Minus (Minus (Plus (Num 59) (Num 91)) (Plus (Num 27) (Num 39))) (Mult (If0 (Num 2) (Num 77) (Num 19)) (Plus (Num 5) (Num 50)))))
+
+Passed:
+If0 (Plus (If0 (Mult (Mult (Num 48) (Num 20)) (Minus (Num 34) (Num 1))) (Minus (If0 (Num 86) (Num 95) (Num 16)) (Minus (Num 64) (Num 66))) (Minus (Plus (Num 2) (Num 10)) (Mult (Num 26) (Num 56)))) (Minus (Plus (If0 (Num 50) (Num 49) (Num 46)) (Minus (Num 48) (Num 52))) (If0 (If0 (Num 50) (Num 67) (Num 40)) (If0 (Num 48) (Num 46) (Num 17)) (Minus (Num 65) (Num 27))))) (If0 (Minus (Minus (Mult (Num 66) (Num 86)) (Num 8)) (Num 61)) (If0 (Mult (Mult (Num 61) (Num 31)) (Minus (Num 97) (Num 85))) (Minus (Minus (Num 28) (Num 21)) (Num 87)) (Num 32)) (If0 (Minus (If0 (Num 59) (Num 57) (Num 95)) (If0 (Num 45) (Num 10) (Num 3))) (Minus (Minus (Num 62) (Num 31)) (Minus (Num 12) (Num 12))) (Num 18))) (If0 (Num 39) (Plus (If0 (Num 67) (Plus (Num 52) (Num 89)) (Num 24)) (Minus (Plus (Num 40) (Num 49)) (If0 (Num 75) (Num 56) (Num 34)))) (If0 (Minus (Plus (Num 24) (Num 74)) (Num 47)) (Mult (Num 64) (Plus (Num 41) (Num 48))) (Minus (If0 (Num 56) (Num 100) (Num 94)) (If0 (Num 60) (Num 70) (Num 76)))))
+
+Passed:
+Mult (Minus (Num 66) (Plus (If0 (Plus (Num 81) (Num 64)) (If0 (Num 13) (Num 66) (Num 18)) (Mult (Num 36) (Num 54))) (If0 (If0 (Num 82) (Num 21) (Num 24)) (Num 43) (Mult (Num 61) (Num 55))))) (Plus (Num 44) (Minus (Plus (Minus (Num 36) (Num 7)) (If0 (Num 97) (Num 45) (Num 74))) (If0 (If0 (Num 11) (Num 65) (Num 77)) (Num 39) (Minus (Num 90) (Num 39)))))
+
+Passed:
+Minus (Minus (If0 (Minus (Mult (Num 73) (Num 38)) (Minus (Num 18) (Num 71))) (Minus (Minus (Num 57) (Num 23)) (Minus (Num 75) (Num 66))) (Minus (Mult (Num 69) (Num 40)) (Plus (Num 77) (Num 10)))) (Plus (Mult (Mult (Num 93) (Num 62)) (Num 24)) (Minus (Plus (Num 22) (Num 97)) (Num 34)))) (Minus (Num 8) (Num 8))
+
+Passed:
+Minus (Mult (Num 43) (Num 68)) (Minus (Num 67) (Minus (Plus (If0 (Num 89) (Num 6) (Num 50)) (Plus (Num 40) (Num 29))) (Mult (Minus (Num 5) (Num 77)) (Mult (Num 90) (Num 45)))))
+
+Passed:
+Num 60
+
+Passed:
+If0 (Num 27) (Num 91) (Plus (If0 (Mult (If0 (Num 48) (Num 17) (Num 78)) (Minus (Num 42) (Num 31))) (Num 60) (Minus (Mult (Num 40) (Num 40)) (Num 18))) (Plus (Mult (Mult (Num 49) (Num 41)) (Mult (Num 35) (Num 56))) (If0 (Minus (Num 57) (Num 77)) (If0 (Num 51) (Num 34) (Num 39)) (If0 (Num 0) (Num 13) (Num 57)))))
+
+Passed:
+Minus (If0 (If0 (Plus (Num 85) (If0 (Num 66) (Num 0) (Num 41))) (Mult (Plus (Num 34) (Num 14)) (Mult (Num 30) (Num 77))) (Mult (If0 (Num 93) (Num 22) (Num 10)) (Plus (Num 92) (Num 89)))) (If0 (Num 5) (If0 (Minus (Num 42) (Num 50)) (Minus (Num 79) (Num 82)) (If0 (Num 100) (Num 39) (Num 35))) (Minus (Minus (Num 99) (Num 28)) (Minus (Num 80) (Num 42)))) (Mult (Num 17) (Mult (Num 31) (Plus (Num 87) (Num 1))))) (If0 (Mult (Minus (If0 (Num 98) (Num 6) (Num 8)) (Minus (Num 22) (Num 83))) (If0 (Plus (Num 69) (Num 90)) (If0 (Num 4) (Num 85) (Num 0)) (Num 68))) (Minus (If0 (Num 61) (Minus (Num 66) (Num 66)) (Mult (Num 9) (Num 65))) (Num 14)) (Mult (If0 (Num 55) (Minus (Num 96) (Num 27)) (Mult (Num 39) (Num 97))) (Plus (If0 (Num 68) (Num 26) (Num 45)) (Plus (Num 84) (Num 51)))))
+
++++ OK, passed 10 tests.

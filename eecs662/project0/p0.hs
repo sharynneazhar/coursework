@@ -20,6 +20,9 @@ import Text.ParserCombinators.Parsec.Token
 -- Author: Perry Alexander
 -- Date: Tue Jan 23 17:54:44 CST 2018
 --
+-- Modified by: Sharynne Azhar
+-- Date: Tue Feb 6 15:08:00 CST 2018
+--
 -- Source files for the Arithmetic Expressions (AE) language from PLIH
 --
 
@@ -112,7 +115,7 @@ evalAE (Minus l r) = if ((evalAE l) - (evalAE r) < 0) then error "!"
 evalAE (Mult l r) = (evalAE l) * (evalAE r)
 evalAE (Div l r) = if ((evalAE r) == 0) then error "!"
                    else div (evalAE l) (evalAE r)
-evalAE (If0 c t e) = if (c == (Num 0)) then (evalAE t)
+evalAE (If0 c t e) = if ((evalAE c) == 0) then (evalAE t)
                      else (evalAE e)
 
 evalAEMaybe :: AE -> Maybe Int
@@ -149,12 +152,8 @@ evalAEMaybe (Div l r) =
 
 evalAEMaybe (If0 c t e) =
   case (evalAEMaybe c) of
-    Just c2 -> case (evalAEMaybe t) of
-      Just t2 -> case (evalAEMaybe e) of
-        Just e2 -> if (c2 == 0) then Just t2
-                   else Just e2
-        Nothing -> Nothing
-      Nothing-> Nothing
+    Just c2 -> if (c2 == 0) then (evalAEMaybe t)
+               else (evalAEMaybe e)
     Nothing -> Nothing
 
 evalM :: AE -> Maybe Int
@@ -183,10 +182,8 @@ evalM (Div l r) =
 
 evalM (If0 c t e) =
   do x <- evalM c;
-     y <- evalM t;
-     z <- evalM e;
-     if (x == 0) then Just y
-     else Just z
+     if (x == 0) then (evalM t)
+     else (evalM e)
 
 interpAE :: String -> Maybe Int
 interpAE = evalM . parseAE
@@ -196,7 +193,7 @@ interpAE = evalM . parseAE
 
 instance Arbitrary AE where
   arbitrary =
-    sized $ \n -> genAE ((rem n 10) + 10)
+    sized $ \n -> genAE ((rem n 5) + 5)
 
 genNum =
   do t <- choose (0,100)
@@ -244,9 +241,9 @@ genAE n =
 
 -- QuickCheck Tests
 testParser :: Int -> IO ()
-testParser n = quickCheckWith stdArgs {maxSuccess=n}
+testParser n = verboseCheckWith stdArgs {maxSuccess=n}
   (\t -> parseAE (pprintAE t) == t)
 
 testEval :: Int -> IO ()
-testEval n = quickCheckWith stdArgs {maxSuccess=n}
+testEval n = verboseCheckWith stdArgs {maxSuccess=n}
   (\t -> (interpAE $ pprintAE t) == (evalM t))

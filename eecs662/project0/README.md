@@ -14,6 +14,8 @@ Run the QuickCheck test (e.g. 10 different test runs)
 testEval 10
 ```
 
+*results.txt* shows a sample verbose output when `testEval 10` is run.
+
 
 ## Project Requirements
 
