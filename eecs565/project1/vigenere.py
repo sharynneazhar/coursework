@@ -61,7 +61,8 @@ def decrypt(message, key_len, first_word_len, dictionary):
   print('>> Key: %s' % key)
   print('>> Decrypted Text: %s' % plaintext)
   print('>> Time Taken to Find Key: %.4f seconds' % find_key_time)
-  print('>> Time Taken to Decipher: %.4f seconds\n' % vignere_time)
+  print('>> Time Taken to Decipher: %.4f seconds' % vignere_time)
+  print('>> Total Time Taken: %.4f seconds\n' % (find_key_time + vignere_time))
 
 
 if __name__ == '__main__':
