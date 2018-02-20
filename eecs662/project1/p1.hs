@@ -41,7 +41,6 @@ pprint (Leq n m) = "(" ++ pprint n ++ " <= " ++ pprint m ++ ")"
 pprint (IsZero m) = "(isZero " ++ pprint m ++ ")"
 pprint (If c n m) = "(if " ++ pprint c ++ " then " ++ pprint n ++ " else " ++ pprint m ++ ")"
 
-
 -- Parser (Requires ParserUtils and Parsec)
 
 languageDef =
@@ -108,10 +107,61 @@ term = parens lexer expr
 
 parseABE = parseString expr
 
+-- Helper lift Functions
+
+liftNum :: (Int -> Int -> Int) -> ABE -> ABE -> ABE
+liftNum f (Num x) (Num y) = Num (f x y)
+
+liftNum2Bool :: (Int -> Int -> Bool) -> ABE -> ABE -> ABE
+liftNum2Bool f (Num x) (Num y) = Boolean (f x y)
+
+liftBool :: (Bool -> Bool -> Bool) -> ABE -> ABE -> ABE
+liftBool f (Boolean x) (Boolean y) = Boolean (f x y)
+
 -- Evaluation Functions
 
 evalM :: ABE -> (Maybe ABE)
-evalM _ = Nothing -- Replace this with your interpreter
+evalM (Num n) = return (Num n)
+
+evalM (Plus l r) = 
+  do x <- evalM l;
+     y <- evalM r;
+     return (liftNum (+) x y)
+
+evalM (Minus l r) = 
+  do x <- evalM l;
+     y <- evalM r;
+     return (liftNum (-) x y)
+
+evalM (Mult l r) =
+  do x <- evalM l;
+     y <- evalM r;
+     return (liftNum (*) x y)
+
+evalM (Div l r) =
+  do x <- evalM l;
+     y <- evalM r;
+     return (liftNum div x y)
+
+evalM (Boolean b) = Just (Boolean b)
+
+evalM (And l r) =
+  do x <- evalM l;
+     y <- evalM r;
+     return (liftBool (&&) x y)
+
+evalM (Leq l r) =
+  do x <- evalM l;
+     y <- evalM r;
+     return (liftNum2Bool (<=) x y)
+
+evalM (IsZero t) =
+  do x <- evalM t;
+     return (liftNum2Bool (==) x (Num 0))
+
+evalM (If c t e) =
+  do (Boolean b) <- evalM c
+     (if b then (evalM t) else (evalM e))
 
 evalErr :: ABE -> (Maybe ABE)
 evalErr _ = Nothing -- Replace this with your interpreter
