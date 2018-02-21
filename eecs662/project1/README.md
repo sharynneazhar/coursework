@@ -9,6 +9,11 @@ Load the file:
 ghci p1.hs
 ```
 
+Run the QuickCheck test (e.g. 100 different test runs)
+```
+testTypedEval 100
+```
+
 ## Project Requirements
 
 To aid in your quest, the file p1.hs implements the Haskell ABE and TABE data types, function signatures, and a parser from strings to the ABE data type. You do not need the parser for this project. It is included if you find the concrete syntax easier to read and to give you another example using Parsec.
