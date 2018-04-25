@@ -9,22 +9,17 @@ Load the file:
 ghci p3.hs
 ```
 
-There are three `interp` methods available to easily run the different `eval`s:
-
+Run tests (tests cases can be modified in the test.hs file):
 ```
-interpDyn :: String -> (Maybe CFAE)
-interpDyn = (evalDynCFAE []) . parseCFAE
-```
-```
-interpStat :: String -> (Maybe CFAEValue)
-interpStat = (evalStatCFAE []) . parseCFAE
-```
-```
-interpCFBAE :: String -> (Maybe CFAEValue)
-interpCFBAE = (evalCFBAE []) . parseCFBAE
+> runTests
 ```
 
-
+Sample Output:
+```
+evalDynCFAE  - [Just (Lambda "x" (Plus (Id "x") (Num 1))),Just (Num 4),Just (Num 6),Just (Num 6)]
+evalStatCFAE - [Just (ClosureV "x" (Plus (Id "x") (Num 1)) []),Just (NumV 4),Just (NumV 4),Nothing]
+evalCFBAE    - [Just (ClosureV "x" (Plus (Id "x") (Num 1)) []),Just (NumV 4),Just (NumV 4),Nothing]
+```
 
 ## Project Requirements
 
