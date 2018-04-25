@@ -6,7 +6,7 @@ The objective of this project is to add dynamically scoped and statically scoped
 
 Load the file:
 ```
-ghci p3.hs
+ghci test.hs
 ```
 
 Run tests (tests cases can be modified in the test.hs file):
