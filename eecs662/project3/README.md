@@ -31,7 +31,7 @@ In this exercise you will write an interpreter for a modified FBAE language pres
 ```
 CFAE ::= number |
          id |
-         CFAE * CFAE  |
+         CFAE + CFAE  |
          CFAE - CFAE |
          lambda id in CFAE |
          app CFAE CFAE |
@@ -53,7 +53,7 @@ In this exercise you will write a pair of interpreters for a an extension of the
 ```
 CFBAE ::= number |
           id |
-          CFBAE * CFBAE  |
+          CFBAE + CFBAE  |
           CFBAE - CFBAE |
           bind id = CFBAE in CFBAE |
           lambda id in CFBAE |
