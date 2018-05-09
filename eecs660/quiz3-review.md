@@ -196,3 +196,10 @@ As a result, deletions that trigger table-halving will not cost any money and th
 
 > Use the **accounting method** to show that the amortized time complexity for each insertion and deletion with table-doubling and table-halving is O(1).
 
+Imagine at a given point where the array has size of 2m and is half full. This is possible if we simply assign the initial hash table with size 2. Given the above proofs, we can have any insertion to deposit $2 into the bank and each deletion to depost $1 into the bank.
+
+If the next size-changing operation is table-doubling, then there are at least m insertions and our bank account will have $2m to pay for the table-doubling cost.
+
+If the next size-changing operation is table-halving, then there are at least m/2 deletions and our bank account will have $m/2 to pay for the table-halving cost.
+
+It follows that each insertion and deletion takes O(1) time even if they come in random order.
