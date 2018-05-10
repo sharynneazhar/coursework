@@ -119,13 +119,13 @@ In this case, we define a **best valid partner** as the partner highest in prefe
 
 Let us suppose, by way of contradiction, that some execution &epsilon; of the G-S algorithm results in a matching S in which some man is paired with a woman who is not his best valid partner. Since men propose in decreasing order of preference, this means that some man is rejected by a valid partner during the execution &epsilon; of the algorithm. So consider the first moment during the execution &epsilon; in which some man, say m, is rejected by a valid partner w. Again, since men propose in decreasing order of preference, and since this is the first time such a rejection has occurred, it must be that w is m’s best valid partner best(m).
 
-The rejection of m by w may have happened either because m proposed and was turned down in favor of w’s existing engagement, or because w broke her engagement to m in favor of a better proposal. But either way, at this moment w forms or continues an engagement with a man m' whom she prefers to m.
+The rejection of m by w may have happened either because m proposed and was turned down in favor of w’s existing engagement, or because w broke her engagement to m in favor of a better proposal. But either way, at this moment w forms or continues an engagement with a man m' whom she prefers to m.
 
-Since w is a valid partner of m, there exists a stable matching S' containing the pair (m, w). Now we ask: Who is m' paired with in this matching? Suppose it is a woman w' &ne; w.
+Since w is a valid partner of m, there exists a stable matching S' containing the pair (m, w). Now we ask: Who is m' paired with in this matching? Suppose it is a woman w' &ne; w.
 
-Since the rejection of m by w was the first rejection of a man by a valid partner in the execution &epsilon;, it must be that m' had not been rejected by any valid partner at the point in &epsilon; when he became engaged to w. Since he proposed in decreasing order of preference, and since w' is clearly a valid partner of m', it must be that m' prefers w to w'. But we have already seen that w prefers m' to m, for in execution &epsilon; she rejected m in favor of m'. Since (m', w) &in; S', it follows that (m', w) is an instability in S'.
+Since the rejection of m by w was the first rejection of a man by a valid partner in the execution &epsilon;, it must be that m' had not been rejected by any valid partner at the point in &epsilon; when he became engaged to w. Since he proposed in decreasing order of preference, and since w' is clearly a valid partner of m', it must be that m' prefers w to w'. But we have already seen that w prefers m' to m, for in execution &epsilon; she rejected m in favor of m'. Since (m', w) &in; S', it follows that (m', w) is an instability in S'.
 
-This contradicts our claim that S' is stable and hence contradicts our initial assumption.
+This contradicts our claim that S' is stable and hence contradicts our initial assumption.
 
 ### Time Complexity
 
